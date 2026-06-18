@@ -34,6 +34,7 @@ export const checkAuth: Tool = {
   inputShape: { code: z.string() },
   run(args) {
     const findings = RULES.filter((r) => r.pattern.test(args.code)).map((r) => ({
+      pattern: r.pattern.source,
       severity: r.severity, message: r.message, fix: r.fix, docUrl: r.docUrl,
     }));
     return ok({ findings, clean: findings.length === 0 });

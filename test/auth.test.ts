@@ -19,6 +19,9 @@ test("pc_check_auth flags the retired graph.windows.net audience", async () => {
   const data = r.data as any;
   expect(data.clean).toBe(false);
   expect(data.findings.some((f: any) => /graph\.windows\.net/.test(f.message))).toBe(true);
+  const gw = data.findings.find((f: any) => /graph\.windows\.net/.test(f.message));
+  expect(gw.severity).toBe("error");
+  expect(gw.pattern).toBeDefined();
 });
 
 test("pc_check_auth reports clean for a correct snippet", async () => {
