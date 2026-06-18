@@ -1,0 +1,23 @@
+{
+  "name": "partner-center-mcp",
+  "version": "0.1.0",
+  "description": "MCP server: knowledge and codegen assistant for the Partner Center REST API",
+  "type": "module",
+  "bin": { "partner-center-mcp": "dist/index.js" },
+  "files": ["dist", "data", "README.md"],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "start": "node dist/index.js"
+  },
+  "engines": { "node": ">=18" },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.5.0",
+    "vitest": "^2.0.0"
+  }
+}
