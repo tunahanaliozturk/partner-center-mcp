@@ -1,0 +1,6 @@
+{ "version": "test",
+  "baseUrls": { "commercial": "https://api.partnercenter.microsoft.com" },
+  "headers": [ { "name": "MS-CorrelationId", "purpose": "Trace a request" } ],
+  "versioning": "Paths are prefixed with /v1.",
+  "sandbox": "Use the integration sandbox for testing.",
+  "rateLimits": "Honor 429 Retry-After." }

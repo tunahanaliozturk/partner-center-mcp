@@ -1,8 +1,9 @@
 import type { z } from "zod";
+import type { Knowledge } from "./knowledge/schema.js";
 
-// Knowledge and DocFetch get concrete types in later tasks; widen here so this
-// foundational module does not depend on them.
-export type Knowledge = unknown;
+export type { Knowledge };
+
+// DocFetch returns curated-or-live doc excerpts; concrete impl arrives in a later task.
 export type DocFetch = (query: string, opts?: { timeoutMs?: number }) =>
   Promise<{ ok: boolean; excerpts: { title: string; url: string; text: string }[]; note?: string }>;
 

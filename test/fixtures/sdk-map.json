@@ -1,0 +1,3 @@
+{ "version": "test", "mappings": [
+  { "sdkPattern": "Customers.ById({id}).Subscriptions.Get()", "restScenarioId": "list-customer-subscriptions", "notes": "GET /v1/customers/{id}/subscriptions" }
+] }
