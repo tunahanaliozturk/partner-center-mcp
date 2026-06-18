@@ -15,6 +15,7 @@ export const authGuidance: Tool = {
     const cloudKey = args.cloud ?? "commercial";
     const cloud = auth.clouds[cloudKey];
     if (!cloud) return notFound(`No auth data for cloud "${cloudKey}".`, Object.keys(auth.clouds));
-    return ok({ cloud, pattern: auth.patterns[args.authType], deprecations: auth.deprecations });
+    const pattern = auth.patterns[args.authType as "app-only" | "app+user"];
+    return ok({ cloud, pattern, deprecations: auth.deprecations });
   },
 };

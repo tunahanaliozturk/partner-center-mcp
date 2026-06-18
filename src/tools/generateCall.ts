@@ -18,7 +18,7 @@ export const generateCall: Tool = {
     // powershell is derived from curl when no dedicated example exists.
     const code = lang === "powershell"
       ? `# PowerShell (Invoke-RestMethod)\nInvoke-RestMethod -Method ${scenario.method} -Uri "https://api.partnercenter.microsoft.com${scenario.path}" -Headers @{ Authorization = "Bearer $token" }`
-      : scenario.examples[lang];
+      : scenario.examples[lang as "curl" | "csharp" | "typescript"];
     return ok({ language: lang, code, authType: scenario.authType, docUrl: scenario.docUrl });
   },
 };

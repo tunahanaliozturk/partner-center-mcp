@@ -11,7 +11,7 @@ export function createServer(tools: Tool[], ctx: ToolContext): McpServer {
         const result = await tool.run(args, ctx);
         return {
           content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }],
-          structuredContent: result as Record<string, unknown>,
+          structuredContent: result as unknown as Record<string, unknown>,
         };
       },
     );

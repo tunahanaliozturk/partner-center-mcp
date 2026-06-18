@@ -15,6 +15,7 @@ export const getReference: Tool = {
       case "versioning": return ok({ versioning: ref.versioning });
       case "sandbox": return ok({ sandbox: ref.sandbox });
       case "rate-limits": return ok({ rateLimits: ref.rateLimits });
+      default: return ok({});
     }
   },
 };
