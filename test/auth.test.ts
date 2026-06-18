@@ -29,3 +29,15 @@ test("pc_check_auth reports clean for a correct snippet", async () => {
   const r = await checkAuth.run({ code }, ctx);
   expect((r.data as any).clean).toBe(true);
 });
+
+test("every advertised cloud has backing auth data", () => {
+  for (const cloud of ["commercial", "china-21vianet", "us-gov"]) {
+    expect((ctx.knowledge as any).auth.clouds[cloud]).toBeDefined();
+  }
+});
+
+test("pc_auth_guidance resolves us-gov", async () => {
+  const r = await authGuidance.run({ authType: "app-only", cloud: "us-gov" }, ctx);
+  expect(r.ok).toBe(true);
+  expect((r.data as any).cloud.authority).toBe("https://login.microsoftonline.us");
+});

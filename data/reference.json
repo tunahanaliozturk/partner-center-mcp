@@ -1,7 +1,8 @@
 {
   "baseUrls": {
     "commercial": "https://api.partnercenter.microsoft.com",
-    "china-21vianet": "https://partner.partnercenterapi.microsoftonline.cn"
+    "china-21vianet": "https://partner.partnercenterapi.microsoftonline.cn",
+    "us-gov": "https://api.partnercenter.microsoft.com"
   },
   "headers": [
     { "name": "Authorization", "purpose": "Bearer access token, audience https://api.partnercenter.microsoft.com" },
