@@ -1,0 +1,71 @@
+{
+  "version": "2026-06",
+  "scenarios": [
+    {
+      "id": "verify-mpn",
+      "area": "profiles",
+      "title": "Verify a partner by MPN id",
+      "method": "GET",
+      "path": "/v1/profiles/mpn?mpnId={mpn-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "MS-CorrelationId", "required": false, "note": "GUID to trace the request" }
+      ],
+      "requestShape": null,
+      "responseShape": "MpnProfile",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/profiles/mpn?mpnId=1234567\"",
+        "csharp": "using var http = new HttpClient { BaseAddress = new Uri(\"https://api.partnercenter.microsoft.com\") };\nhttp.DefaultRequestHeaders.Authorization = new(\"Bearer\", token);\nvar res = await http.GetAsync(\"/v1/profiles/mpn?mpnId=1234567\");",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/profiles/mpn?mpnId=1234567\", { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": ["Omit mpnId to return the signed-in partner's profile."],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-partner-by-mpn-id",
+      "lastVerified": "2026-06-18"
+    },
+    {
+      "id": "assign-licenses",
+      "area": "licenses",
+      "title": "Assign licenses to a user",
+      "method": "POST",
+      "path": "/v1/customers/{customer-id}/users/{user-id}/licenseupdates",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "LicenseUpdate",
+      "responseShape": "LicenseUpdate",
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d @body.json \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/users/{user-id}/licenseupdates\"",
+        "csharp": "var res = await http.PostAsync($\"/v1/customers/{customerId}/users/{userId}/licenseupdates\", content);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/users/${userId}/licenseupdates`, { method: \"POST\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": ["Returns 201 with the LicenseUpdate resource on success.", "Fails if the license is not available in the customer tenant."],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/assign-licenses-to-a-user",
+      "lastVerified": "2026-06-18"
+    },
+    {
+      "id": "list-customer-subscriptions",
+      "area": "subscriptions",
+      "title": "List a customer's subscriptions",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/subscriptions",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "MS-CorrelationId", "required": false, "note": "GUID to trace the request" }
+      ],
+      "requestShape": null,
+      "responseShape": "Subscription collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/subscriptions\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/subscriptions`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": ["App-only authentication is not supported for all customer operations; this one requires app+user."],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-subscriptions",
+      "lastVerified": "2026-06-18"
+    }
+  ]
+}

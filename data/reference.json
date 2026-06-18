@@ -1,0 +1,15 @@
+{
+  "baseUrls": {
+    "commercial": "https://api.partnercenter.microsoft.com",
+    "china-21vianet": "https://partner.partnercenterapi.microsoftonline.cn"
+  },
+  "headers": [
+    { "name": "Authorization", "purpose": "Bearer access token, audience https://api.partnercenter.microsoft.com" },
+    { "name": "MS-CorrelationId", "purpose": "GUID to correlate a single request in support cases" },
+    { "name": "MS-RequestId", "purpose": "GUID for idempotency of write operations" },
+    { "name": "Accept-Language", "purpose": "Locale for localized responses" }
+  ],
+  "versioning": "Resource paths are prefixed with /v1. The generatetoken API uses /v3.",
+  "sandbox": "Use your integration sandbox account and its tokens while developing so you do not incur real charges.",
+  "rateLimits": "Honor HTTP 429 responses and the Retry-After header; back off and retry."
+}
