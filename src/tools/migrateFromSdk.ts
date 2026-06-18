@@ -13,7 +13,8 @@ export const migrateFromSdk: Tool = {
       .filter((m) => {
         const tail = m.sdkPattern.split(".").slice(-2).join(".").replace(/\{[^}]+\}/g, "");
         const needle = tail.replace(/\(\)$/, "").replace(/[()]/g, "");
-        return new RegExp(needle, "i").test(args.code);
+        const safeNeedle = needle.replace(/\./g, "\\.");
+        return new RegExp(safeNeedle, "i").test(args.code);
       })
       .map((m) => ({ sdkPattern: m.sdkPattern, notes: m.notes, scenario: k.scenarios.find((s) => s.id === m.restScenarioId) }))
       .filter((m) => m.scenario);

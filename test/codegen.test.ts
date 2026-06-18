@@ -29,3 +29,8 @@ test("pc_migrate_from_sdk reports unmatched for unrecognized code", async () => 
   const r = await migrateFromSdk.run({ code: "var x = 1;" }, ctx);
   expect((r.data as any).unmatched).toBe(true);
 });
+
+test("pc_migrate_from_sdk does not match on a coincidental substring", async () => {
+  const r = await migrateFromSdk.run({ code: "const subscriptionsXgetter = 1;" }, ctx);
+  expect((r.data as any).unmatched).toBe(true);
+});
