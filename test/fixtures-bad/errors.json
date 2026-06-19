@@ -1,0 +1,5 @@
+{ "version": "test", "errors": [
+  { "httpStatus": 401, "errorCode": "900420", "description": "Token audience invalid / retired.",
+    "causes": ["graph.windows.net audience token"], "remediation": "Use api.partnercenter.microsoft.com audience.",
+    "docUrl": "https://learn.microsoft.com/partner-center/developer/error-codes" }
+] }

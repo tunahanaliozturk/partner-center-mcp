@@ -1,0 +1,9 @@
+{
+  "version": "2026-06",
+  "errors": [
+    { "httpStatus": 401, "errorCode": "900420", "description": "The audience in the token is invalid and is no longer supported in Partner Center API.", "causes": ["Token requested with the retired graph.windows.net audience"], "remediation": "Request the token with resource https://api.partnercenter.microsoft.com (see the deprecate-azure-active-directory-graph-token guidance).", "docUrl": "https://learn.microsoft.com/partner-center/developer/deprecate-azure-active-directory-graph-token" },
+    { "httpStatus": 400, "errorCode": "900154", "description": "The PLA ID (formerly MPN ID) is not linked to an active CSP indirect reseller tenant.", "causes": ["Reseller not enrolled as an indirect reseller"], "remediation": "Have the reseller enroll into the CSP program as an indirect reseller in Partner Center.", "docUrl": "https://learn.microsoft.com/partner-center/developer/error-codes" },
+    { "httpStatus": 400, "errorCode": "900419", "description": "This customer tenant has exceeded the limit for the number of subscriptions.", "causes": ["Subscription count over the Entra limit"], "remediation": "Consolidate subscriptions per the Partner Center documentation.", "docUrl": "https://learn.microsoft.com/partner-center/developer/error-codes" },
+    { "httpStatus": 403, "errorCode": "900416", "description": "This customer account is locked for transactions.", "causes": ["Account locked"], "remediation": "Contact Partner Center support.", "docUrl": "https://learn.microsoft.com/partner-center/developer/error-codes" }
+  ]
+}

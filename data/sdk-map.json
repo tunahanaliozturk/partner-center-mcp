@@ -1,0 +1,8 @@
+{
+  "version": "2026-06",
+  "mappings": [
+    { "sdkPattern": "Customers.ById({customerId}).Subscriptions.Get()", "restScenarioId": "list-customer-subscriptions", "notes": "GET /v1/customers/{customerId}/subscriptions with an app+user token." },
+    { "sdkPattern": "Customers.ById({customerId}).Users.ById({userId}).LicenseUpdates.Create(update)", "restScenarioId": "assign-licenses", "notes": "POST /v1/customers/{customerId}/users/{userId}/licenseupdates with a LicenseUpdate body." },
+    { "sdkPattern": "Profiles.MpnProfile.Get()", "restScenarioId": "verify-mpn", "notes": "GET /v1/profiles/mpn (omit mpnId for the signed-in partner)." }
+  ]
+}

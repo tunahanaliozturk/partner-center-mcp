@@ -1,0 +1,9 @@
+{ "version": "test", "scenarios": [
+  { "id": "verify-mpn", "area": "profiles", "title": "Verify a partner by MPN id",
+    "method": "GET", "path": "/v1/profiles/mpn?mpnId={mpn-id}", "authType": "app+user",
+    "headers": [{ "name": "Authorization", "required": true, "note": "Bearer token" }],
+    "requestShape": null, "responseShape": "MpnProfile",
+    "examples": { "curl": "curl ...", "csharp": "// ...", "typescript": "// ..." },
+    "gotchas": [], "docUrl": "https://learn.microsoft.com/partner-center/developer/get-partner-by-mpn-id",
+    "lastVerified": "2026-06-18" }
+] }
