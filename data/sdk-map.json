@@ -1,8 +1,32 @@
 {
   "version": "2026-06",
   "mappings": [
-    { "sdkPattern": "Customers.ById({customerId}).Subscriptions.Get()", "restScenarioId": "list-customer-subscriptions", "notes": "GET /v1/customers/{customerId}/subscriptions with an app+user token." },
+    { "sdkPattern": "Customers.Query(query).Get()", "restScenarioId": "list-customers", "notes": "GET /v1/customers?size={size}; paged collection, follow links.next. Filter via the customers query." },
+    { "sdkPattern": "Customers.Create(customer)", "restScenarioId": "create-customer", "notes": "POST /v1/customers with BillingProfile + CompanyProfile; reuse MS-RequestId on retries." },
+    { "sdkPattern": "Customers.ById({customerId}).Get()", "restScenarioId": "get-customer-by-id", "notes": "GET /v1/customers/{customerId}." },
+    { "sdkPattern": "Customers.ById({customerId}).Delete()", "restScenarioId": "delete-customer-sandbox", "notes": "DELETE /v1/customers/{customerId}; integration sandbox only." },
+    { "sdkPattern": "Customers.ById({customerId}).Users.Create(user)", "restScenarioId": "create-user", "notes": "POST /v1/customers/{customerId}/users; app+user only, returns 200." },
+    { "sdkPattern": "Customers.ById({customerId}).Users.Get()", "restScenarioId": "get-customer-users", "notes": "GET /v1/customers/{customerId}/users; app+user only." },
     { "sdkPattern": "Customers.ById({customerId}).Users.ById({userId}).LicenseUpdates.Create(update)", "restScenarioId": "assign-licenses", "notes": "POST /v1/customers/{customerId}/users/{userId}/licenseupdates with a LicenseUpdate body." },
+    { "sdkPattern": "Products.ByCountry({country}).ByTargetView({view}).Get()", "restScenarioId": "get-products", "notes": "GET /v1/products?country=..&targetView=..; use OnlineServices for NCE." },
+    { "sdkPattern": "Products.ById({productId}).Skus.ById({skuId}).Availabilities.Get()", "restScenarioId": "get-sku-availabilities", "notes": "GET /v1/products/{productId}/skus/{skuId}/availabilities?country=..; fetch fresh CatalogItemId before ordering." },
+    { "sdkPattern": "Customers.ById({customerId}).Carts.Create(cart)", "restScenarioId": "create-cart", "notes": "POST /v1/customers/{customerId}/carts; carts expire after 7 days." },
+    { "sdkPattern": "Customers.ById({customerId}).Carts.ById({cartId}).Checkout()", "restScenarioId": "checkout-cart", "notes": "POST /v1/customers/{customerId}/carts/{cartId}/checkout; empty body, idempotent." },
+    { "sdkPattern": "Customers.ById({customerId}).Orders.ById({orderId}).Get()", "restScenarioId": "get-order-by-id", "notes": "GET /v1/customers/{customerId}/orders/{orderId}." },
+    { "sdkPattern": "Customers.ById({customerId}).Orders.Get()", "restScenarioId": "list-customer-orders", "notes": "GET /v1/customers/{customerId}/orders[?billingType=..]; up to 15-min propagation delay." },
+    { "sdkPattern": "Customers.ById({customerId}).Subscriptions.Get()", "restScenarioId": "list-customer-subscriptions", "notes": "GET /v1/customers/{customerId}/subscriptions with an app+user token." },
+    { "sdkPattern": "Customers.ById({customerId}).Subscriptions.ById({id}).Get()", "restScenarioId": "get-subscription-by-id", "notes": "GET /v1/customers/{customerId}/subscriptions/{id}." },
+    { "sdkPattern": "Customers.ById({customerId}).Subscriptions.ById({id}).Patch(subscription)", "restScenarioId": "update-subscription", "notes": "PATCH /v1/customers/{customerId}/subscriptions/{id} with the FULL resource; GET-mutate-PATCH." },
+    { "sdkPattern": "Customers.ById({customerId}).Subscriptions.ByOrder({orderId}).Get()", "restScenarioId": "get-subscriptions-by-order", "notes": "GET /v1/customers/{customerId}/subscriptions?order_id={orderId} (note the underscore)." },
+    { "sdkPattern": "Customers.ById({customerId}).Migrations.NewCommerce.Create(migration)", "restScenarioId": "migrate-to-new-commerce", "notes": "POST /v1/customers/{customerId}/migrations/newcommerce; validate eligibility first." },
+    { "sdkPattern": "Invoices.Get()", "restScenarioId": "get-invoices", "notes": "GET /v1/invoices; filter by InvoiceDate to avoid timeouts." },
+    { "sdkPattern": "Invoices.ById({invoiceId}).Get()", "restScenarioId": "get-invoice-by-id", "notes": "GET /v1/invoices/{invoiceId}; app+user only." },
+    { "sdkPattern": "Customers.ById({customerId}).Subscriptions.ById({id}).UtilizationRecords.Query(azure).Get()", "restScenarioId": "get-azure-utilization", "notes": "GET /v1/customers/{customerId}/subscriptions/{id}/utilizations/azure; legacy Azure only, not Azure plan." },
+    { "sdkPattern": "Invoices.Summary.Get()", "restScenarioId": "get-partner-balance", "notes": "GET /v1/invoices/summary; balance is InvoiceSummary.BalanceAmount." },
+    { "sdkPattern": "Validations.IsAddressValid(address)", "restScenarioId": "validate-address", "notes": "POST /v1/validations/address; prevalidate before create-customer." },
+    { "sdkPattern": "Domains.ByDomain({domain}).Exists()", "restScenarioId": "check-domain-availability", "notes": "HEAD /v1/domains/{domain}; 404 = available, 200 = in use." },
+    { "sdkPattern": "AuditRecords.Query(filter).Get()", "restScenarioId": "get-audit-records", "notes": "GET /v1/auditrecords?startDate=..; 90-day window." },
+    { "sdkPattern": "Customers.ById({customerId}).ServiceRequests.Get()", "restScenarioId": "list-service-requests", "notes": "GET /v1/customers/{customerId}/servicerequests; app+user only." },
     { "sdkPattern": "Profiles.MpnProfile.Get()", "restScenarioId": "verify-mpn", "notes": "GET /v1/profiles/mpn (omit mpnId for the signed-in partner)." }
   ]
 }

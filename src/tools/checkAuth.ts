@@ -26,6 +26,20 @@ const RULES: Rule[] = [
     fix: "Call the Partner Center REST APIs directly. Use pc_migrate_from_sdk to translate.",
     docUrl: "https://learn.microsoft.com/partner-center/developer/get-started",
   },
+  {
+    pattern: /Install-Module\s+(AzureAD|MSOnline)|Connect-AzureAD|Connect-MsolService/i,
+    severity: "warning",
+    message: "Uses the deprecated AzureAD/MSOnline PowerShell modules.",
+    fix: "Use the Microsoft.Graph PowerShell module (and the community Partner Center PowerShell module) with the secure application model.",
+    docUrl: "https://learn.microsoft.com/partner-center/developer/enable-secure-app-model",
+  },
+  {
+    pattern: /resource=https?%3a%2f%2fgraph\.windows\.net|aadgraph|graph\.windows\.net\/\.default/i,
+    severity: "error",
+    message: "Requests a token for the retired Azure AD Graph (graph.windows.net) audience; Partner Center returns 401 / 900420.",
+    fix: "Request the token with resource https://api.partnercenter.microsoft.com.",
+    docUrl: "https://learn.microsoft.com/partner-center/developer/deprecate-azure-active-directory-graph-token",
+  },
 ];
 
 export const checkAuth: Tool = {

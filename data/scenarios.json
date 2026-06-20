@@ -24,6 +24,171 @@
       "lastVerified": "2026-06-18"
     },
     {
+      "id": "list-customers",
+      "area": "customers",
+      "title": "Get a list of customers",
+      "method": "GET",
+      "path": "/v1/customers?size={size}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": false, "note": "application/json" },
+        { "name": "MS-CorrelationId", "required": false, "note": "GUID to trace the request" }
+      ],
+      "requestShape": null,
+      "responseShape": "Customer collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers?size=40\"",
+        "csharp": "var res = await http.GetAsync(\"/v1/customers?size=40\");",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/customers?size=40\", { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Paged collection: response has totalCount, items[], and links (follow links.next for more pages).",
+        "Each item carries only companyProfile and relationshipToPartner; call get-customer-by-id for full detail.",
+        "Filter with &filter={url-encoded-json} to search by company name, domain, or reseller.",
+        "Supports both app+user and app-only."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-customers",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "create-customer",
+      "area": "customers",
+      "title": "Create a customer",
+      "method": "POST",
+      "path": "/v1/customers",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "MS-RequestId", "required": true, "note": "GUID for idempotency; reuse the same value on retries so the customer isn't created twice" },
+        { "name": "MS-CorrelationId", "required": true, "note": "GUID for tracing" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "Customer",
+      "responseShape": "Customer",
+      "examples": {
+        "curl": "curl -X POST \"https://api.partnercenter.microsoft.com/v1/customers\" -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -H \"MS-RequestId: $(uuidgen)\" -H \"MS-CorrelationId: $(uuidgen)\" -d @customer.json",
+        "csharp": "using var req = new HttpRequestMessage(HttpMethod.Post, \"/v1/customers\");\nreq.Headers.Add(\"MS-RequestId\", Guid.NewGuid().ToString());\nreq.Headers.Add(\"MS-CorrelationId\", Guid.NewGuid().ToString());\nreq.Content = new StringContent(bodyJson, Encoding.UTF8, \"application/json\");\nvar res = await http.SendAsync(req); // 201 Created",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/customers\", { method: \"POST\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\", \"MS-RequestId\": crypto.randomUUID(), \"MS-CorrelationId\": crypto.randomUUID() }, body });"
+      },
+      "gotchas": [
+        "Returns 201 with a Customer that includes userCredentials (admin username/password) - save it, it cannot be retrieved later.",
+        "Idempotent: reuse the same MS-RequestId on retries to avoid creating duplicate customers.",
+        "Required body: BillingProfile (email, culture, language, companyName, defaultAddress) and CompanyProfile (domain).",
+        "A valid physical address is required; in the sandbox an invalid address makes the customer tenant undeletable.",
+        "organizationRegistrationNumber is mandatory for customers in certain countries/regions (e.g. Russia, Turkey, Brazil, India, UAE).",
+        "Do not pass a userCredentials password in the request; it is not accepted.",
+        "Also supports app-only."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/create-a-customer",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-customer-by-id",
+      "area": "customers",
+      "title": "Get a customer by ID",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "MS-CorrelationId", "required": false, "note": "GUID to trace the request" }
+      ],
+      "requestShape": null,
+      "responseShape": "Customer",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "customer-id is the customer's Microsoft (Entra) tenant GUID.",
+        "Without DAP/GDAP access the response omits CompanyProfileAddress, CompanyProfileEmail, and CustomDomain.",
+        "Supports both app+user and app-only."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-customer-by-id",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "delete-customer-sandbox",
+      "area": "customers",
+      "title": "Delete a customer from the integration sandbox",
+      "method": "DELETE",
+      "path": "/v1/customers/{customer-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "MS-CorrelationId", "required": false, "note": "GUID to trace the request" }
+      ],
+      "requestShape": null,
+      "responseShape": null,
+      "examples": {
+        "curl": "curl -X DELETE -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}\"",
+        "csharp": "var res = await http.DeleteAsync($\"/v1/customers/{customerId}\"); // 204 No Content",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}`, { method: \"DELETE\", headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Sandbox (TIP) only - this breaks the partner-customer relationship and purges ALL resources for that tenant.",
+        "Returns 204 No Content on success.",
+        "All Azure reservations and software purchase orders must be canceled first or the delete fails.",
+        "A customer created with an invalid sandbox address cannot be deleted."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/delete-a-customer-account-from-the-integration-sandbox",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "create-user",
+      "area": "customers",
+      "title": "Create a user account for a customer",
+      "method": "POST",
+      "path": "/v1/customers/{customer-id}/users",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "CustomerUser",
+      "responseShape": "CustomerUser",
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d @user.json \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/users\"",
+        "csharp": "var res = await http.PostAsync($\"/v1/customers/{customerId}/users\", content); // 200 OK",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/users`, { method: \"POST\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "App+User only - app-only is NOT supported. Requires a GDAP role (User Administrator or Directory Writers).",
+        "Returns 200 OK (not 201) with the created CustomerUser including its generated id.",
+        "userPrincipalName must use the customer's own (non-federated) domain.",
+        "passwordProfile.password must meet complexity rules; set forceChangePassword=true to require a reset on first sign-in."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/create-user-accounts-for-a-customer",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-customer-users",
+      "area": "customers",
+      "title": "Get all user accounts for a customer",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/users",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "MS-CorrelationId", "required": false, "note": "GUID to trace the request" }
+      ],
+      "requestShape": null,
+      "responseShape": "CustomerUser collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/users\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/users\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/users`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "App+User only - app-only is NOT supported. Requires a GDAP role (Directory Reader, Global Reader, or User Administrator).",
+        "For a single user, use /v1/customers/{customer-id}/users/{user-id}."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-all-user-accounts-for-a-customer",
+      "lastVerified": "2026-06-21"
+    },
+    {
       "id": "assign-licenses",
       "area": "licenses",
       "title": "Assign licenses to a user",
@@ -46,6 +211,169 @@
       "lastVerified": "2026-06-18"
     },
     {
+      "id": "get-products",
+      "area": "catalog",
+      "title": "Get a list of products",
+      "method": "GET",
+      "path": "/v1/products?country={country}&targetView={targetView}&targetSegment={targetSegment}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "Product collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/products?country=US&targetView=OnlineServices\"",
+        "csharp": "var res = await http.GetAsync(\"/v1/products?country=US&targetView=OnlineServices\");",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/products?country=US&targetView=OnlineServices\", { headers: { Authorization: `Bearer ${token}`, Accept: \"application/json\" } });"
+      },
+      "gotchas": [
+        "Both country and targetView are required.",
+        "targetView is an enum (Azure, AzureReservations, MicrosoftAzure, OnlineServices, Software, MarketplaceSaaS); use OnlineServices for new commerce (NCE) license-based products.",
+        "For Azure Reservations add reservationScope=AzurePlan.",
+        "403/400036 if the targetView is not allowed; 403/400030 if the targetSegment is not allowed.",
+        "Supports both app-only and app+user."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-products",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-sku-availabilities",
+      "area": "catalog",
+      "title": "Get a list of availabilities for a SKU",
+      "method": "GET",
+      "path": "/v1/products/{product-id}/skus/{sku-id}/availabilities?country={country}&targetSegment={targetSegment}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "Availability collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/products/{product-id}/skus/{sku-id}/availabilities?country=US\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/products/{productId}/skus/{skuId}/availabilities?country=US\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/products/${productId}/skus/${skuId}/availabilities?country=US`, { headers: { Authorization: `Bearer ${token}`, Accept: \"application/json\" } });"
+      },
+      "gotchas": [
+        "country is required; all segments except nonprofit are returned by default (pass targetSegment=nonprofit explicitly for those).",
+        "The availability's CatalogItemId is mutable and reissued regularly - always fetch a fresh availability right before adding a cart line item or placing an order.",
+        "For Azure Reservation SKUs add reservationScope=AzurePlan; add IncludeLifeCycleState=true for NCE license-based lifecycle state.",
+        "Supports both app-only and app+user."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-availabilities-for-a-sku",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "create-cart",
+      "area": "orders",
+      "title": "Create a cart",
+      "method": "POST",
+      "path": "/v1/customers/{customer-id}/carts",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "Cart",
+      "responseShape": "Cart",
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d @cart.json \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/carts\"",
+        "csharp": "var res = await http.PostAsync($\"/v1/customers/{customerId}/carts\", content); // 201 Created",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/carts`, { method: \"POST\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "Carts expire 7 days after creation. Success returns 201 with the populated Cart.",
+        "lineItems is required (>=1 CartLineItem). Line items are processed in array order - place any promotion-eligible (New-To-Offer) item FIRST.",
+        "billingCycle uses snake_case JSON enum values (one_time, monthly, none).",
+        "Azure plan and perpetual software line items do NOT support termDuration - omit it for those.",
+        "Set AttestationAccepted per line item when the offer enforces attestation.",
+        "Supports both app-only and app+user."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/create-a-cart",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "checkout-cart",
+      "area": "orders",
+      "title": "Check out a cart",
+      "method": "POST",
+      "path": "/v1/customers/{customer-id}/carts/{cart-id}/checkout",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json (empty body)" }
+      ],
+      "requestShape": null,
+      "responseShape": "CartCheckoutResult",
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Length: 0\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/carts/{cart-id}/checkout\"",
+        "csharp": "var res = await http.PostAsync($\"/v1/customers/{customerId}/carts/{cartId}/checkout\", new StringContent(\"\", Encoding.UTF8, \"application/json\")); // 201 Created",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/carts/${cartId}/checkout`, { method: \"POST\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" } });"
+      },
+      "gotchas": [
+        "Empty request body (Content-Length: 0). Success returns 201 with a CartCheckoutResult containing an orders array.",
+        "Idempotent: re-checking out an already-checked-out cart returns the original result.",
+        "Provisioning is asynchronous - subscriptionId values may be absent in the response and appear later via Get Order.",
+        "Checkout fails on an expired cart (7-day limit).",
+        "Supports both app-only and app+user."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/checkout-a-cart",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-order-by-id",
+      "area": "orders",
+      "title": "Get an order by ID",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/orders/{order-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "Order",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/orders/{order-id}\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/orders/{orderId}\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/orders/${orderId}`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Use this (or list-customer-orders) to retrieve subscriptionId values not yet provisioned at checkout time.",
+        "Supports both app-only and app+user."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-an-order-by-id",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "list-customer-orders",
+      "area": "orders",
+      "title": "Get all of a customer's orders",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/orders?billingType={billing-cycle-type}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "Order collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/orders\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/orders\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/orders`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "There is a delay of up to 15 minutes between order submission and appearance in this collection - don't poll immediately after checkout.",
+        "Optional ?billingType={monthly|annual|one_time|none} filters by billing cycle.",
+        "Supports both app-only and app+user."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-all-of-a-customer-s-orders",
+      "lastVerified": "2026-06-21"
+    },
+    {
       "id": "list-customer-subscriptions",
       "area": "subscriptions",
       "title": "List a customer's subscriptions",
@@ -66,6 +394,376 @@
       "gotchas": ["App-only authentication is not supported for all customer operations; this one requires app+user."],
       "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-subscriptions",
       "lastVerified": "2026-06-18"
+    },
+    {
+      "id": "get-subscription-by-id",
+      "area": "subscriptions",
+      "title": "Get a subscription by ID",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/subscriptions/{subscription-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "Subscription",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/subscriptions/{subscriptionId}\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/subscriptions/${subscriptionId}`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Add-on subscriptions include parentSubscriptionId.",
+        "NCE subscriptions return extra fields (productType, termDuration, billingCycle, refundOptions, cancellationAllowedUntilDate).",
+        "Supports both app-only and app+user."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-subscription-by-id",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "update-subscription",
+      "area": "subscriptions",
+      "title": "Update a subscription (quantity, status, autorenew)",
+      "method": "PATCH",
+      "path": "/v1/customers/{customer-id}/subscriptions/{subscription-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "Subscription",
+      "responseShape": "Subscription",
+      "examples": {
+        "curl": "curl -X PATCH -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d @subscription.json \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}\"",
+        "csharp": "var req = new HttpRequestMessage(HttpMethod.Patch, $\"/v1/customers/{customerId}/subscriptions/{subscriptionId}\") { Content = content };\nvar res = await http.SendAsync(req);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/subscriptions/${subscriptionId}`, { method: \"PATCH\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "Send the FULL Subscription resource, not a partial patch: GET it first, mutate it, then PATCH it back.",
+        "If autoRenewEnabled or next-term instructions are set, include them in the body or they are silently reset.",
+        "Change quantity via Quantity; suspend/reactivate via Status (active/suspended); toggle renewal via AutoRenewEnabled.",
+        "NCE license quantity can only be reduced within 7 days of purchase/renewal (else error 800090).",
+        "Billing cycle CANNOT be changed here (error 2054) - use update-order instead.",
+        "Long-running updates return 202 with a Location header to poll."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/update-a-subscription-by-id",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-subscriptions-by-order",
+      "area": "subscriptions",
+      "title": "Get a list of subscriptions by order",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/subscriptions?order_id={order-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "Subscription collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions?order_id={order-id}\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/subscriptions?order_id={orderId}\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/subscriptions?order_id=${orderId}`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Note the underscore: order_id, not orderId.",
+        "Returns a collection even when the order produced a single subscription.",
+        "Up to 15-minute delay after order submission before subscriptions appear.",
+        "Supports both app-only and app+user."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-subscriptions-by-order",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "migrate-to-new-commerce",
+      "area": "subscriptions",
+      "title": "Migrate a legacy subscription to New Commerce (NCE)",
+      "method": "POST",
+      "path": "/v1/customers/{customer-id}/migrations/newcommerce",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "NewCommerceMigration",
+      "responseShape": "NewCommerceMigration",
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d '{\"currentSubscriptionId\":\"{id}\"}' \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/migrations/newcommerce\"",
+        "csharp": "var res = await http.PostAsync($\"/v1/customers/{customerId}/migrations/newcommerce\", content);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/migrations/newcommerce`, { method: \"POST\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body: JSON.stringify({ currentSubscriptionId }) });"
+      },
+      "gotchas": [
+        "Only currentSubscriptionId is required; termDuration, billingCycle, purchaseFullTerm, quantity, customTermEndDate are optional and let you change terms during migration.",
+        "Omitted properties carry forward the legacy subscription's values.",
+        "Base subscriptions migrate together with all active add-ons as a bundle; if any add-on is ineligible the whole bundle fails.",
+        "addOnMigrations must be a FLAT list, not nested.",
+        "Validate eligibility first with the validate-a-new-commerce-migration API.",
+        "To schedule rather than run immediately, POST to .../migrations/newcommerce/schedules."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/create-migration",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-invoices",
+      "area": "invoicing",
+      "title": "Get a collection of invoices",
+      "method": "GET",
+      "path": "/v1/invoices?size={size}&offset={offset}&filter={url-encoded-json}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "Invoice collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/invoices?size=10&offset=0\"",
+        "csharp": "var res = await http.GetAsync(\"/v1/invoices?size=10&offset=0\");",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/invoices?size=10&offset=0\", { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "size/offset are only honored for legacy invoices; for modern commercial purchases they are ignored.",
+        "Use the filter param (LeftFilter/RightFilter/Operator JSON, bounded by InvoiceDate) to avoid timeouts on large invoice sets.",
+        "Supports both app-only and app+user."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-collection-of-invoices",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-invoice-by-id",
+      "area": "invoicing",
+      "title": "Get an invoice by ID",
+      "method": "GET",
+      "path": "/v1/invoices/{invoice-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "Invoice",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/invoices/{invoice-id}\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/invoices/{invoiceId}\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/invoices/${invoiceId}`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "invoice-id is a string identifier, not a GUID.",
+        "App+User only (no app-only).",
+        "For modern commercial purchases this applies only to daily-rated usage and recons generated before 2025-05-15."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-invoice-by-id",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-azure-utilization",
+      "area": "invoicing",
+      "title": "Get a customer's Azure utilization records",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/subscriptions/{subscription-id}/utilizations/azure?start_time={start}&end_time={end}&granularity={daily|hourly}&show_details={true|false}&size={size}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "AzureUtilizationRecord collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}/utilizations/azure?start_time=2026-05-01T00:00:00%2B00:00&end_time=2026-06-01T00:00:00%2B00:00&granularity=daily&show_details=true\"",
+        "csharp": "var url = $\"/v1/customers/{customerId}/subscriptions/{subscriptionId}/utilizations/azure?start_time={Uri.EscapeDataString(start)}&end_time={Uri.EscapeDataString(end)}&granularity=daily&show_details=true\";\nvar res = await http.GetAsync(url);",
+        "typescript": "const qs = new URLSearchParams({ start_time: start, end_time: end, granularity: \"daily\", show_details: \"true\" });\nconst res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/subscriptions/${subscriptionId}/utilizations/azure?${qs}`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "start_time and end_time are REQUIRED (UTC date-time offset). granularity (daily default), show_details (default true), and size (max 1000) are optional.",
+        "NOT supported for Azure plans (only legacy MS-AZR-0145P); for Azure plans use the invoice consumption line-item APIs.",
+        "If data isn't ready in billing yet, returns 204 with a Retry-After header.",
+        "Paged - follow the next link.",
+        "Supports both app-only and app+user."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-customer-s-utilization-record-for-azure",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-partner-balance",
+      "area": "invoicing",
+      "title": "Get the partner's current account balance",
+      "method": "GET",
+      "path": "/v1/invoices/summary",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "InvoiceSummary",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/invoices/summary\"",
+        "csharp": "var res = await http.GetAsync(\"/v1/invoices/summary\"); // read BalanceAmount",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/invoices/summary\", { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "The balance is exposed via InvoiceSummary.BalanceAmount; there is no dedicated balance endpoint.",
+        "Use /v1/invoices/summaries (plural) for one summary per currency.",
+        "Supports both app-only and app+user."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-the-reseller-s-current-account-balance",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "validate-address",
+      "area": "utilities",
+      "title": "Validate an address",
+      "method": "POST",
+      "path": "/v1/validations/address",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "Address",
+      "responseShape": "AddressValidationResponse",
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d '{\"AddressLine1\":\"1 Microsoft Way\",\"City\":\"Redmond\",\"State\":\"WA\",\"PostalCode\":\"98052\",\"Country\":\"US\"}' \"https://api.partnercenter.microsoft.com/v1/validations/address\"",
+        "csharp": "var res = await http.PostAsync(\"/v1/validations/address\", content);",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/validations/address\", { method: \"POST\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "Prevalidate addresses before create-customer or profile updates; the caller picks the final address from the result.",
+        "Country must be the two-character ISO alpha-2 code; required fields vary by country/region.",
+        "Only Verified or VerifiedShippable are safe to use directly; other statuses need user confirmation."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/validate-an-address",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "check-domain-availability",
+      "area": "utilities",
+      "title": "Verify domain availability",
+      "method": "HEAD",
+      "path": "/v1/domains/{domain}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" }
+      ],
+      "requestShape": null,
+      "responseShape": null,
+      "examples": {
+        "curl": "curl -I -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/domains/contoso.onmicrosoft.com\"",
+        "csharp": "var req = new HttpRequestMessage(HttpMethod.Head, \"/v1/domains/contoso.onmicrosoft.com\");\nvar res = await http.SendAsync(req);\nbool available = res.StatusCode == HttpStatusCode.NotFound;",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/domains/contoso.onmicrosoft.com\", { method: \"HEAD\", headers: { Authorization: `Bearer ${token}` } });\nconst available = res.status === 404;"
+      },
+      "gotchas": [
+        "Use the HEAD method - there is no response body; rely on the status code.",
+        "404 Not Found means the domain IS available; 200 OK means it is already in use.",
+        "The {domain} segment is the full domain string, e.g. contoso.onmicrosoft.com."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/verify-domain-availability",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-audit-records",
+      "area": "audit",
+      "title": "Get a record of Partner Center activity",
+      "method": "GET",
+      "path": "/v1/auditrecords?startDate={startDate}&endDate={endDate}&filter={url-encoded-json}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "AuditRecord collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/auditrecords?startDate=2026-06-01\"",
+        "csharp": "var res = await http.GetAsync(\"/v1/auditrecords?startDate=2026-06-01\");",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/auditrecords?startDate=2026-06-01\", { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Activity log data is limited to the previous 90 days; a startDate older than 90 days returns 400.",
+        "Without startDate, results default to the previous 30 days. Dates use yyyy-mm-dd.",
+        "filter must be url-encoded JSON with Field/Value/Operator (fields: CompanyName substring, CustomerId equals, ResourceType equals); matching is case-insensitive.",
+        "Results are paged."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-record-of-partner-center-activity-by-user",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "list-service-requests",
+      "area": "support",
+      "title": "Get all service requests for a customer",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/servicerequests",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "ServiceRequest collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/servicerequests\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/servicerequests\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/servicerequests`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "App+User only (no app-only).",
+        "For a single service request use GET /v1/servicerequests/{servicerequest-id}; that endpoint accepts an IncludeOrganizationRequests header for the Support Request Admin role."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-all-service-requests-for-a-customer",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-mfa-status",
+      "area": "security",
+      "title": "Get per-request MFA compliance for App+User API calls",
+      "method": "GET",
+      "path": "/v1/partnerRequests",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" }
+      ],
+      "requestShape": null,
+      "responseShape": "ApiRequestDetails collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/partnerRequests\"",
+        "csharp": "var res = await http.GetAsync(\"/v1/partnerRequests\"); // items[].mfaCompliant",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/partnerRequests\", { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "App+User only. Returns the most recent App+User API requests, capped at 10K items.",
+        "Each item exposes mfaCompliant (true/false) plus upn, objectId, applicationId, operationName - use it to find non-MFA-compliant callers before the MFA enforcement date.",
+        "This is request-level telemetry, not a static per-user enrollment record."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-api-request-details",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-customer-analytics",
+      "area": "analytics",
+      "title": "Get customer licenses usage information",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/analytics/licenses/usage",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "CustomerLicensesUsageInsights collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/analytics/licenses/usage\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/analytics/licenses/usage\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/analytics/licenses/usage`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "App+User only. Returns CustomerLicensesUsageInsights (workloadName, productName, licensesActive, licensesQualified, usagePercent).",
+        "Superseded by the workload-level GET /v1/analytics/commercial/usage/license/, but this per-customer endpoint remains documented and valid."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-customer-licenses-usage-information",
+      "lastVerified": "2026-06-21"
     }
   ]
 }

@@ -2,15 +2,19 @@
   "baseUrls": {
     "commercial": "https://api.partnercenter.microsoft.com",
     "china-21vianet": "https://partner.partnercenterapi.microsoftonline.cn",
-    "us-gov": "https://api.partnercenter.microsoft.com"
+    "us-gov": "https://api.partnercenter.microsoft.com",
+    "pricing-and-referrals": "https://api.partner.microsoft.com"
   },
   "headers": [
-    { "name": "Authorization", "purpose": "Bearer access token, audience https://api.partnercenter.microsoft.com" },
-    { "name": "MS-CorrelationId", "purpose": "GUID to correlate a single request in support cases" },
-    { "name": "MS-RequestId", "purpose": "GUID for idempotency of write operations" },
-    { "name": "Accept-Language", "purpose": "Locale for localized responses" }
+    { "name": "Authorization", "purpose": "Bearer access token, audience https://api.partnercenter.microsoft.com (required on every call)" },
+    { "name": "MS-RequestId", "purpose": "GUID for idempotency of write operations; reuse the same value on retries so the operation runs once" },
+    { "name": "MS-CorrelationId", "purpose": "GUID to correlate a single request in logs and support cases; use a fresh one per logical operation" },
+    { "name": "Accept", "purpose": "application/json" },
+    { "name": "Content-Type", "purpose": "application/json on requests with a body" },
+    { "name": "Accept-Language / X-Locale", "purpose": "Locale for localized responses, e.g. en-US" },
+    { "name": "ValidateMfa", "purpose": "Set to true to ask the API to report MFA compliance; the response then includes isMfaCompliant" }
   ],
-  "versioning": "Resource paths are prefixed with /v1. The generatetoken API uses /v3.",
-  "sandbox": "Use your integration sandbox account and its tokens while developing so you do not incur real charges.",
-  "rateLimits": "Honor HTTP 429 responses and the Retry-After header; back off and retry."
+  "versioning": "Resource paths are prefixed with /v1. The generatetoken (secure app model) API uses /v3. Pricing and Referrals APIs live on a separate host, https://api.partner.microsoft.com.",
+  "sandbox": "Use your integration sandbox (TIP) account and its tokens while developing so you do not incur real charges. Sandbox customers created with an invalid address cannot be deleted.",
+  "rateLimits": "Honor HTTP 429 responses and the Retry-After header; back off and retry. Long-running write operations may return HTTP 202 with a Location header - poll that URL for completion. Some collection endpoints (e.g. utilization) return 204 with Retry-After when data isn't ready yet."
 }

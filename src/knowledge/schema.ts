@@ -2,11 +2,16 @@ import { z } from "zod";
 
 const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "lastVerified must be YYYY-MM-DD");
 
+export const AREAS = [
+  "customers", "subscriptions", "orders", "licenses", "invoicing", "profiles", "auth",
+  "catalog", "utilities", "audit", "support", "security", "analytics",
+] as const;
+
 export const ScenarioSchema = z.object({
   id: z.string(),
-  area: z.enum(["customers", "subscriptions", "orders", "licenses", "invoicing", "profiles", "auth"]),
+  area: z.enum(AREAS),
   title: z.string(),
-  method: z.enum(["GET", "POST", "PUT", "PATCH", "DELETE"]),
+  method: z.enum(["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD"]),
   path: z.string(),
   authType: z.enum(["app-only", "app+user"]),
   headers: z.array(z.object({ name: z.string(), required: z.boolean(), note: z.string().optional() })),
