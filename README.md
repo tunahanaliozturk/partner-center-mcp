@@ -18,6 +18,33 @@ the REST APIs. Deprecated auth (the retired `graph.windows.net` audience) still 
 401 / `900420` failures, and from **2026-04-01** App+User API usage enforces MFA. This server
 steers you to the current REST + auth patterns and decodes the errors you hit along the way.
 
+## How it works
+
+Your MCP host (Claude Code, Cursor, Copilot, VS Code…) talks to this server over the MCP
+protocol (stdio by default, or HTTP). The server answers from a **curated knowledge pack** that
+is zod-validated at load and grounded in official Microsoft Learn docs — falling back to a
+**cached live doc search** only when needed. It never sees your credentials and never calls
+Partner Center.
+
+```mermaid
+flowchart LR
+  subgraph Host["MCP host (Claude / Cursor / Copilot / VS Code)"]
+    LLM["LLM agent"]
+  end
+  LLM -->|"MCP protocol"| T{"Transport<br/>stdio · HTTP"}
+  T --> S["partner-center-mcp"]
+  S --> Tools["12 tools<br/>list/get scenario · generate_call<br/>validate_request · plan_purchase<br/>check_auth · lookup_error · diagnose · …"]
+  S --> RP["Resources & Prompts<br/>pc://… · migrate / diagnose / plan"]
+  Tools --> KP[("Knowledge pack<br/>data/*.json")]
+  KP -. "zod-validated at load" .-> Tools
+  Tools -->|"fallback (cached)"| ML[("Microsoft Learn<br/>live doc search")]
+  KP -. "docUrl + lastVerified" .-> CI[["Weekly doc-freshness CI<br/>opens an issue on drift"]]
+```
+
+A typical call: the agent picks a tool (e.g. `pc_generate_call`), the server looks the scenario
+up in the pack, and returns the verified method, path, headers, a ready code sample, and gotchas —
+each carrying the `docUrl` it was verified against.
+
 ## Run
 
 ```bash
