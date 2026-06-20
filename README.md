@@ -9,6 +9,8 @@ credentials** and makes **no live Partner Center calls** — it is a knowledge &
 > **Unofficial, community project** — not affiliated with, sponsored, or endorsed by Microsoft.
 > "Partner Center" and "Microsoft" are trademarks of Microsoft, used here only descriptively.
 
+![partner-center-mcp demo](https://raw.githubusercontent.com/tunahanaliozturk/partner-center-mcp/master/assets/demo.gif)
+
 ## Why
 
 The Partner Center .NET SDK (3.4.0) was archived in June 2023; Microsoft directs partners to
@@ -149,6 +151,9 @@ The knowledge pack lives in `data/` (date-versioned; each record carries a `docU
 file at load time, so malformed or drifted data fails fast. `npm run check-docs` verifies every
 `docUrl` still resolves and flags stale entries; a weekly GitHub Action runs it and opens an issue
 on drift.
+
+To regenerate the demo GIF (after `npm run build`): install [vhs](https://github.com/charmbracelet/vhs)
+and run `vhs demo.tape` (writes `assets/demo.gif`).
 
 ## Contributing
 
