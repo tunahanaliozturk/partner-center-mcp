@@ -6,6 +6,9 @@ linter, archived-.NET-SDK → REST migration, error decoding, and reference. Gro
 curated, date-versioned knowledge pack plus live Microsoft Learn doc fetch. It holds **no
 credentials** and makes **no live Partner Center calls** — it is a knowledge & codegen assistant.
 
+> **Unofficial, community project** — not affiliated with, sponsored, or endorsed by Microsoft.
+> "Partner Center" and "Microsoft" are trademarks of Microsoft, used here only descriptively.
+
 ## Why
 
 The Partner Center .NET SDK (3.4.0) was archived in June 2023; Microsoft directs partners to

@@ -1,9 +1,10 @@
 {
   "name": "partner-center-mcp",
-  "version": "0.2.1",
-  "description": "MCP server: knowledge and codegen assistant for the Partner Center REST API",
+  "version": "0.2.2",
+  "description": "Unofficial MCP server: knowledge and codegen assistant for the Partner Center REST API (not affiliated with Microsoft)",
   "type": "module",
   "license": "MIT",
+  "mcpName": "io.github.tunahanaliozturk/partner-center-mcp",
   "author": "Tunahan Ali Ozturk <ozturktunahanali@gmail.com>",
   "homepage": "https://github.com/tunahanaliozturk/partner-center-mcp#readme",
   "repository": {
