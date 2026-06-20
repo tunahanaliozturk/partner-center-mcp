@@ -22,11 +22,12 @@ jobs:
         uses: actions/setup-node@v5
         with:
           node-version: "lts/*"
-          # No registry-url on purpose: it writes an empty-token .npmrc that
-          # disables OIDC. Trusted Publishing uses the default registry + OIDC.
+          registry-url: "https://registry.npmjs.org"
 
-      - name: Use latest npm (required for OIDC Trusted Publishing)
-        run: npm install -g npm@latest
+      - name: Use latest npm (required for OIDC Trusted Publishing) and print version
+        run: |
+          npm install -g npm@latest
+          echo "npm version: $(npm --version)"
 
       - name: Install dependencies
         run: npm ci
