@@ -1,7 +1,7 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.tunahanaliozturk/partner-center-mcp",
-  "description": "Unofficial knowledge & codegen assistant for the Partner Center REST API: scenarios, auth guidance, deprecation linter, SDK->REST migration, error decoding. Not affiliated with Microsoft.",
+  "description": "Unofficial Partner Center REST API knowledge & codegen assistant (scenarios, auth, errors).",
   "repository": {
     "url": "https://github.com/tunahanaliozturk/partner-center-mcp",
     "source": "github"
