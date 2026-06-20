@@ -65,6 +65,16 @@
         { "name": "Content-Type", "required": true, "note": "application/json" }
       ],
       "requestShape": "Customer",
+      "requestFields": [
+        { "name": "CompanyProfile.domain", "type": "string", "required": true, "note": "e.g. contoso.onmicrosoft.com" },
+        { "name": "BillingProfile.email", "type": "string", "required": true },
+        { "name": "BillingProfile.culture", "type": "string", "required": true, "note": "e.g. en-US" },
+        { "name": "BillingProfile.language", "type": "string", "required": true, "note": "two-letter code, e.g. en" },
+        { "name": "BillingProfile.companyName", "type": "string", "required": true },
+        { "name": "BillingProfile.defaultAddress", "type": "Address", "required": true, "note": "validate via validate-address first" },
+        { "name": "CompanyProfile.organizationRegistrationNumber", "type": "string", "required": false, "note": "required in some countries (RU, TR, BR, IN, UAE, ...)" },
+        { "name": "enableGDAPByDefault", "type": "boolean", "required": false, "note": "only honored in clouds that support GDAP" }
+      ],
       "responseShape": "Customer",
       "examples": {
         "curl": "curl -X POST \"https://api.partnercenter.microsoft.com/v1/customers\" -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -H \"MS-RequestId: $(uuidgen)\" -H \"MS-CorrelationId: $(uuidgen)\" -d @customer.json",
@@ -148,6 +158,15 @@
         { "name": "Content-Type", "required": true, "note": "application/json" }
       ],
       "requestShape": "CustomerUser",
+      "requestFields": [
+        { "name": "userPrincipalName", "type": "string", "required": true, "note": "must use the customer's own (non-federated) domain" },
+        { "name": "displayName", "type": "string", "required": true },
+        { "name": "usageLocation", "type": "string", "required": true, "note": "two-letter country code" },
+        { "name": "firstName", "type": "string", "required": false },
+        { "name": "lastName", "type": "string", "required": false },
+        { "name": "passwordProfile.password", "type": "string", "required": false, "note": "auto-generated if omitted; must meet complexity rules" },
+        { "name": "passwordProfile.forceChangePassword", "type": "boolean", "required": false }
+      ],
       "responseShape": "CustomerUser",
       "examples": {
         "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d @user.json \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/users\"",
@@ -200,6 +219,11 @@
         { "name": "Content-Type", "required": true, "note": "application/json" }
       ],
       "requestShape": "LicenseUpdate",
+      "requestFields": [
+        { "name": "licensesToAssign", "type": "LicenseAssignment[]", "required": true, "note": "each item has skuId and optional excludedPlans" },
+        { "name": "licensesToAssign[].skuId", "type": "string", "required": true },
+        { "name": "licensesToRemove", "type": "string[]", "required": false, "note": "skuIds to unassign" }
+      ],
       "responseShape": "LicenseUpdate",
       "examples": {
         "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d @body.json \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/users/{user-id}/licenseupdates\"",
@@ -277,6 +301,14 @@
         { "name": "Content-Type", "required": true, "note": "application/json" }
       ],
       "requestShape": "Cart",
+      "requestFields": [
+        { "name": "lineItems", "type": "CartLineItem[]", "required": true, "note": ">=1 item; processed in array order" },
+        { "name": "lineItems[].id", "type": "int", "required": true, "note": "zero-based line index" },
+        { "name": "lineItems[].catalogItemId", "type": "string", "required": true, "note": "fresh value from get-sku-availabilities" },
+        { "name": "lineItems[].quantity", "type": "int", "required": true },
+        { "name": "lineItems[].termDuration", "type": "string", "required": false, "note": "ISO 8601 (P1M, P1Y); omit for Azure plan & perpetual software" },
+        { "name": "lineItems[].billingCycle", "type": "string", "required": false, "note": "snake_case: monthly, annual, one_time" }
+      ],
       "responseShape": "Cart",
       "examples": {
         "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d @cart.json \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/carts\"",
@@ -433,6 +465,12 @@
         { "name": "Content-Type", "required": true, "note": "application/json" }
       ],
       "requestShape": "Subscription",
+      "requestFields": [
+        { "name": "(full Subscription resource)", "type": "Subscription", "required": true, "note": "GET the subscription, mutate, then PATCH the whole object back" },
+        { "name": "quantity", "type": "int", "required": false, "note": "seat count" },
+        { "name": "status", "type": "string", "required": false, "note": "active | suspended (suspend/reactivate)" },
+        { "name": "autoRenewEnabled", "type": "boolean", "required": false, "note": "include it or it silently resets to false" }
+      ],
       "responseShape": "Subscription",
       "examples": {
         "curl": "curl -X PATCH -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d @subscription.json \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}\"",
@@ -489,6 +527,15 @@
         { "name": "Content-Type", "required": true, "note": "application/json" }
       ],
       "requestShape": "NewCommerceMigration",
+      "requestFields": [
+        { "name": "currentSubscriptionId", "type": "string (guid)", "required": true, "note": "the legacy subscription to migrate" },
+        { "name": "termDuration", "type": "string", "required": false, "note": "ISO 8601; defaults to the legacy value" },
+        { "name": "billingCycle", "type": "string", "required": false },
+        { "name": "purchaseFullTerm", "type": "boolean", "required": false },
+        { "name": "quantity", "type": "int", "required": false },
+        { "name": "customTermEndDate", "type": "date", "required": false },
+        { "name": "addOnMigrations", "type": "array", "required": false, "note": "FLAT list of add-ons, not nested" }
+      ],
       "responseShape": "NewCommerceMigration",
       "examples": {
         "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d '{\"currentSubscriptionId\":\"{id}\"}' \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/migrations/newcommerce\"",
@@ -624,6 +671,13 @@
         { "name": "Content-Type", "required": true, "note": "application/json" }
       ],
       "requestShape": "Address",
+      "requestFields": [
+        { "name": "addressLine1", "type": "string", "required": true },
+        { "name": "city", "type": "string", "required": true },
+        { "name": "country", "type": "string", "required": true, "note": "ISO alpha-2 code" },
+        { "name": "postalCode", "type": "string", "required": false, "note": "required in most countries" },
+        { "name": "state", "type": "string", "required": false, "note": "required in some countries" }
+      ],
       "responseShape": "AddressValidationResponse",
       "examples": {
         "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d '{\"AddressLine1\":\"1 Microsoft Way\",\"City\":\"Redmond\",\"State\":\"WA\",\"PostalCode\":\"98052\",\"Country\":\"US\"}' \"https://api.partnercenter.microsoft.com/v1/validations/address\"",
@@ -763,6 +817,174 @@
         "Superseded by the workload-level GET /v1/analytics/commercial/usage/license/, but this per-customer endpoint remains documented and valid."
       ],
       "docUrl": "https://learn.microsoft.com/partner-center/developer/get-customer-licenses-usage-information",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "create-transfer",
+      "area": "subscriptions",
+      "title": "Create a New Commerce transfer (billing ownership)",
+      "method": "POST",
+      "path": "/v1/customers/{customer-id}/transfers",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com; caller must be an Admin agent" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "Transfer",
+      "requestFields": [
+        { "name": "sourcePartnerTenantId", "type": "string (guid)", "required": true, "note": "the source/current partner tenant" },
+        { "name": "sourcePartnerName", "type": "string", "required": true },
+        { "name": "customerEmailId", "type": "string", "required": true, "note": "receives transfer notifications" },
+        { "name": "transferType", "type": "int", "required": true, "note": "3 = NewCommerce (Azure plan + NCE license-based)" },
+        { "name": "targetProductTypes", "type": "string[]", "required": false, "note": "AzureSubscription, AzureReservation, AzureSavingsPlan, OnlineServicesNCE; null = all" },
+        { "name": "partnerOnRecord", "type": "string", "required": false, "note": "MPN ID; only when target is an indirect provider" }
+      ],
+      "responseShape": "Transfer",
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d @transfer.json \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/transfers\"",
+        "csharp": "var res = await http.PostAsync($\"/v1/customers/{customerId}/transfers\", content); // 201 Created",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/transfers`, { method: \"POST\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "The TARGET (new) partner creates the transfer; the SOURCE partner later submits it. Only Admin agents can create transfers.",
+        "transferType must be 3 (NewCommerce) - this endpoint is not for legacy subscriptions.",
+        "Customer must already have a reseller relationship with the target partner.",
+        "Returns 201 with status Pending. Common errors: 900400, 900160, 20002."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/create-a-transfer",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-transfer",
+      "area": "subscriptions",
+      "title": "Get a transfer by ID",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/transfers/{transfer-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "Transfer",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/transfers/{transfer-id}\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/transfers/{transferId}\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/transfers/${transferId}`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Either the source or target partner can read transfer status (Pending -> InProgress -> Complete).",
+        "Target partners cannot see line items until the transfer completes (new subscription/order IDs are issued then)."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-transfer-by-id",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-reservation-orders",
+      "area": "orders",
+      "title": "Get a customer's Azure reservations (entitlements)",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/entitlements?entitlementType=reservedInstance&showExpiry=true",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "Entitlement collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/entitlements?entitlementType=reservedInstance&showExpiry=true\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/entitlements?entitlementType=reservedInstance&showExpiry=true\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/entitlements?entitlementType=reservedInstance&showExpiry=true`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Partner Center has no 'reservation orders' endpoint; reservations are 'reservedinstance' entitlements, each carrying a referenceOrder.id and entitledArtifacts links.",
+        "Omit entitlementType to return all entitlement types; add showExpiry=true for expiry dates.",
+        "Reservation orders have billingCycle one_time; fetch the order itself via get-order-by-id with referenceOrder.id.",
+        "Supports both app-only and app+user."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-collection-of-entitlements",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-agreements",
+      "area": "customers",
+      "title": "Get customer agreements (MCA confirmation)",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/agreements?agreementType={agreement-type}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "Agreement collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/agreements?agreementType=MicrosoftCustomerAgreement\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/agreements?agreementType=MicrosoftCustomerAgreement\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/agreements?agreementType=MicrosoftCustomerAgreement`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "App+User only (no app-only).",
+        "If agreementType is omitted it defaults to MicrosoftCloudAgreement; pass MicrosoftCustomerAgreement explicitly for MCA confirmations.",
+        "Agreement resource is supported only in the Microsoft public cloud (not 21Vianet or US Gov).",
+        "Returns a paged collection."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-confirmation-of-customer-agreement",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-azure-rate-card",
+      "area": "invoicing",
+      "title": "Get the Azure rate card (real-time prices)",
+      "method": "GET",
+      "path": "/v1/ratecards/azure?currency={currency}&region={region}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" },
+        { "name": "X-Locale", "required": false, "note": "e.g. en-US; also drives region/currency defaults" }
+      ],
+      "requestShape": null,
+      "responseShape": "AzureRateCard",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/ratecards/azure?currency=USD&region=US\"",
+        "csharp": "var res = await http.GetAsync(\"/v1/ratecards/azure?currency=USD&region=US\");",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/ratecards/azure?currency=USD&region=US\", { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "currency (ISO, default USD) and region (ISO country, default US) are optional; prices vary by market.",
+        "Response can be very large (~1.5 MB) - stream/parse efficiently.",
+        "All rates are pretax (isTaxIncluded is always false).",
+        "Use /v1/ratecards/azure-shared for Azure Partner Shared Services pricing."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-prices-for-microsoft-azure",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-gdap-relationships",
+      "area": "security",
+      "title": "List GDAP delegated admin relationships (Microsoft Graph)",
+      "method": "GET",
+      "path": "https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://graph.microsoft.com (NOT partnercenter); scope DelegatedAdminRelationship.Read.All" }
+      ],
+      "requestShape": null,
+      "responseShape": "delegatedAdminRelationship collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $GRAPH_TOKEN\" \"https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships\"",
+        "csharp": "var res = await http.GetAsync(\"https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships\");",
+        "typescript": "const res = await fetch(\"https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships\", { headers: { Authorization: `Bearer ${graphToken}` } });"
+      },
+      "gotchas": [
+        "This is a Microsoft Graph API, NOT Partner Center: host graph.microsoft.com, path starts with /v1.0/. A Partner Center token will not work.",
+        "Needs a Graph token with scope DelegatedAdminRelationship.Read.All (or ReadWrite.All); caller is in the partner tenant.",
+        "Supports OData $select/$filter/$top (max 300)/$orderby; paged via @odata.nextLink.",
+        "Not available in China (21Vianet); available in Global and US Gov."
+      ],
+      "docUrl": "https://learn.microsoft.com/graph/api/tenantrelationship-list-delegatedadminrelationships?view=graph-rest-1.0",
       "lastVerified": "2026-06-21"
     }
   ]

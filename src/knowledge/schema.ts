@@ -16,6 +16,12 @@ export const ScenarioSchema = z.object({
   authType: z.enum(["app-only", "app+user"]),
   headers: z.array(z.object({ name: z.string(), required: z.boolean(), note: z.string().optional() })),
   requestShape: z.union([z.string(), z.null()]),
+  requestFields: z.array(z.object({
+    name: z.string(),
+    type: z.string(),
+    required: z.boolean(),
+    note: z.string().optional(),
+  })).optional(),
   responseShape: z.union([z.string(), z.null()]),
   examples: z.object({ curl: z.string(), csharp: z.string(), typescript: z.string() }),
   gotchas: z.array(z.string()),
@@ -51,6 +57,7 @@ export const ReferenceSchema = z.object({
   versioning: z.string(),
   sandbox: z.string(),
   rateLimits: z.string(),
+  nationalClouds: z.string(),
 });
 
 export type Scenario = z.infer<typeof ScenarioSchema>;

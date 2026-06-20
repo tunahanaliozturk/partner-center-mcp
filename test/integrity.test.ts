@@ -11,13 +11,14 @@ test("scenario ids are unique", () => {
   expect(new Set(ids).size).toBe(ids.length);
 });
 
-test("every scenario path is under /v1 or /v3", () => {
-  for (const s of k.scenarios) expect(s.path).toMatch(/^\/v[13]\//);
+test("every scenario path is under /v1, /v3, or an explicit https URL (e.g. Graph)", () => {
+  for (const s of k.scenarios) expect(s.path, s.id).toMatch(/^(\/v[13]\/|https:\/\/)/);
 });
 
-test("every scenario's curl example targets the API host and its own path", () => {
+test("every scenario's curl example targets its API host and its own path", () => {
   for (const s of k.scenarios) {
-    expect(s.examples.curl, s.id).toContain("api.partnercenter.microsoft.com");
+    const host = s.path.startsWith("http") ? new URL(s.path).host : "api.partnercenter.microsoft.com";
+    expect(s.examples.curl, s.id).toContain(host);
     expect(s.examples.curl, s.id).toContain(pathPrefix(s.path));
   }
 });

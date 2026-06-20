@@ -116,9 +116,10 @@ export const generateCall: Tool = {
     const scenario = k.scenarios.find((s) => s.id === args.id);
     if (!scenario) return notFound(`No scenario with id "${args.id}".`, k.scenarios.map((s) => s.id));
     const lang = args.language as Lang;
+    const fullUrl = scenario.path.startsWith("http") ? scenario.path : `https://api.partnercenter.microsoft.com${scenario.path}`;
     // powershell is derived from the path when no curated example exists.
     const code = lang === "powershell"
-      ? `# PowerShell (Invoke-RestMethod)\nInvoke-RestMethod -Method ${scenario.method} -Uri "https://api.partnercenter.microsoft.com${scenario.path}" -Headers @{ Authorization = "Bearer $token" }`
+      ? `# PowerShell (Invoke-RestMethod)\nInvoke-RestMethod -Method ${scenario.method} -Uri "${fullUrl}" -Headers @{ Authorization = "Bearer $token" }`
       : scenario.examples[lang as "curl" | "csharp" | "typescript"];
     const includeHelpers = args.includeHelpers !== false; // default on
     return ok({
