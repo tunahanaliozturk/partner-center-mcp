@@ -27,3 +27,25 @@ test("docFetch degrades gracefully on a non-ok HTTP status", async () => {
   expect(r.ok).toBe(false);
   expect(r.note).toMatch(/unavailable/i);
 });
+
+test("docFetch caches successful responses within the TTL", async () => {
+  let calls = 0;
+  const counting = (async () => { calls++; return { ok: true, json: async () => ({ results: [] }) }; }) as unknown as typeof fetch;
+  const docFetch = makeDocFetch({ fetchImpl: counting, cacheTtlMs: 1000, now: () => 1000 });
+  const first = await docFetch("Auth");
+  const second = await docFetch("auth"); // same key, case-insensitive
+  expect(calls).toBe(1);
+  expect(first.ok).toBe(true);
+  expect(second.note).toBe("cached");
+});
+
+test("docFetch re-fetches after the TTL expires", async () => {
+  let calls = 0;
+  let t = 0;
+  const counting = (async () => { calls++; return { ok: true, json: async () => ({ results: [] }) }; }) as unknown as typeof fetch;
+  const docFetch = makeDocFetch({ fetchImpl: counting, cacheTtlMs: 100, now: () => t });
+  await docFetch("auth");
+  t = 500; // past the TTL
+  await docFetch("auth");
+  expect(calls).toBe(2);
+});
