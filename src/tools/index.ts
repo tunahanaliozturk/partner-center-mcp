@@ -9,10 +9,13 @@ import { migrateFromSdk } from "./migrateFromSdk.js";
 import { lookupError } from "./lookupError.js";
 import { diagnose } from "./diagnose.js";
 import { getReference } from "./getReference.js";
+import { validateRequest } from "./validateRequest.js";
+import { planPurchase } from "./planPurchase.js";
 
 export const allTools: Tool[] = [
   listScenarios, getScenario, searchDocs,
   authGuidance, checkAuth,
   generateCall, migrateFromSdk,
   lookupError, diagnose, getReference,
+  validateRequest, planPurchase,
 ];

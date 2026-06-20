@@ -1,8 +1,8 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { Tool, ToolContext } from "./types.js";
 
-export function createServer(tools: Tool[], ctx: ToolContext): McpServer {
-  const server = new McpServer({ name: "partner-center-mcp", version: "0.1.0" });
+export function createServer(tools: Tool[], ctx: ToolContext, version = "0.0.0"): McpServer {
+  const server = new McpServer({ name: "partner-center-mcp", version });
   for (const tool of tools) {
     server.registerTool(
       tool.name,

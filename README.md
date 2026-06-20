@@ -62,7 +62,9 @@ claude mcp add partner-center -- npx -y partner-center-mcp
 | --- | --- |
 | `pc_list_scenarios` | List supported REST scenarios, optionally filtered by `area`. |
 | `pc_get_scenario` | Full detail for one scenario: method, path, headers, examples, gotchas. |
-| `pc_generate_call` | Emit a current REST call (`curl`/`csharp`/`typescript`/`powershell`). Never the archived SDK. |
+| `pc_generate_call` | Emit a current REST call (`curl`/`csharp`/`typescript`/`powershell`) with auth/retry/pagination helpers. Never the archived SDK. |
+| `pc_validate_request` | Lint a REST call (method, URL, headers, auth) against the known scenarios. |
+| `pc_plan_purchase` | The ordered New Commerce purchase workflow: product → SKU availability → cart → checkout → subscriptions. |
 | `pc_migrate_from_sdk` | Translate archived .NET SDK code into the equivalent REST scenario(s). |
 | `pc_auth_guidance` | Current auth guidance for app-only / app+user, per national cloud, with GDAP + MFA notes. |
 | `pc_check_auth` | Lint an auth/client snippet for retired patterns (graph.windows.net, ADAL, archived SDK, AzureAD PS). |
