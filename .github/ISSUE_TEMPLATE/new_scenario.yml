@@ -1,0 +1,34 @@
+name: New scenario request
+description: Request a Partner Center REST scenario to be added to the knowledge pack
+title: "[scenario] <short title>"
+labels: ["scenario"]
+body:
+  - type: input
+    id: doc
+    attributes:
+      label: Microsoft Learn doc URL
+      description: The official page documenting this REST operation.
+      placeholder: https://learn.microsoft.com/partner-center/developer/...
+    validations:
+      required: true
+  - type: input
+    id: method-path
+    attributes:
+      label: Method and path
+      placeholder: "GET /v1/customers/{customer-id}/..."
+    validations:
+      required: true
+  - type: dropdown
+    id: auth
+    attributes:
+      label: Auth type
+      options: ["app+user", "app-only", "both", "not sure"]
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes / gotchas
+      description: Anything from the doc worth capturing (required headers, limits, async behavior).
+    validations:
+      required: false

@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Partner Center REST API docs
+    url: https://learn.microsoft.com/partner-center/developer/
+    about: Official Microsoft documentation this project is grounded in.

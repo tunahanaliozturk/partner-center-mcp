@@ -1,0 +1,26 @@
+name: Bug report
+description: Report incorrect data or a tool that misbehaves
+title: "[bug] <short summary>"
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: Which tool/scenario, what you expected, and what you got.
+    validations:
+      required: true
+  - type: input
+    id: scenario
+    attributes:
+      label: Scenario id or error code (if applicable)
+      placeholder: "create-cart / 900420"
+    validations:
+      required: false
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      placeholder: "partner-center-mcp@0.x.y"
+    validations:
+      required: false

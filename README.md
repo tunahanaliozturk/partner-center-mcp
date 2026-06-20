@@ -56,6 +56,15 @@ claude mcp add partner-center -- npx -y partner-center-mcp
 > Tip: also add the **Microsoft Learn MCP server** (`https://learn.microsoft.com/api/mcp`)
 > alongside this one for broad documentation search.
 
+### Remote / HTTP (optional)
+
+Prefer a hosted endpoint over stdio? Run the Streamable HTTP variant:
+
+```bash
+PORT=3000 npx -p partner-center-mcp partner-center-mcp-http
+# MCP endpoint: POST http://localhost:3000/mcp   •   health: GET /healthz
+```
+
 ## Tools
 
 | Tool | Purpose |
@@ -81,6 +90,52 @@ domain validation), **audit**, **support**, **security/MFA**, **analytics**, and
 each with a verified `docUrl` and `lastVerified` date. National clouds covered: commercial,
 21Vianet (China), and US Gov.
 
+The pack is also exposed as MCP **resources** (`pc://scenarios`, `pc://errors`, `pc://auth`,
+`pc://reference`, `pc://sdk-map`, and `pc://scenario/{id}`) and three **prompts**
+(`migrate-sdk`, `diagnose-issue`, `plan-purchase`) for hosts that surface them.
+
+## Examples
+
+Decode an error you hit in production:
+
+```jsonc
+// pc_lookup_error { "code": "900420" }
+{
+  "httpStatus": 401,
+  "errorCode": "900420",
+  "description": "The audience in the token is invalid and is no longer supported in Partner Center API.",
+  "causes": ["Token requested with the retired graph.windows.net audience"],
+  "remediation": "Request the token with resource https://api.partnercenter.microsoft.com ...",
+  "docUrl": "https://learn.microsoft.com/partner-center/developer/deprecate-azure-active-directory-graph-token"
+}
+```
+
+Lint old auth/client code before you ship it:
+
+```jsonc
+// pc_check_auth { "code": "new AuthenticationContext(); get(\"https://graph.windows.net\"); partner.Customers..." }
+{
+  "findings": [
+    { "severity": "error",   "message": "Uses the retired graph.windows.net audience; Partner Center returns 401 / 900420.", "fix": "Request the token with resource https://api.partnercenter.microsoft.com." },
+    { "severity": "warning", "message": "Appears to use ADAL, which is deprecated.", "fix": "Use MSAL with the secure application model." }
+  ],
+  "clean": false
+}
+```
+
+Catch a wrong call before you make it:
+
+```jsonc
+// pc_validate_request { "method": "POST", "url": "/v1/customers/abc/subscriptions", "headers": { "Authorization": "Bearer x" } }
+{
+  "ok": false,
+  "findings": [
+    { "severity": "error", "message": "Path matches a known scenario but the method POST is wrong; expected GET.",
+      "fix": "Use GET for /v1/customers/{customer-id}/subscriptions." }
+  ]
+}
+```
+
 ## Develop
 
 ```bash
@@ -91,4 +146,11 @@ npm run build
 
 The knowledge pack lives in `data/` (date-versioned; each record carries a `docUrl` and
 `lastVerified`). Schemas in [`src/knowledge/schema.ts`](src/knowledge/schema.ts) validate every
-file at load time, so malformed or drifted data fails fast.
+file at load time, so malformed or drifted data fails fast. `npm run check-docs` verifies every
+`docUrl` still resolves and flags stale entries; a weekly GitHub Action runs it and opens an issue
+on drift.
+
+## Contributing
+
+New scenarios and doc-accuracy fixes are very welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
+This is an unofficial, community project and is not affiliated with Microsoft.
