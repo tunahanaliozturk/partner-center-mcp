@@ -1,15 +1,40 @@
 {
   "name": "partner-center-mcp",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "MCP server: knowledge and codegen assistant for the Partner Center REST API",
   "type": "module",
+  "license": "MIT",
+  "author": "Tunahan Ali Ozturk <ozturktunahanali@gmail.com>",
+  "homepage": "https://github.com/tunahanaliozturk/partner-center-mcp#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tunahanaliozturk/partner-center-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tunahanaliozturk/partner-center-mcp/issues"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "partner-center",
+    "microsoft",
+    "azure",
+    "csp",
+    "cloud-solution-provider",
+    "rest-api",
+    "typescript",
+    "claude",
+    "llm",
+    "ai"
+  ],
   "bin": {
     "partner-center-mcp": "dist/index.js"
   },
   "files": [
     "dist",
     "data",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "build": "tsc",
