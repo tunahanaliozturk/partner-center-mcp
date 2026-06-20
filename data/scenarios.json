@@ -391,9 +391,9 @@
         "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/subscriptions\");",
         "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/subscriptions`, { headers: { Authorization: `Bearer ${token}` } });"
       },
-      "gotchas": ["App-only authentication is not supported for all customer operations; this one requires app+user."],
-      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-subscriptions",
-      "lastVerified": "2026-06-18"
+      "gotchas": ["Supports both app-only and app+user.", "customer-tenant-id is the customer's Microsoft (Entra) tenant GUID."],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-all-of-a-customer-s-subscriptions",
+      "lastVerified": "2026-06-21"
     },
     {
       "id": "get-subscription-by-id",

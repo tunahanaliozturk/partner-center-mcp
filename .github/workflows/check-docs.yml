@@ -1,0 +1,42 @@
+name: Doc freshness
+
+# Weekly check that every scenario/error docUrl still resolves and that no
+# scenario's lastVerified has gone stale. On drift it opens (or updates) an issue.
+on:
+  schedule:
+    - cron: "0 6 * * 1" # Mondays 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "lts/*"
+
+      - id: check
+        run: node scripts/check-docs.mjs
+        continue-on-error: true
+
+      - name: Open or update drift issue
+        if: steps.check.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh label create doc-drift --color FBCA04 --description "Knowledge pack doc link/staleness drift" 2>/dev/null || true
+          existing=$(gh issue list --state open --label doc-drift --json number -q '.[0].number')
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body-file doc-report.md
+          else
+            gh issue create --title "📚 Documentation drift detected" --label doc-drift --body-file doc-report.md
+          fi
+
+      - name: Fail the run if drift was found
+        if: steps.check.outcome == 'failure'
+        run: exit 1

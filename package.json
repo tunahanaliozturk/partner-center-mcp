@@ -40,6 +40,7 @@
   "scripts": {
     "build": "tsc",
     "test": "vitest run",
+    "check-docs": "node scripts/check-docs.mjs",
     "start": "node dist/index.js"
   },
   "engines": {
