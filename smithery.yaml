@@ -1,0 +1,7 @@
+# Smithery configuration (https://smithery.ai/docs)
+# Unofficial Partner Center REST API assistant — no config required, stdio transport.
+startCommand:
+  type: stdio
+  configSchema: {}
+  commandFunction: |
+    () => ({ command: 'npx', args: ['-y', 'partner-center-mcp'] })
