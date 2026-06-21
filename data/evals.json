@@ -1,0 +1,23 @@
+{
+  "version": "2026-06",
+  "cases": [
+    { "name": "decode the retired-audience error", "tool": "pc_lookup_error", "input": { "code": "900420" }, "contains": ["api.partnercenter.microsoft.com", "900420"] },
+    { "name": "list includes a core scenario", "tool": "pc_list_scenarios", "input": {}, "contains": ["create-customer"] },
+    { "name": "scenario detail has the REST path", "tool": "pc_get_scenario", "input": { "id": "create-customer" }, "contains": ["/v1/customers"] },
+    { "name": "codegen emits helpers, never the SDK", "tool": "pc_generate_call", "input": { "id": "verify-mpn", "language": "typescript" }, "contains": ["getAccessToken"], "notContains": ["graph.windows.net"] },
+    { "name": "SDK call maps to REST scenario", "tool": "pc_migrate_from_sdk", "input": { "code": "partner.Customers.ById(id).Subscriptions.Get()" }, "contains": ["list-customer-subscriptions"] },
+    { "name": "validate flags the wrong method", "tool": "pc_validate_request", "input": { "method": "POST", "url": "/v1/customers/abc/subscriptions", "headers": { "Authorization": "Bearer x" } }, "contains": ["method"] },
+    { "name": "purchase plan starts at products", "tool": "pc_plan_purchase", "input": {}, "contains": ["get-products", "checkout-cart"] },
+    { "name": "enum lookup returns values", "tool": "pc_get_enums", "input": { "name": "billingCycle" }, "contains": ["monthly", "one_time"] },
+    { "name": "whats-new surfaces MFA enforcement", "tool": "pc_whats_new", "input": {}, "contains": ["MFA", "2026-04-01"] },
+    { "name": "resource dictionary has fields", "tool": "pc_get_resource", "input": { "name": "Subscription" }, "contains": ["status", "autoRenewEnabled"] },
+    { "name": "build-request fills path + body", "tool": "pc_build_request", "input": { "id": "create-cart", "params": { "customer-id": "abc" } }, "contains": ["/v1/customers/abc/carts", "lineItems"] },
+    { "name": "decode-error finds code + correlation id", "tool": "pc_decode_error", "input": { "error": "{\"code\":\"900420\",\"correlationId\":\"aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee\"}" }, "contains": ["900420", "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"] },
+    { "name": "auth linter catches retired audience", "tool": "pc_check_auth", "input": { "code": "get(\"https://graph.windows.net\")" }, "contains": ["graph.windows.net"] },
+    { "name": "auth guidance covers the secure app model", "tool": "pc_auth_guidance", "input": { "authType": "app+user" }, "contains": ["secure"] },
+    { "name": "reference lists the pricing host", "tool": "pc_get_reference", "input": { "topic": "base-urls" }, "contains": ["api.partner.microsoft.com"] },
+    { "name": "transfer plan starts at create-transfer", "tool": "pc_plan_transfer", "input": {}, "contains": ["create-transfer"] },
+    { "name": "gdap plan uses Graph", "tool": "pc_plan_gdap_onboarding", "input": {}, "contains": ["graph.microsoft.com", "create-gdap-relationship"] },
+    { "name": "reconciliation plan ends at the statement", "tool": "pc_plan_reconciliation", "input": {}, "contains": ["get-invoice-statement"] }
+  ]
+}

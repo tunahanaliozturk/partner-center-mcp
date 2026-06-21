@@ -106,10 +106,18 @@ PORT=3000 npx -p partner-center-mcp partner-center-mcp-http
 | `pc_migrate_from_sdk` | Translate archived .NET SDK code into the equivalent REST scenario(s). |
 | `pc_auth_guidance` | Current auth guidance for app-only / app+user, per national cloud, with GDAP + MFA notes. |
 | `pc_check_auth` | Lint an auth/client snippet for retired patterns (graph.windows.net, ADAL, archived SDK, AzureAD PS). |
-| `pc_lookup_error` | Decode a Partner Center error code with causes and remediation. |
+| `pc_build_request` | Build a ready-to-send request: fills path placeholders, generates `MS-RequestId`/`MS-CorrelationId`, and a body skeleton from the scenario's fields. |
+| `pc_plan_transfer` | Ordered billing-ownership transfer workflow (create → poll → verify). |
+| `pc_plan_gdap_onboarding` | Ordered GDAP onboarding workflow (create → approve → verify) over Microsoft Graph. |
+| `pc_plan_reconciliation` | Ordered reconciliation workflow (invoice → billed/unbilled line items → statement). |
+| `pc_lookup_error` | Decode an error code: causes, remediation, and the scenarios it commonly hits. |
+| `pc_decode_error` | Paste a raw error response → decoded code, likely scenarios, and the correlation id for support. |
 | `pc_diagnose` | Map a symptom to likely causes, fixes, and relevant scenarios. |
+| `pc_get_enums` | Look up enum values (billingCycle, termDuration, targetView, transitionType, status, …). |
+| `pc_get_resource` | Field dictionary for resources (Customer, Subscription, Order, Invoice, …). |
+| `pc_whats_new` | Deprecations & deadlines (MFA enforcement, graph.windows.net, v1→v2 reconciliation, …). |
 | `pc_search_docs` | Search the curated pack and fetch live Microsoft Learn docs. |
-| `pc_get_reference` | Base URLs, required headers, versioning, sandbox, and rate-limit guidance. |
+| `pc_get_reference` | Base URLs, headers, versioning, sandbox, rate limits, national-cloud differences. |
 
 ## Coverage
 
@@ -120,8 +128,13 @@ each with a verified `docUrl` and `lastVerified` date. National clouds covered: 
 21Vianet (China), and US Gov.
 
 The pack is also exposed as MCP **resources** (`pc://scenarios`, `pc://errors`, `pc://auth`,
-`pc://reference`, `pc://sdk-map`, and `pc://scenario/{id}`) and three **prompts**
-(`migrate-sdk`, `diagnose-issue`, `plan-purchase`) for hosts that surface them.
+`pc://reference`, `pc://sdk-map`, `pc://enums`, `pc://deprecations`, `pc://resources`, and
+`pc://scenario/{id}`) and three **prompts** (`migrate-sdk`, `diagnose-issue`, `plan-purchase`)
+for hosts that surface them.
+
+It also ships reference datasets — **enum values**, a **resource field dictionary**, and a
+**deprecations & deadlines** timeline — and can **export** the whole pack to an OpenAPI 3.0 spec
+and a Postman collection (`npm run export`).
 
 ## Examples
 

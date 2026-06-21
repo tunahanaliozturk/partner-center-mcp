@@ -37,6 +37,9 @@ function registerResources(server: McpServer, ctx: ToolContext): void {
     { slug: "auth", title: "Authentication guidance and deprecations", get: () => k().auth },
     { slug: "reference", title: "Base URLs, headers, versioning, clouds", get: () => k().reference },
     { slug: "sdk-map", title: "Archived .NET SDK -> REST mappings", get: () => k().sdkMap },
+    { slug: "enums", title: "Partner Center enum values", get: () => k().enums },
+    { slug: "deprecations", title: "Deprecations & deadlines", get: () => k().deprecations },
+    { slug: "resources", title: "Resource field dictionary", get: () => k().resources },
   ];
   for (const c of collections) {
     server.registerResource(

@@ -1,10 +1,25 @@
 // Freshness check for the curated knowledge pack.
 // - Verifies every docUrl still resolves (flags 404 / dead links).
 // - Flags scenarios whose lastVerified is older than STALE_DAYS.
+// - Hashes each page's main text and flags content drift vs data/doc-hashes.json.
 // Writes a markdown report to doc-report.md (and to the GitHub step summary when
 // run in CI). Exits non-zero when anything needs attention, so CI can open an issue.
+// Run with UPDATE_HASHES=1 to (re)write the content-hash baseline.
 
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync } from "node:fs";
+import { createHash } from "node:crypto";
+
+// A stable-ish hash of the page's visible text (first 4k chars, tags/scripts stripped).
+function contentHash(html) {
+  const text = String(html)
+    .replace(/<script[\s\S]*?<\/script>/gi, " ")
+    .replace(/<style[\s\S]*?<\/style>/gi, " ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 4000);
+  return createHash("sha256").update(text).digest("hex").slice(0, 16);
+}
 
 const STALE_DAYS = Number(process.env.STALE_DAYS ?? 180);
 const TIMEOUT_MS = 15000;
@@ -35,7 +50,9 @@ async function checkUrl(url) {
       signal: ctrl.signal,
       headers: { "user-agent": UA, accept: "text/html" },
     });
-    return { url, status: res.status, ok: res.status >= 200 && res.status < 400 };
+    const okStatus = res.status >= 200 && res.status < 400;
+    const hash = okStatus ? contentHash(await res.text()) : null;
+    return { url, status: res.status, ok: okStatus, hash };
   } catch (err) {
     return { url, status: 0, ok: false, error: String(err?.message ?? err) };
   } finally {
@@ -61,6 +78,16 @@ const urls = [...refs.keys()];
 const results = await pmap(urls, CONCURRENCY, checkUrl);
 const dead = results.filter((r) => !r.ok);
 
+// Content-drift vs the committed baseline (data/doc-hashes.json).
+const hashesUrl = new URL("../data/doc-hashes.json", import.meta.url);
+const baseline = existsSync(hashesUrl) ? JSON.parse(readFileSync(hashesUrl, "utf8")) : null;
+const current = Object.fromEntries(results.filter((r) => r.ok && r.hash).map((r) => [r.url, r.hash]));
+const updateBaseline = process.env.UPDATE_HASHES || process.argv.includes("--update") || !baseline;
+const drifted = (baseline && !updateBaseline)
+  ? results.filter((r) => r.ok && r.hash && baseline[r.url] && baseline[r.url] !== r.hash)
+  : [];
+if (updateBaseline) writeFileSync(hashesUrl, JSON.stringify(current, null, 2) + "\n");
+
 // Staleness check.
 const now = Date.now();
 const stale = scenarios
@@ -73,7 +100,8 @@ const lines = [];
 lines.push("# Documentation freshness report", "");
 lines.push(`- Checked **${urls.length}** unique doc URLs across ${scenarios.length} scenarios and ${errors.length} errors.`);
 lines.push(`- Dead/unreachable links: **${dead.length}**`);
-lines.push(`- Scenarios stale (> ${STALE_DAYS} days): **${stale.length}**`, "");
+lines.push(`- Scenarios stale (> ${STALE_DAYS} days): **${stale.length}**`);
+lines.push(`- Pages with changed content vs baseline: **${drifted.length}**`, "");
 
 if (dead.length) {
   lines.push("## ❌ Dead or unreachable links", "");
@@ -91,11 +119,17 @@ if (stale.length) {
   lines.push("");
 }
 
-if (!dead.length && !stale.length) lines.push("✅ All doc links resolve and every scenario is within the freshness window.", "");
+if (drifted.length) {
+  lines.push("## 🔄 Content changed since last verification (re-verify these)", "");
+  for (const d of drifted) lines.push(`- ${d.url}\n  - referenced by: ${refs.get(d.url).join(", ")}`);
+  lines.push("", "_Re-verify against the docs, bump lastVerified, then run `npm run check-docs:update` to refresh the baseline._", "");
+}
+
+if (!dead.length && !stale.length && !drifted.length) lines.push("✅ All doc links resolve, content is unchanged, and every scenario is within the freshness window.", "");
 
 const report = lines.join("\n");
 writeFileSync(new URL("../doc-report.md", import.meta.url), report);
 if (process.env.GITHUB_STEP_SUMMARY) writeFileSync(process.env.GITHUB_STEP_SUMMARY, report, { flag: "a" });
 console.log(report);
 
-if (dead.length || stale.length) process.exit(1);
+if (dead.length || stale.length || drifted.length) process.exit(1);

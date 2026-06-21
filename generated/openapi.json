@@ -1,0 +1,2467 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Partner Center REST (unofficial, generated)",
+    "version": "0.5.0",
+    "description": "Generated from partner-center-mcp's verified scenario pack. Not affiliated with Microsoft."
+  },
+  "servers": [
+    {
+      "url": "https://api.partnercenter.microsoft.com"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "paths": {
+    "/v1/profiles/mpn": {
+      "get": {
+        "operationId": "verify-mpn",
+        "summary": "Verify a partner by MPN id",
+        "description": "Omit mpnId to return the signed-in partner's profile.",
+        "parameters": [
+          {
+            "name": "mpnId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-partner-by-mpn-id"
+        }
+      }
+    },
+    "/v1/customers": {
+      "get": {
+        "operationId": "list-customers",
+        "summary": "Get a list of customers",
+        "description": "Paged collection: response has totalCount, items[], and links (follow links.next for more pages).\nEach item carries only companyProfile and relationshipToPartner; call get-customer-by-id for full detail.\nFilter with &filter={url-encoded-json} to search by company name, domain, or reseller.\nSupports both app+user and app-only.",
+        "parameters": [
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-customers"
+        }
+      },
+      "post": {
+        "operationId": "create-customer",
+        "summary": "Create a customer",
+        "description": "Returns 201 with a Customer that includes userCredentials (admin username/password) - save it, it cannot be retrieved later.\nIdempotent: reuse the same MS-RequestId on retries to avoid creating duplicate customers.\nRequired body: BillingProfile (email, culture, language, companyName, defaultAddress) and CompanyProfile (domain).\nA valid physical address is required; in the sandbox an invalid address makes the customer tenant undeletable.\norganizationRegistrationNumber is mandatory for customers in certain countries/regions (e.g. Russia, Turkey, Brazil, India, UAE).\nDo not pass a userCredentials password in the request; it is not accepted.\nAlso supports app-only.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/create-a-customer"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "CompanyProfile": {
+                    "type": "string"
+                  },
+                  "BillingProfile": {
+                    "type": "string"
+                  },
+                  "enableGDAPByDefault": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/customers/{customer-id}": {
+      "get": {
+        "operationId": "get-customer-by-id",
+        "summary": "Get a customer by ID",
+        "description": "customer-id is the customer's Microsoft (Entra) tenant GUID.\nWithout DAP/GDAP access the response omits CompanyProfileAddress, CompanyProfileEmail, and CustomDomain.\nSupports both app+user and app-only.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-a-customer-by-id"
+        }
+      },
+      "delete": {
+        "operationId": "delete-customer-sandbox",
+        "summary": "Delete a customer from the integration sandbox",
+        "description": "Sandbox (TIP) only - this breaks the partner-customer relationship and purges ALL resources for that tenant.\nReturns 204 No Content on success.\nAll Azure reservations and software purchase orders must be canceled first or the delete fails.\nA customer created with an invalid sandbox address cannot be deleted.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/delete-a-customer-account-from-the-integration-sandbox"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/users": {
+      "post": {
+        "operationId": "create-user",
+        "summary": "Create a user account for a customer",
+        "description": "App+User only - app-only is NOT supported. Requires a GDAP role (User Administrator or Directory Writers).\nReturns 200 OK (not 201) with the created CustomerUser including its generated id.\nuserPrincipalName must use the customer's own (non-federated) domain.\npasswordProfile.password must meet complexity rules; set forceChangePassword=true to require a reset on first sign-in.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/create-user-accounts-for-a-customer"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userPrincipalName": {
+                    "type": "string"
+                  },
+                  "displayName": {
+                    "type": "string"
+                  },
+                  "usageLocation": {
+                    "type": "string"
+                  },
+                  "firstName": {
+                    "type": "string"
+                  },
+                  "lastName": {
+                    "type": "string"
+                  },
+                  "passwordProfile": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "get-customer-users",
+        "summary": "Get all user accounts for a customer",
+        "description": "App+User only - app-only is NOT supported. Requires a GDAP role (Directory Reader, Global Reader, or User Administrator).\nFor a single user, use /v1/customers/{customer-id}/users/{user-id}.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-all-user-accounts-for-a-customer"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/users/{user-id}/licenseupdates": {
+      "post": {
+        "operationId": "assign-licenses",
+        "summary": "Assign licenses to a user",
+        "description": "Returns 201 with the LicenseUpdate resource on success.\nFails if the license is not available in the customer tenant.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "user-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/assign-licenses-to-a-user"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "licensesToAssign": {
+                    "type": "string"
+                  },
+                  "licensesToRemove": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/products": {
+      "get": {
+        "operationId": "get-products",
+        "summary": "Get a list of products",
+        "description": "Both country and targetView are required.\ntargetView is an enum (Azure, AzureReservations, MicrosoftAzure, OnlineServices, Software, MarketplaceSaaS); use OnlineServices for new commerce (NCE) license-based products.\nFor Azure Reservations add reservationScope=AzurePlan.\n403/400036 if the targetView is not allowed; 403/400030 if the targetSegment is not allowed.\nSupports both app-only and app+user.",
+        "parameters": [
+          {
+            "name": "country",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "targetView",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "targetSegment",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-products"
+        }
+      }
+    },
+    "/v1/products/{product-id}/skus/{sku-id}/availabilities": {
+      "get": {
+        "operationId": "get-sku-availabilities",
+        "summary": "Get a list of availabilities for a SKU",
+        "description": "country is required; all segments except nonprofit are returned by default (pass targetSegment=nonprofit explicitly for those).\nThe availability's CatalogItemId is mutable and reissued regularly - always fetch a fresh availability right before adding a cart line item or placing an order.\nFor Azure Reservation SKUs add reservationScope=AzurePlan; add IncludeLifeCycleState=true for NCE license-based lifecycle state.\nSupports both app-only and app+user.",
+        "parameters": [
+          {
+            "name": "product-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sku-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "country",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "targetSegment",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-availabilities-for-a-sku"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/carts": {
+      "post": {
+        "operationId": "create-cart",
+        "summary": "Create a cart",
+        "description": "Carts expire 7 days after creation. Success returns 201 with the populated Cart.\nlineItems is required (>=1 CartLineItem). Line items are processed in array order - place any promotion-eligible (New-To-Offer) item FIRST.\nbillingCycle uses snake_case JSON enum values (one_time, monthly, none).\nAzure plan and perpetual software line items do NOT support termDuration - omit it for those.\nSet AttestationAccepted per line item when the offer enforces attestation.\nSupports both app-only and app+user.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/create-a-cart"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "lineItems": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/carts/{cart-id}/checkout": {
+      "post": {
+        "operationId": "checkout-cart",
+        "summary": "Check out a cart",
+        "description": "Empty request body (Content-Length: 0). Success returns 201 with a CartCheckoutResult containing an orders array.\nIdempotent: re-checking out an already-checked-out cart returns the original result.\nProvisioning is asynchronous - subscriptionId values may be absent in the response and appear later via Get Order.\nCheckout fails on an expired cart (7-day limit).\nSupports both app-only and app+user.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cart-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/checkout-a-cart"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/orders/{order-id}": {
+      "get": {
+        "operationId": "get-order-by-id",
+        "summary": "Get an order by ID",
+        "description": "Use this (or list-customer-orders) to retrieve subscriptionId values not yet provisioned at checkout time.\nSupports both app-only and app+user.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-an-order-by-id"
+        }
+      },
+      "patch": {
+        "operationId": "update-order",
+        "summary": "Update an order (legacy billing cycle / cancel)",
+        "description": "Billing-cycle change here is for LEGACY subscriptions only; for NCE use update-subscription instead.\nOut of scope: trials, monthly/Azure offers, inactive or online-services license-based subscriptions.\nTo cancel an order, PATCH the same path with status 'cancelled' (documented for the sandbox).",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/change-the-billing-cycle"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ReferenceCustomerId": {
+                    "type": "string"
+                  },
+                  "BillingCycle": {
+                    "type": "string"
+                  },
+                  "LineItems": {
+                    "type": "string"
+                  },
+                  "Status": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/orders": {
+      "get": {
+        "operationId": "list-customer-orders",
+        "summary": "Get all of a customer's orders",
+        "description": "There is a delay of up to 15 minutes between order submission and appearance in this collection - don't poll immediately after checkout.\nOptional ?billingType={monthly|annual|one_time|none} filters by billing cycle.\nSupports both app-only and app+user.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "billingType",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-all-of-a-customer-s-orders"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/subscriptions": {
+      "get": {
+        "operationId": "get-subscriptions-by-order",
+        "summary": "Get a list of subscriptions by order",
+        "description": "Note the underscore: order_id, not orderId.\nReturns a collection even when the order produced a single subscription.\nUp to 15-minute delay after order submission before subscriptions appear.\nSupports both app-only and app+user.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-subscriptions-by-order"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/subscriptions/{subscription-id}": {
+      "get": {
+        "operationId": "get-subscription-by-id",
+        "summary": "Get a subscription by ID",
+        "description": "Add-on subscriptions include parentSubscriptionId.\nNCE subscriptions return extra fields (productType, termDuration, billingCycle, refundOptions, cancellationAllowedUntilDate).\nSupports both app-only and app+user.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "subscription-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-a-subscription-by-id"
+        }
+      },
+      "patch": {
+        "operationId": "update-subscription",
+        "summary": "Update a subscription (quantity, status, autorenew)",
+        "description": "Send the FULL Subscription resource, not a partial patch: GET it first, mutate it, then PATCH it back.\nIf autoRenewEnabled or next-term instructions are set, include them in the body or they are silently reset.\nChange quantity via Quantity; suspend/reactivate via Status (active/suspended); toggle renewal via AutoRenewEnabled.\nCancel an NCE subscription within its cancellation window by PATCHing Status to 'deleted' (see cancellationAllowedUntilDate).\nSchedule changes for the next term (term/quantity/billing at renewal) via scheduledNextTermInstructions.\nNCE license quantity can only be reduced within 7 days of purchase/renewal (else error 800090).\nBilling cycle CANNOT be changed here (error 2054) - use update-order instead.\nFor SKU/term upgrades or trial-to-paid, use create-subscription-transition instead.\nLong-running updates return 202 with a Location header to poll.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "subscription-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/update-a-subscription-by-id"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "quantity": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "type": "string"
+                  },
+                  "autoRenewEnabled": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/migrations/newcommerce": {
+      "post": {
+        "operationId": "migrate-to-new-commerce",
+        "summary": "Migrate a legacy subscription to New Commerce (NCE)",
+        "description": "Only currentSubscriptionId is required; termDuration, billingCycle, purchaseFullTerm, quantity, customTermEndDate are optional and let you change terms during migration.\nOmitted properties carry forward the legacy subscription's values.\nBase subscriptions migrate together with all active add-ons as a bundle; if any add-on is ineligible the whole bundle fails.\naddOnMigrations must be a FLAT list, not nested.\nValidate eligibility first with the validate-a-new-commerce-migration API.\nTo schedule rather than run immediately, POST to .../migrations/newcommerce/schedules.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/create-migration"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "currentSubscriptionId": {
+                    "type": "string"
+                  },
+                  "termDuration": {
+                    "type": "string"
+                  },
+                  "billingCycle": {
+                    "type": "string"
+                  },
+                  "purchaseFullTerm": {
+                    "type": "string"
+                  },
+                  "quantity": {
+                    "type": "string"
+                  },
+                  "customTermEndDate": {
+                    "type": "string"
+                  },
+                  "addOnMigrations": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/invoices": {
+      "get": {
+        "operationId": "get-invoices",
+        "summary": "Get a collection of invoices",
+        "description": "size/offset are only honored for legacy invoices; for modern commercial purchases they are ignored.\nUse the filter param (LeftFilter/RightFilter/Operator JSON, bounded by InvoiceDate) to avoid timeouts on large invoice sets.\nSupports both app-only and app+user.",
+        "parameters": [
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-a-collection-of-invoices"
+        }
+      }
+    },
+    "/v1/invoices/{invoice-id}": {
+      "get": {
+        "operationId": "get-invoice-by-id",
+        "summary": "Get an invoice by ID",
+        "description": "invoice-id is a string identifier, not a GUID.\nApp+User only (no app-only).\nFor modern commercial purchases this applies only to daily-rated usage and recons generated before 2025-05-15.",
+        "parameters": [
+          {
+            "name": "invoice-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-invoice-by-id"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/subscriptions/{subscription-id}/utilizations/azure": {
+      "get": {
+        "operationId": "get-azure-utilization",
+        "summary": "Get a customer's Azure utilization records",
+        "description": "start_time and end_time are REQUIRED (UTC date-time offset). granularity (daily default), show_details (default true), and size (max 1000) are optional.\nNOT supported for Azure plans (only legacy MS-AZR-0145P); for Azure plans use the invoice consumption line-item APIs.\nIf data isn't ready in billing yet, returns 204 with a Retry-After header.\nPaged - follow the next link.\nSupports both app-only and app+user.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "subscription-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_time",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "end_time",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "granularity",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "show_details",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-a-customer-s-utilization-record-for-azure"
+        }
+      }
+    },
+    "/v1/invoices/summary": {
+      "get": {
+        "operationId": "get-partner-balance",
+        "summary": "Get the partner's current account balance",
+        "description": "The balance is exposed via InvoiceSummary.BalanceAmount; there is no dedicated balance endpoint.\nUse /v1/invoices/summaries (plural) for one summary per currency.\nSupports both app-only and app+user.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-the-reseller-s-current-account-balance"
+        }
+      }
+    },
+    "/v1/validations/address": {
+      "post": {
+        "operationId": "validate-address",
+        "summary": "Validate an address",
+        "description": "Prevalidate addresses before create-customer or profile updates; the caller picks the final address from the result.\nCountry must be the two-character ISO alpha-2 code; required fields vary by country/region.\nOnly Verified or VerifiedShippable are safe to use directly; other statuses need user confirmation.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/validate-an-address"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "addressLine1": {
+                    "type": "string"
+                  },
+                  "city": {
+                    "type": "string"
+                  },
+                  "country": {
+                    "type": "string"
+                  },
+                  "postalCode": {
+                    "type": "string"
+                  },
+                  "state": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain}": {
+      "head": {
+        "operationId": "check-domain-availability",
+        "summary": "Verify domain availability",
+        "description": "Use the HEAD method - there is no response body; rely on the status code.\n404 Not Found means the domain IS available; 200 OK means it is already in use.\nThe {domain} segment is the full domain string, e.g. contoso.onmicrosoft.com.",
+        "parameters": [
+          {
+            "name": "domain",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/verify-domain-availability"
+        }
+      }
+    },
+    "/v1/auditrecords": {
+      "get": {
+        "operationId": "get-audit-records",
+        "summary": "Get a record of Partner Center activity",
+        "description": "Activity log data is limited to the previous 90 days; a startDate older than 90 days returns 400.\nWithout startDate, results default to the previous 30 days. Dates use yyyy-mm-dd.\nfilter must be url-encoded JSON with Field/Value/Operator (fields: CompanyName substring, CustomerId equals, ResourceType equals); matching is case-insensitive.\nResults are paged.",
+        "parameters": [
+          {
+            "name": "startDate",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-a-record-of-partner-center-activity-by-user"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/servicerequests": {
+      "get": {
+        "operationId": "list-service-requests",
+        "summary": "Get all service requests for a customer",
+        "description": "App+User only (no app-only).\nFor a single service request use GET /v1/servicerequests/{servicerequest-id}; that endpoint accepts an IncludeOrganizationRequests header for the Support Request Admin role.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-all-service-requests-for-a-customer"
+        }
+      }
+    },
+    "/v1/partnerRequests": {
+      "get": {
+        "operationId": "get-mfa-status",
+        "summary": "Get per-request MFA compliance for App+User API calls",
+        "description": "App+User only. Returns the most recent App+User API requests, capped at 10K items.\nEach item exposes mfaCompliant (true/false) plus upn, objectId, applicationId, operationName - use it to find non-MFA-compliant callers before the MFA enforcement date.\nThis is request-level telemetry, not a static per-user enrollment record.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-api-request-details"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/analytics/licenses/usage": {
+      "get": {
+        "operationId": "get-customer-analytics",
+        "summary": "Get customer licenses usage information",
+        "description": "App+User only. Returns CustomerLicensesUsageInsights (workloadName, productName, licensesActive, licensesQualified, usagePercent).\nSuperseded by the workload-level GET /v1/analytics/commercial/usage/license/, but this per-customer endpoint remains documented and valid.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-customer-licenses-usage-information"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/transfers": {
+      "post": {
+        "operationId": "create-transfer",
+        "summary": "Create a New Commerce transfer (billing ownership)",
+        "description": "The TARGET (new) partner creates the transfer; the SOURCE partner later submits it. Only Admin agents can create transfers.\ntransferType must be 3 (NewCommerce) - this endpoint is not for legacy subscriptions.\nCustomer must already have a reseller relationship with the target partner.\nReturns 201 with status Pending. Common errors: 900400, 900160, 20002.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/create-a-transfer"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "sourcePartnerTenantId": {
+                    "type": "string"
+                  },
+                  "sourcePartnerName": {
+                    "type": "string"
+                  },
+                  "customerEmailId": {
+                    "type": "string"
+                  },
+                  "transferType": {
+                    "type": "string"
+                  },
+                  "targetProductTypes": {
+                    "type": "string"
+                  },
+                  "partnerOnRecord": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/transfers/{transfer-id}": {
+      "get": {
+        "operationId": "get-transfer",
+        "summary": "Get a transfer by ID",
+        "description": "Either the source or target partner can read transfer status (Pending -> InProgress -> Complete).\nTarget partners cannot see line items until the transfer completes (new subscription/order IDs are issued then).",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "transfer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-transfer-by-id"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/entitlements": {
+      "get": {
+        "operationId": "get-reservation-orders",
+        "summary": "Get a customer's Azure reservations (entitlements)",
+        "description": "Partner Center has no 'reservation orders' endpoint; reservations are 'reservedinstance' entitlements, each carrying a referenceOrder.id and entitledArtifacts links.\nOmit entitlementType to return all entitlement types; add showExpiry=true for expiry dates.\nReservation orders have billingCycle one_time; fetch the order itself via get-order-by-id with referenceOrder.id.\nSupports both app-only and app+user.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "entitlementType",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "showExpiry",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-a-collection-of-entitlements"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/agreements": {
+      "get": {
+        "operationId": "get-agreements",
+        "summary": "Get customer agreements (MCA confirmation)",
+        "description": "App+User only (no app-only).\nIf agreementType is omitted it defaults to MicrosoftCloudAgreement; pass MicrosoftCustomerAgreement explicitly for MCA confirmations.\nAgreement resource is supported only in the Microsoft public cloud (not 21Vianet or US Gov).\nReturns a paged collection.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "agreementType",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-confirmation-of-customer-agreement"
+        }
+      },
+      "post": {
+        "operationId": "create-agreement",
+        "summary": "Confirm customer acceptance of the MCA (create agreement)",
+        "description": "App+User only; public cloud only (not 21Vianet or US Gov). Get the templateId via Get agreement metadata first.\n201 Created on success; userId is derived from the App+User token.\nRe-creating with identical contact fields returns error 600061 - vary at least one field to create another.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/confirm-customer-consent-customer-agreement"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "primaryContact": {
+                    "type": "string"
+                  },
+                  "dateAgreed": {
+                    "type": "string"
+                  },
+                  "templateId": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/ratecards/azure": {
+      "get": {
+        "operationId": "get-azure-rate-card",
+        "summary": "Get the Azure rate card (real-time prices)",
+        "description": "currency (ISO, default USD) and region (ISO country, default US) are optional; prices vary by market.\nResponse can be very large (~1.5 MB) - stream/parse efficiently.\nAll rates are pretax (isTaxIncluded is always false).\nUse /v1/ratecards/azure-shared for Azure Partner Shared Services pricing.",
+        "parameters": [
+          {
+            "name": "currency",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "region",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-prices-for-microsoft-azure"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/subscriptions/{subscription-id}/transitionEligibilities": {
+      "get": {
+        "operationId": "get-subscription-transition-eligibilities",
+        "summary": "Get eligible subscription transitions (NCE)",
+        "description": "eligibilityType is optional (default immediate); use the returned catalogItemId as toCatalogItemId in create-subscription-transition.\nDistinct from GET .../transitions, which returns transition history rather than eligible transitions.\nEmpty list for trials or when eligibilityType=scheduled (you can only transition into an existing subscription via an immediate transition).",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "subscription-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "eligibilityType",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/transition-a-new-commerce-subscription"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/subscriptions/{subscription-id}/transitions": {
+      "post": {
+        "operationId": "create-subscription-transition",
+        "summary": "Create a subscription transition (NCE upgrade / trial-to-paid)",
+        "description": "Two-step: GET transitionEligibilities first to get a valid toCatalogItemId, then POST.\nUsed to upgrade an NCE subscription to a target SKU/term and to convert an NCE trial to paid.\ntransition_with_license_transfer needs Directory Writer (GDAP); provisioning is asynchronous (response has an Events array).",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "subscription-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/transition-a-new-commerce-subscription"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "toCatalogItemId": {
+                    "type": "string"
+                  },
+                  "quantity": {
+                    "type": "string"
+                  },
+                  "transitionType": {
+                    "type": "string"
+                  },
+                  "toSubscriptionId": {
+                    "type": "string"
+                  },
+                  "termDuration": {
+                    "type": "string"
+                  },
+                  "billingCycle": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/productupgrades": {
+      "post": {
+        "operationId": "create-azure-plan-upgrade",
+        "summary": "Upgrade a customer to the Azure plan",
+        "description": "Global /v1/productupgrades collection (not subscription-scoped); the customer is identified in the body.\nReturns 202 Accepted with an empty body and a Location header (productUpgrades/{id}) to poll; app+user only.\nCheck eligibility first via POST /v1/productUpgrades/eligibility. After upgrade, Get Subscriptions returns only the Azure plan.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/create-product-upgrade-entity"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "customerId": {
+                    "type": "string"
+                  },
+                  "productFamily": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/invoices/{invoice-id}/lineitems/{billing-provider}/{invoice-line-item-type}": {
+      "get": {
+        "operationId": "get-invoice-billed-lineitems",
+        "summary": "Get invoice billed reconciliation line items",
+        "description": "billing-provider: OneTime (modern), or Azure/Office (legacy). invoice-line-item-type: BillingLineItems or UsageLineItems.\nOneTime pages via seekOperation=Next + the MS-ContinuationToken header (from links.next); Azure/Office use size+offset. Default/max size 2000.\nThis v1 API is in feature freeze; for new-commerce billed recon after 2025-04-21 use the async Graph v2 API.",
+        "parameters": [
+          {
+            "name": "invoice-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "billing-provider",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "invoice-line-item-type",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "seekOperation",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-invoiceline-items"
+        }
+      }
+    },
+    "/v1/invoices/unbilled/lineitems": {
+      "get": {
+        "operationId": "get-invoice-unbilled-lineitems",
+        "summary": "Get unbilled reconciliation line items",
+        "description": "Literal path /invoices/unbilled/lineitems (no invoice-id). Required query: provider, invoicelineitemtype, currencycode, period (current|previous).\nPages via size (max 2000) + seekOperation=Next with MS-ContinuationToken; allow up to 24h for unbilled data.\nThis v1 NCE API is deprecated effective 2026-03-15; use the async v2 GA unbilled API.",
+        "parameters": [
+          {
+            "name": "provider",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "invoicelineitemtype",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "currencycode",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "period",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-invoice-unbilled-recon-lineitems"
+        }
+      }
+    },
+    "/v1/invoices/{invoice-id}/documents/statement": {
+      "get": {
+        "operationId": "get-invoice-statement",
+        "summary": "Download an invoice statement (PDF)",
+        "description": "App+User only. Response is a binary PDF (Content-Type application/pdf) - read it as bytes, not JSON.\nPath is /documents/statement (singular). For Taiwan tax receipts use .../receipts/{receipt-id}/documents/statement.",
+        "parameters": [
+          {
+            "name": "invoice-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-invoice-statement"
+        }
+      }
+    },
+    "/v1/productpromotions": {
+      "get": {
+        "operationId": "get-promotions",
+        "summary": "Get available offer promotions",
+        "description": "country and segment are required; segment currently supports only 'commercial'.\nReturns only currently-active promotions (by start/end dates). Covers NCE license-based promotions.\nSupports both app-only and app+user.",
+        "parameters": [
+          {
+            "name": "country",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "segment",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-promotions"
+        }
+      }
+    },
+    "/v1/productpromotions/{promotion-id}": {
+      "get": {
+        "operationId": "get-promotion-by-id",
+        "summary": "Get a promotion by ID",
+        "description": "country is required; promotion-id is a delimited product:sku:availability string - URL-encode it.\nReturns the promotion ignoring start/end dates (works after expiry - useful for reconciliation).\nResponse may include promotionConstraints for eligibility checks. Supports both app-only and app+user.",
+        "parameters": [
+          {
+            "name": "promotion-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "country",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-promotion-by-id"
+        }
+      }
+    },
+    "/v1/products/{product-id}": {
+      "get": {
+        "operationId": "get-product-by-id",
+        "summary": "Get a product by ID",
+        "description": "country is required; 404 with error 400013 if not found.\nA product is a grouping construct and is not itself purchasable - drill into SKUs/availabilities.\nSupports both app-only and app+user.",
+        "parameters": [
+          {
+            "name": "product-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "country",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-a-product-by-id"
+        }
+      }
+    },
+    "/v1/products/{product-id}/skus/{sku-id}": {
+      "get": {
+        "operationId": "get-sku-by-id",
+        "summary": "Get a SKU by ID",
+        "description": "country is required; 404 with error 400013 (product) or 400018 (SKU) if not found.\nIf purchasePrerequisites contains 'InventoryCheck' you must call Check Inventory before ordering.\nSupports both app-only and app+user.",
+        "parameters": [
+          {
+            "name": "product-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sku-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "country",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-a-sku-by-id"
+        }
+      }
+    },
+    "/v1/agreementtemplates/{agreement-template-id}/document": {
+      "get": {
+        "operationId": "get-agreement-template-document",
+        "summary": "Get a download link for the MCA template",
+        "description": "App+User only; public cloud + MCA only. Top-level /v1/agreementtemplates path (not under /customers).\ncountry/language default to US/en-US; values are case-sensitive.\ndownloadUri (Word) and displayUri (preview) are freshly generated and EXPIRE after five minutes.",
+        "parameters": [
+          {
+            "name": "agreement-template-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "language",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "country",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/download-customer-agreement-template"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/qualifications": {
+      "get": {
+        "operationId": "get-customer-qualifications",
+        "summary": "Get a customer's qualifications",
+        "description": "Supports both app-only and app+user (unlike update-customer-qualification, which is app+user only).\nReturns an array; a customer can hold multiple (e.g. Education + StateOwnedEntity).\nValues: Education, GovernmentCommunityCloud, StateOwnedEntity, Nonprofit, None; vetted types carry vettingStatus.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-customer-qualification-asynchronous"
+        }
+      },
+      "post": {
+        "operationId": "update-customer-qualification",
+        "summary": "Set a customer's qualification",
+        "description": "POST (not PUT); app+user only. Only Education, GovernmentCommunityCloud, StateOwnedEntity can be set.\nEducation requires educationSegment (K12 or HigherEducation); GCC requires a validationCode + a GDAP role.\nVetted types (Education/GCC) start in a review/vetting flow rather than immediately Approved.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/update-customer-qualification-asynchronous"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "qualification": {
+                    "type": "string"
+                  },
+                  "educationSegment": {
+                    "type": "string"
+                  },
+                  "validationCode": {
+                    "type": "string"
+                  },
+                  "website": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/extensions/product/checkInventory": {
+      "post": {
+        "operationId": "check-inventory",
+        "summary": "Check inventory for catalog items before ordering",
+        "description": "Only needed for SKUs whose purchasePrerequisites contains 'InventoryCheck'; skip otherwise.\nRequired InventoryContext keys vary by SKU (declared in the SKU's inventoryVariables).\nItems not found in the catalog are silently omitted from the result.",
+        "parameters": [
+          {
+            "name": "country",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/check-inventory"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "TargetItems": {
+                    "type": "string"
+                  },
+                  "InventoryContext": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/servicerequests/{servicerequest-id}": {
+      "get": {
+        "operationId": "get-service-request-by-id",
+        "summary": "Get a service request by ID",
+        "description": "App+User only. There is no REST endpoint to list support topics or to create a service request (portal-only).\nPass IncludeOrganizationRequests to read a request owned by the organization.",
+        "parameters": [
+          {
+            "name": "servicerequest-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-service-request-details-by-id"
+        }
+      },
+      "patch": {
+        "operationId": "update-service-request",
+        "summary": "Update a service request (add note / close)",
+        "description": "App+User only. Send only the fields you want to change.\nAdd notes via the singular NewNote object (the Notes array is read-only).",
+        "parameters": [
+          {
+            "name": "servicerequest-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/update-a-service-request"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "NewNote": {
+                    "type": "string"
+                  },
+                  "Status": {
+                    "type": "string"
+                  },
+                  "Severity": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/deviceBatches": {
+      "post": {
+        "operationId": "create-device-batch",
+        "summary": "Upload devices as a new batch (Autopilot)",
+        "description": "Returns 202 Accepted with a Location header (/customers/{id}/batchJobStatus/{tracking-id}) - poll it for status.\nApp+User only. Each device must satisfy one of the accepted id field combinations.\nAdd devices to an EXISTING batch via update-devices instead of reusing a batchId.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/upload-a-list-of-devices-to-create-a-new-batch-for-the-specified-customer"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "batchId": {
+                    "type": "string"
+                  },
+                  "devices": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "get-device-batches",
+        "summary": "Get a customer's device batches",
+        "description": "Each batch item has a devicesLink to fetch that batch's devices.\nSupports both app-only and app+user.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-the-list-of-device-batches-for-the-specified-customer"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/deviceBatches/{devicebatch-id}/devices": {
+      "post": {
+        "operationId": "update-devices",
+        "summary": "Add devices to an existing batch",
+        "description": "Body is a bare JSON ARRAY of Device objects (unlike create-device-batch, which wraps them).\nReturns 202 Accepted with a Location header to poll. Supports both app-only and app+user.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "devicebatch-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/upload-a-list-of-devices-for-the-specified-customer"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/policies": {
+      "get": {
+        "operationId": "get-configuration-policies",
+        "summary": "Get a customer's configuration policies (Autopilot)",
+        "description": "The wire path is /policies (the SDK surface is named ConfigurationPolicies).\npolicySettings is an enum: remove_oem_preinstalls, oobe_user_not_local_admin, skip_express_settings, skip_oem_registration, skip_eula.\nSupports both app-only and app+user.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-a-customer-s-policies"
+        }
+      }
+    },
+    "/v1/customers/relationshiprequests": {
+      "get": {
+        "operationId": "get-reseller-relationship-url",
+        "summary": "Get a reseller relationship request URL to send a customer",
+        "description": "A GET that returns a personalized { url } invitation link to send the customer; no request body.\nApp+User only. The customer accepts it in the Microsoft 365 admin center.\nNot available for customer tenants with B2C/CIAM features enabled.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/request-reseller-relationship"
+        }
+      }
+    },
+    "/v1/fraudEvents": {
+      "get": {
+        "operationId": "get-fraud-events",
+        "summary": "Get Azure fraud events",
+        "description": "All query params optional. Base model: EventStatus, SubscriptionId.\nWith X-NewEventsModel: true you also get EventType, PageSize, PageNumber (both must be nonzero to page).\nMicrosoft is steering partners to the Graph partner security alerts API; this remains usable during transition.",
+        "parameters": [
+          {
+            "name": "EventStatus",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-fraud-events"
+        }
+      }
+    },
+    "/v1/ratecards/azure-shared": {
+      "get": {
+        "operationId": "get-azure-rate-card-shared",
+        "summary": "Get the Azure Partner Shared Services rate card",
+        "description": "The 'shared' variant for Azure Partner Shared Services; the standard one is /v1/ratecards/azure.\ncurrency/region optional (default from the partner profile). All rates are pretax.",
+        "parameters": [
+          {
+            "name": "currency",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "region",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-prices-for-microsoft-azure-partner-shared-services"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/directoryroles/{role-id}/usermembers": {
+      "post": {
+        "operationId": "assign-user-role",
+        "summary": "Assign a directory role to a customer user",
+        "description": "App+User only; requires the GDAP Privileged Role Administrator role.\nrole-id is the directory role's GUID (from the customer's directoryroles collection).\nReturns 201 Created on success.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "role-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/set-user-roles-for-a-customer"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "Id": {
+                    "type": "string"
+                  },
+                  "DisplayName": {
+                    "type": "string"
+                  },
+                  "UserPrincipalName": {
+                    "type": "string"
+                  },
+                  "Attributes": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/users/{user-id}/resetpassword": {
+      "patch": {
+        "operationId": "reset-user-password",
+        "summary": "Reset a customer user's password",
+        "description": "Use the dedicated /resetpassword sub-resource - NOT the generic update-user PATCH.\nApp+User only; needs the GDAP User Administrator (or Privileged Authentication Administrator) role.\nNot supported in US Gov - use the Azure portal there.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "user-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/reset-user-password-for-a-customer"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "passwordProfile": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/users/{user-id}": {
+      "patch": {
+        "operationId": "restore-user",
+        "summary": "Restore a deleted customer user",
+        "description": "Only within the 30-day window after deletion; after that the account is purged.\nApp+User only; needs GDAP User Administrator or Directory Writer.\nFind the deleted user-id via the deleted (UserState=Inactive) users list.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "user-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/restore-a-user-for-a-customer"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "State": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/profiles/billing": {
+      "get": {
+        "operationId": "get-billing-profile",
+        "summary": "Get the partner billing profile",
+        "description": "App+User only. billingCurrency is fixed at account creation and cannot be changed.\nReturns companyName, address, primaryContact, purchaseOrderNumber, taxId, billingCurrency, billingDay.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-partner-billing-profile"
+        }
+      },
+      "put": {
+        "operationId": "update-billing-profile",
+        "summary": "Update the partner billing profile",
+        "description": "PUT (full replace), not PATCH: GET it, mutate, then PUT the whole resource back.\nApp+User only. Modern 'G' invoices may not reflect PO-number changes made here (may need a support request).",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/update-partner-billing-profile"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "companyName": {
+                    "type": "string"
+                  },
+                  "address": {
+                    "type": "string"
+                  },
+                  "primaryContact": {
+                    "type": "string"
+                  },
+                  "purchaseOrderNumber": {
+                    "type": "string"
+                  },
+                  "taxId": {
+                    "type": "string"
+                  },
+                  "billingDay": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/profiles/legalbusiness": {
+      "get": {
+        "operationId": "get-legal-business-profile",
+        "summary": "Get the partner legal business profile",
+        "description": "Path segment is 'legalbusiness' (one word).\nReturns companyName, address, primaryContact, companyApproverAddress/Email, vettingStatus/vettingSubStatus.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-legal-business-profile"
+        }
+      }
+    },
+    "/v1/profiles/support": {
+      "get": {
+        "operationId": "get-support-profile",
+        "summary": "Get the partner support profile",
+        "description": "App+User only. GET path is /v1/profiles/support but the UPDATE path is /v1/profiles/supportprofile - they differ.\nReturns email, telephone, website.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-support-profile"
+        }
+      }
+    },
+    "/v1/profiles/organization": {
+      "get": {
+        "operationId": "get-organization-profile",
+        "summary": "Get the partner organization profile",
+        "description": "App+User only. Update via PUT /v1/profiles/organization (full resource).\nReturns id, companyName, defaultAddress, tenantId, domain, email, language, culture.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-an-organization-profile"
+        }
+      }
+    },
+    "/v1/invoices/{invoice-id}/receipts/{receipt-id}/documents/statement": {
+      "get": {
+        "operationId": "get-invoice-tax-receipt",
+        "summary": "Download an invoice receipt statement (Taiwan tax receipt)",
+        "description": "Taiwan tax receipts only - not a general invoice download. Response is a binary PDF (read as bytes).\nApp+User only. Needs both an invoice id and a receipt id (from the invoice's tax-receipt collection).",
+        "parameters": [
+          {
+            "name": "invoice-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "receipt-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-invoice-receipt-statement"
+        }
+      }
+    }
+  }
+}
