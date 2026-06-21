@@ -5,6 +5,7 @@ const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "lastVerified must be YY
 export const AREAS = [
   "customers", "subscriptions", "orders", "licenses", "invoicing", "profiles", "auth",
   "catalog", "utilities", "audit", "support", "security", "analytics",
+  "devices", "referrals",
 ] as const;
 
 export const ScenarioSchema = z.object({

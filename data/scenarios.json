@@ -1377,6 +1377,448 @@
       ],
       "docUrl": "https://learn.microsoft.com/partner-center/developer/update-customer-qualification-asynchronous",
       "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "check-inventory",
+      "area": "catalog",
+      "title": "Check inventory for catalog items before ordering",
+      "method": "POST",
+      "path": "/v1/extensions/product/checkInventory?country={country}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "InventoryCheckRequest",
+      "requestFields": [
+        { "name": "TargetItems", "type": "InventoryItem[]", "required": true, "note": "each needs ProductId; SkuId optional" },
+        { "name": "InventoryContext", "type": "object", "required": false, "note": "per-SKU keys from the SKU's inventoryVariables (e.g. customerId, azureSubscriptionId, armRegionName)" }
+      ],
+      "responseShape": "InventoryItem collection",
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d '{\"TargetItems\":[{\"ProductId\":\"DZH318Z0BQ3P\"}]}' \"https://api.partnercenter.microsoft.com/v1/extensions/product/checkInventory?country=US\"",
+        "csharp": "var res = await http.PostAsync(\"/v1/extensions/product/checkInventory?country=US\", content);",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/extensions/product/checkInventory?country=US\", { method: \"POST\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "Only needed for SKUs whose purchasePrerequisites contains 'InventoryCheck'; skip otherwise.",
+        "Required InventoryContext keys vary by SKU (declared in the SKU's inventoryVariables).",
+        "Items not found in the catalog are silently omitted from the result."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/check-inventory",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "update-order",
+      "area": "orders",
+      "title": "Update an order (legacy billing cycle / cancel)",
+      "method": "PATCH",
+      "path": "/v1/customers/{customer-id}/orders/{order-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "Order",
+      "requestFields": [
+        { "name": "ReferenceCustomerId", "type": "string", "required": true, "note": "the customer id" },
+        { "name": "BillingCycle", "type": "string", "required": true, "note": "BillingCycleType member, e.g. Annual / Monthly" },
+        { "name": "LineItems", "type": "OrderLineItem[]", "required": true, "note": "each: LineItemNumber, OfferId, SubscriptionId, Quantity" },
+        { "name": "Status", "type": "string", "required": false, "note": "set to 'cancelled' to cancel the order (sandbox)" }
+      ],
+      "responseShape": "Order",
+      "examples": {
+        "curl": "curl -X PATCH -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d @order.json \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/orders/{order-id}\"",
+        "csharp": "var req = new HttpRequestMessage(HttpMethod.Patch, $\"/v1/customers/{customerId}/orders/{orderId}\") { Content = content };\nvar res = await http.SendAsync(req);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/orders/${orderId}`, { method: \"PATCH\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "Billing-cycle change here is for LEGACY subscriptions only; for NCE use update-subscription instead.",
+        "Out of scope: trials, monthly/Azure offers, inactive or online-services license-based subscriptions.",
+        "To cancel an order, PATCH the same path with status 'cancelled' (documented for the sandbox)."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/change-the-billing-cycle",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-service-request-by-id",
+      "area": "support",
+      "title": "Get a service request by ID",
+      "method": "GET",
+      "path": "/v1/servicerequests/{servicerequest-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "IncludeOrganizationRequests", "required": false, "note": "authorizes the Support Request Admin role to read an org-owned request" }
+      ],
+      "requestShape": null,
+      "responseShape": "ServiceRequest",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/servicerequests/{servicerequest-id}\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/servicerequests/{serviceRequestId}\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/servicerequests/${serviceRequestId}`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "App+User only. There is no REST endpoint to list support topics or to create a service request (portal-only).",
+        "Pass IncludeOrganizationRequests to read a request owned by the organization."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-service-request-details-by-id",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "update-service-request",
+      "area": "support",
+      "title": "Update a service request (add note / close)",
+      "method": "PATCH",
+      "path": "/v1/servicerequests/{servicerequest-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "ServiceRequest",
+      "requestFields": [
+        { "name": "NewNote", "type": "ServiceRequestNote", "required": false, "note": "append a note: { Text }" },
+        { "name": "Status", "type": "string", "required": false, "note": "none | open | closed | attention_needed (set closed to close)" },
+        { "name": "Severity", "type": "string", "required": false, "note": "unknown | critical | moderate | minimal" }
+      ],
+      "responseShape": "ServiceRequest",
+      "examples": {
+        "curl": "curl -X PATCH -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d '{\"NewNote\":{\"Text\":\"...\"},\"Attributes\":{\"ObjectType\":\"ServiceRequest\"}}' \"https://api.partnercenter.microsoft.com/v1/servicerequests/{servicerequest-id}\"",
+        "csharp": "var req = new HttpRequestMessage(HttpMethod.Patch, $\"/v1/servicerequests/{serviceRequestId}\") { Content = content };\nvar res = await http.SendAsync(req);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/servicerequests/${serviceRequestId}`, { method: \"PATCH\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "App+User only. Send only the fields you want to change.",
+        "Add notes via the singular NewNote object (the Notes array is read-only)."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/update-a-service-request",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "create-device-batch",
+      "area": "devices",
+      "title": "Upload devices as a new batch (Autopilot)",
+      "method": "POST",
+      "path": "/v1/customers/{customer-id}/deviceBatches",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "DeviceBatchCreationRequest",
+      "requestFields": [
+        { "name": "batchId", "type": "string", "required": true, "note": "unique batch name you choose" },
+        { "name": "devices", "type": "Device[]", "required": true, "note": "each device needs an accepted id combo (hardwareHash, productKey, serialNumber+oemManufacturerName+modelName, ...)" }
+      ],
+      "responseShape": null,
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d @batch.json \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/deviceBatches\"",
+        "csharp": "var res = await http.PostAsync($\"/v1/customers/{customerId}/deviceBatches\", content); var location = res.Headers.Location;",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/deviceBatches`, { method: \"POST\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "Returns 202 Accepted with a Location header (/customers/{id}/batchJobStatus/{tracking-id}) - poll it for status.",
+        "App+User only. Each device must satisfy one of the accepted id field combinations.",
+        "Add devices to an EXISTING batch via update-devices instead of reusing a batchId."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/upload-a-list-of-devices-to-create-a-new-batch-for-the-specified-customer",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-device-batches",
+      "area": "devices",
+      "title": "Get a customer's device batches",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/deviceBatches",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "DeviceBatch collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/deviceBatches\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/deviceBatches\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/deviceBatches`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Each batch item has a devicesLink to fetch that batch's devices.",
+        "Supports both app-only and app+user."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-the-list-of-device-batches-for-the-specified-customer",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "update-devices",
+      "area": "devices",
+      "title": "Add devices to an existing batch",
+      "method": "POST",
+      "path": "/v1/customers/{customer-id}/deviceBatches/{devicebatch-id}/devices",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "Device[]",
+      "requestFields": [
+        { "name": "(array)", "type": "Device[]", "required": true, "note": "bare JSON array of Device objects (NOT wrapped), each with an accepted id combo" }
+      ],
+      "responseShape": null,
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d '[{\"hardwareHash\":\"...\"}]' \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/deviceBatches/{devicebatch-id}/devices\"",
+        "csharp": "var res = await http.PostAsync($\"/v1/customers/{customerId}/deviceBatches/{batchId}/devices\", content); var location = res.Headers.Location;",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/deviceBatches/${batchId}/devices`, { method: \"POST\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "Body is a bare JSON ARRAY of Device objects (unlike create-device-batch, which wraps them).",
+        "Returns 202 Accepted with a Location header to poll. Supports both app-only and app+user."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/upload-a-list-of-devices-for-the-specified-customer",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-configuration-policies",
+      "area": "devices",
+      "title": "Get a customer's configuration policies (Autopilot)",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/policies",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "ConfigurationPolicy collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/policies\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/policies\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/policies`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "The wire path is /policies (the SDK surface is named ConfigurationPolicies).",
+        "policySettings is an enum: remove_oem_preinstalls, oobe_user_not_local_admin, skip_express_settings, skip_oem_registration, skip_eula.",
+        "Supports both app-only and app+user."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-a-customer-s-policies",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "create-gdap-relationship",
+      "area": "security",
+      "title": "Create a GDAP relationship (Microsoft Graph)",
+      "method": "POST",
+      "path": "https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://graph.microsoft.com; scope DelegatedAdminRelationship.ReadWrite.All" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "delegatedAdminRelationship",
+      "requestFields": [
+        { "name": "displayName", "type": "string", "required": true, "note": "unique across the partner's relationships, max 50 chars" },
+        { "name": "duration", "type": "Duration", "required": true, "note": "ISO 8601, P1D to P2Y" },
+        { "name": "accessDetails.unifiedRoles", "type": "unifiedRole[]", "required": true, "note": "each has roleDefinitionId (Entra role template GUID)" },
+        { "name": "customer.tenantId", "type": "string", "required": false, "note": "omit to let any customer approve; set to target a specific customer" }
+      ],
+      "responseShape": "delegatedAdminRelationship",
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $GRAPH_TOKEN\" -H \"Content-Type: application/json\" -d @gdap.json \"https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships\"",
+        "csharp": "var res = await http.PostAsync(\"https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships\", content);",
+        "typescript": "const res = await fetch(\"https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships\", { method: \"POST\", headers: { Authorization: `Bearer ${graphToken}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "Graph API (graph.microsoft.com), not Partner Center. Returns 201 with a Location header.",
+        "Creating it is step 1: then POST a relationshipRequest (lockForApproval), have the customer approve, then create accessAssignments.",
+        "Not available in China (21Vianet)."
+      ],
+      "docUrl": "https://learn.microsoft.com/graph/api/tenantrelationship-post-delegatedadminrelationships?view=graph-rest-1.0",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-gdap-relationship-by-id",
+      "area": "security",
+      "title": "Get a GDAP relationship by ID (Microsoft Graph)",
+      "method": "GET",
+      "path": "https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships/{relationship-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://graph.microsoft.com; scope DelegatedAdminRelationship.Read.All" }
+      ],
+      "requestShape": null,
+      "responseShape": "delegatedAdminRelationship",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $GRAPH_TOKEN\" \"https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships/{relationship-id}\"",
+        "csharp": "var res = await http.GetAsync($\"https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships/{relationshipId}\");",
+        "typescript": "const res = await fetch(`https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships/${relationshipId}`, { headers: { Authorization: `Bearer ${graphToken}` } });"
+      },
+      "gotchas": [
+        "Graph API. The id is a compound {partnerTenantGuid}-{customerTenantGuid}.",
+        "Response carries an @odata.etag. Not available in China (21Vianet)."
+      ],
+      "docUrl": "https://learn.microsoft.com/graph/api/delegatedadminrelationship-get?view=graph-rest-1.0",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-reseller-relationship-url",
+      "area": "customers",
+      "title": "Get a reseller relationship request URL to send a customer",
+      "method": "GET",
+      "path": "/v1/customers/relationshiprequests",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "RelationshipRequest",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/relationshiprequests\"",
+        "csharp": "var res = await http.GetAsync(\"/v1/customers/relationshiprequests\"); // body.url is the invitation link",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/customers/relationshiprequests\", { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "A GET that returns a personalized { url } invitation link to send the customer; no request body.",
+        "App+User only. The customer accepts it in the Microsoft 365 admin center.",
+        "Not available for customer tenants with B2C/CIAM features enabled."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/request-reseller-relationship",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-fraud-events",
+      "area": "security",
+      "title": "Get Azure fraud events",
+      "method": "GET",
+      "path": "/v1/fraudEvents?EventStatus={Active|Resolved|Investigating}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "X-NewEventsModel", "required": false, "note": "set true for the new model (EventType, PageSize, PageNumber + richer alert types)" }
+      ],
+      "requestShape": null,
+      "responseShape": "FraudEvents collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/fraudEvents?EventStatus=Active\"",
+        "csharp": "var res = await http.GetAsync(\"/v1/fraudEvents?EventStatus=Active\");",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/fraudEvents?EventStatus=Active\", { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "All query params optional. Base model: EventStatus, SubscriptionId.",
+        "With X-NewEventsModel: true you also get EventType, PageSize, PageNumber (both must be nonzero to page).",
+        "Microsoft is steering partners to the Graph partner security alerts API; this remains usable during transition."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-fraud-events",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-referrals",
+      "area": "referrals",
+      "title": "Get co-sell referrals / leads (Partner API)",
+      "method": "GET",
+      "path": "https://api.partner.microsoft.com/v1.0/engagements/referrals",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partner.microsoft.com; user needs Referral Admin/User role" }
+      ],
+      "requestShape": null,
+      "responseShape": "Referral collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partner.microsoft.com/v1.0/engagements/referrals?$orderby=createdDateTime desc\"",
+        "csharp": "var res = await http.GetAsync(\"https://api.partner.microsoft.com/v1.0/engagements/referrals?$orderby=createdDateTime desc\");",
+        "typescript": "const res = await fetch(\"https://api.partner.microsoft.com/v1.0/engagements/referrals?$orderby=createdDateTime desc\", { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Host is api.partner.microsoft.com (the Partner API), NOT api.partnercenter.microsoft.com. App+User only.",
+        "Supports OData $select/$filter/$orderby/$top; page via @odata.nextLink.",
+        "Unresponded incoming leads are archived as Expired after 14 days."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-referrals",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "create-referral",
+      "area": "referrals",
+      "title": "Create a referral / co-sell deal (Partner API)",
+      "method": "POST",
+      "path": "https://api.partner.microsoft.com/v1.0/engagements/referrals",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partner.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "Referral",
+      "requestFields": [
+        { "name": "type", "type": "string", "required": true, "note": "Independent or Shared (indicative; actual type derived from consent)" },
+        { "name": "customerProfile", "type": "CustomerProfile", "required": true, "note": "customer name, address, contact team" },
+        { "name": "consent", "type": "Consent", "required": true, "note": "consentToShareReferralWithMicrosoftSellers: false=Private, true=Co-sell" },
+        { "name": "details", "type": "ReferralDetails", "required": true, "note": "notes, dealValue, currency, closingDateTime, requirements" }
+      ],
+      "responseShape": "Referral",
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d @referral.json \"https://api.partner.microsoft.com/v1.0/engagements/referrals\"",
+        "csharp": "var res = await http.PostAsync(\"https://api.partner.microsoft.com/v1.0/engagements/referrals\", content);",
+        "typescript": "const res = await fetch(\"https://api.partner.microsoft.com/v1.0/engagements/referrals\", { method: \"POST\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "Host is api.partner.microsoft.com. App+User only.",
+        "Co-sell (Shared) is a two-step flow: POST the partner-led deal, then POST a Microsoft referral linked via the returned engagementId.",
+        "For Services co-sell, PartnerRole/SolutionArea/SolutionPlay are required under details.requirements.additionalRequirements."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/create-a-referral",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-azure-rate-card-shared",
+      "area": "invoicing",
+      "title": "Get the Azure Partner Shared Services rate card",
+      "method": "GET",
+      "path": "/v1/ratecards/azure-shared?currency={currency}&region={region}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "AzureRateCard",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/ratecards/azure-shared?currency=EUR&region=FR\"",
+        "csharp": "var res = await http.GetAsync(\"/v1/ratecards/azure-shared?currency=EUR&region=FR\");",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/ratecards/azure-shared?currency=EUR&region=FR\", { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "The 'shared' variant for Azure Partner Shared Services; the standard one is /v1/ratecards/azure.",
+        "currency/region optional (default from the partner profile). All rates are pretax."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-prices-for-microsoft-azure-partner-shared-services",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-partner-usage-analytics",
+      "area": "analytics",
+      "title": "Get partner-level Azure usage analytics",
+      "method": "GET",
+      "path": "https://api.partnercenter.microsoft.com/partner/v1/analytics/usage/azure",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "Azure usage collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/partner/v1/analytics/usage/azure\"",
+        "csharp": "var res = await http.GetAsync(\"https://api.partnercenter.microsoft.com/partner/v1/analytics/usage/azure\");",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/partner/v1/analytics/usage/azure\", { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Note the /partner/v1/ path prefix (not /v1/). App+User only; CSP partners only.",
+        "OData params: top (max 10000), skip, filter, orderby, groupby, aggregationLevel (day|week|month).",
+        "Response includes a next link when more rows exist than 'top'."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-all-azure-usage-analytics",
+      "lastVerified": "2026-06-21"
     }
   ]
 }
