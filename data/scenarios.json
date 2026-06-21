@@ -1819,6 +1819,388 @@
       ],
       "docUrl": "https://learn.microsoft.com/partner-center/developer/get-all-azure-usage-analytics",
       "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "assign-user-role",
+      "area": "customers",
+      "title": "Assign a directory role to a customer user",
+      "method": "POST",
+      "path": "/v1/customers/{customer-id}/directoryroles/{role-id}/usermembers",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "UserMember",
+      "requestFields": [
+        { "name": "Id", "type": "string", "required": true, "note": "object id of the user to add to the role" },
+        { "name": "DisplayName", "type": "string", "required": true },
+        { "name": "UserPrincipalName", "type": "string", "required": true },
+        { "name": "Attributes.ObjectType", "type": "string", "required": true, "note": "must be 'UserMember'" }
+      ],
+      "responseShape": "UserMember",
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d @member.json \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/directoryroles/{role-id}/usermembers\"",
+        "csharp": "var res = await http.PostAsync($\"/v1/customers/{customerId}/directoryroles/{roleId}/usermembers\", content); // 201",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/directoryroles/${roleId}/usermembers`, { method: \"POST\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "App+User only; requires the GDAP Privileged Role Administrator role.",
+        "role-id is the directory role's GUID (from the customer's directoryroles collection).",
+        "Returns 201 Created on success."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/set-user-roles-for-a-customer",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "reset-user-password",
+      "area": "customers",
+      "title": "Reset a customer user's password",
+      "method": "PATCH",
+      "path": "/v1/customers/{customer-id}/users/{user-id}/resetpassword",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "CustomerUser",
+      "requestFields": [
+        { "name": "passwordProfile.password", "type": "string", "required": true, "note": "the new password" },
+        { "name": "passwordProfile.forceChangePassword", "type": "boolean", "required": false, "note": "require change at next sign-in" }
+      ],
+      "responseShape": "CustomerUser",
+      "examples": {
+        "curl": "curl -X PATCH -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d '{\"passwordProfile\":{\"password\":\"Renew456*\",\"forceChangePassword\":true}}' \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/users/{user-id}/resetpassword\"",
+        "csharp": "var req = new HttpRequestMessage(HttpMethod.Patch, $\"/v1/customers/{customerId}/users/{userId}/resetpassword\") { Content = content };\nvar res = await http.SendAsync(req);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/users/${userId}/resetpassword`, { method: \"PATCH\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "Use the dedicated /resetpassword sub-resource - NOT the generic update-user PATCH.",
+        "App+User only; needs the GDAP User Administrator (or Privileged Authentication Administrator) role.",
+        "Not supported in US Gov - use the Azure portal there."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/reset-user-password-for-a-customer",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "restore-user",
+      "area": "customers",
+      "title": "Restore a deleted customer user",
+      "method": "PATCH",
+      "path": "/v1/customers/{customer-id}/users/{user-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "CustomerUser",
+      "requestFields": [
+        { "name": "State", "type": "string", "required": true, "note": "set to 'active' to restore; other fields auto-restore" }
+      ],
+      "responseShape": "CustomerUser",
+      "examples": {
+        "curl": "curl -X PATCH -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d '{\"State\":\"active\"}' \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/users/{user-id}\"",
+        "csharp": "var req = new HttpRequestMessage(HttpMethod.Patch, $\"/v1/customers/{customerId}/users/{userId}\") { Content = content };\nvar res = await http.SendAsync(req);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/users/${userId}`, { method: \"PATCH\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "Only within the 30-day window after deletion; after that the account is purged.",
+        "App+User only; needs GDAP User Administrator or Directory Writer.",
+        "Find the deleted user-id via the deleted (UserState=Inactive) users list."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/restore-a-user-for-a-customer",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-billing-profile",
+      "area": "profiles",
+      "title": "Get the partner billing profile",
+      "method": "GET",
+      "path": "/v1/profiles/billing",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "BillingProfile",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/profiles/billing\"",
+        "csharp": "var res = await http.GetAsync(\"/v1/profiles/billing\");",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/profiles/billing\", { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "App+User only. billingCurrency is fixed at account creation and cannot be changed.",
+        "Returns companyName, address, primaryContact, purchaseOrderNumber, taxId, billingCurrency, billingDay."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-partner-billing-profile",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "update-billing-profile",
+      "area": "profiles",
+      "title": "Update the partner billing profile",
+      "method": "PUT",
+      "path": "/v1/profiles/billing",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "BillingProfile",
+      "requestFields": [
+        { "name": "companyName", "type": "string", "required": false },
+        { "name": "address", "type": "Address", "required": false },
+        { "name": "primaryContact", "type": "Contact", "required": false },
+        { "name": "purchaseOrderNumber", "type": "string", "required": false },
+        { "name": "taxId", "type": "string", "required": false },
+        { "name": "billingDay", "type": "int", "required": false }
+      ],
+      "responseShape": "BillingProfile",
+      "examples": {
+        "curl": "curl -X PUT -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d @billing.json \"https://api.partnercenter.microsoft.com/v1/profiles/billing\"",
+        "csharp": "var req = new HttpRequestMessage(HttpMethod.Put, \"/v1/profiles/billing\") { Content = content };\nvar res = await http.SendAsync(req);",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/profiles/billing\", { method: \"PUT\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "PUT (full replace), not PATCH: GET it, mutate, then PUT the whole resource back.",
+        "App+User only. Modern 'G' invoices may not reflect PO-number changes made here (may need a support request)."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/update-partner-billing-profile",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-legal-business-profile",
+      "area": "profiles",
+      "title": "Get the partner legal business profile",
+      "method": "GET",
+      "path": "/v1/profiles/legalbusiness",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "LegalBusinessProfile",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/profiles/legalbusiness\"",
+        "csharp": "var res = await http.GetAsync(\"/v1/profiles/legalbusiness\");",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/profiles/legalbusiness\", { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Path segment is 'legalbusiness' (one word).",
+        "Returns companyName, address, primaryContact, companyApproverAddress/Email, vettingStatus/vettingSubStatus."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-legal-business-profile",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-support-profile",
+      "area": "profiles",
+      "title": "Get the partner support profile",
+      "method": "GET",
+      "path": "/v1/profiles/support",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "SupportProfile",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/profiles/support\"",
+        "csharp": "var res = await http.GetAsync(\"/v1/profiles/support\");",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/profiles/support\", { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "App+User only. GET path is /v1/profiles/support but the UPDATE path is /v1/profiles/supportprofile - they differ.",
+        "Returns email, telephone, website."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-support-profile",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-organization-profile",
+      "area": "profiles",
+      "title": "Get the partner organization profile",
+      "method": "GET",
+      "path": "/v1/profiles/organization",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "OrganizationProfile",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/profiles/organization\"",
+        "csharp": "var res = await http.GetAsync(\"/v1/profiles/organization\");",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/profiles/organization\", { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "App+User only. Update via PUT /v1/profiles/organization (full resource).",
+        "Returns id, companyName, defaultAddress, tenantId, domain, email, language, culture."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-an-organization-profile",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-service-health-overviews",
+      "area": "support",
+      "title": "Get Microsoft 365 service health overviews (Microsoft Graph)",
+      "method": "GET",
+      "path": "https://graph.microsoft.com/v1.0/admin/serviceAnnouncement/healthOverviews",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://graph.microsoft.com; scope ServiceHealth.Read.All" }
+      ],
+      "requestShape": null,
+      "responseShape": "serviceHealth collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $GRAPH_TOKEN\" \"https://graph.microsoft.com/v1.0/admin/serviceAnnouncement/healthOverviews\"",
+        "csharp": "var res = await http.GetAsync(\"https://graph.microsoft.com/v1.0/admin/serviceAnnouncement/healthOverviews\");",
+        "typescript": "const res = await fetch(\"https://graph.microsoft.com/v1.0/admin/serviceAnnouncement/healthOverviews\", { headers: { Authorization: `Bearer ${graphToken}` } });"
+      },
+      "gotchas": [
+        "Microsoft Graph (not Partner Center): reads the signed-in/own tenant, or a customer tenant via GDAP/app context.",
+        "Add $expand=issues for active issues per service; paged at 100, follow @odata.nextLink."
+      ],
+      "docUrl": "https://learn.microsoft.com/graph/api/serviceannouncement-list-healthoverviews?view=graph-rest-1.0",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-service-health-issues",
+      "area": "support",
+      "title": "List Microsoft 365 service health issues (Microsoft Graph)",
+      "method": "GET",
+      "path": "https://graph.microsoft.com/v1.0/admin/serviceAnnouncement/issues",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://graph.microsoft.com; scope ServiceHealth.Read.All" },
+        { "name": "Prefer", "required": false, "note": "odata.maxpagesize={x}; max 1000, default 100" }
+      ],
+      "requestShape": null,
+      "responseShape": "serviceHealthIssue collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $GRAPH_TOKEN\" \"https://graph.microsoft.com/v1.0/admin/serviceAnnouncement/issues\"",
+        "csharp": "var res = await http.GetAsync(\"https://graph.microsoft.com/v1.0/admin/serviceAnnouncement/issues\");",
+        "typescript": "const res = await fetch(\"https://graph.microsoft.com/v1.0/admin/serviceAnnouncement/issues\", { headers: { Authorization: `Bearer ${graphToken}` } });"
+      },
+      "gotchas": [
+        "Microsoft Graph (not Partner Center). Each issue carries classification, status, service, isResolved, posts.",
+        "Default page size 100; set Prefer: odata.maxpagesize and follow @odata.nextLink."
+      ],
+      "docUrl": "https://learn.microsoft.com/graph/api/serviceannouncement-list-issues?view=graph-rest-1.0",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-message-center-messages",
+      "area": "support",
+      "title": "List Message center posts (Microsoft Graph)",
+      "method": "GET",
+      "path": "https://graph.microsoft.com/v1.0/admin/serviceAnnouncement/messages",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://graph.microsoft.com; scope ServiceMessage.Read.All" },
+        { "name": "Prefer", "required": false, "note": "odata.maxpagesize={x}; max 1000, default 100" }
+      ],
+      "requestShape": null,
+      "responseShape": "serviceUpdateMessage collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $GRAPH_TOKEN\" \"https://graph.microsoft.com/v1.0/admin/serviceAnnouncement/messages\"",
+        "csharp": "var res = await http.GetAsync(\"https://graph.microsoft.com/v1.0/admin/serviceAnnouncement/messages\");",
+        "typescript": "const res = await fetch(\"https://graph.microsoft.com/v1.0/admin/serviceAnnouncement/messages\", { headers: { Authorization: `Bearer ${graphToken}` } });"
+      },
+      "gotchas": [
+        "Microsoft Graph (not Partner Center). Scope is ServiceMessage.Read.All (NOT ServiceHealth.Read.All).",
+        "Message center posts (IDs like MCxxxxxx); body content is HTML. Paged at 100, follow @odata.nextLink."
+      ],
+      "docUrl": "https://learn.microsoft.com/graph/api/serviceannouncement-list-messages?view=graph-rest-1.0",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-invoice-tax-receipt",
+      "area": "invoicing",
+      "title": "Download an invoice receipt statement (Taiwan tax receipt)",
+      "method": "GET",
+      "path": "/v1/invoices/{invoice-id}/receipts/{receipt-id}/documents/statement",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": false, "note": "application/pdf" }
+      ],
+      "requestShape": null,
+      "responseShape": "PDF stream",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" -o receipt.pdf \"https://api.partnercenter.microsoft.com/v1/invoices/{invoice-id}/receipts/{receipt-id}/documents/statement\"",
+        "csharp": "var pdf = await http.GetByteArrayAsync($\"/v1/invoices/{invoiceId}/receipts/{receiptId}/documents/statement\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/invoices/${invoiceId}/receipts/${receiptId}/documents/statement`, { headers: { Authorization: `Bearer ${token}` } });\nconst pdf = Buffer.from(await res.arrayBuffer());"
+      },
+      "gotchas": [
+        "Taiwan tax receipts only - not a general invoice download. Response is a binary PDF (read as bytes).",
+        "App+User only. Needs both an invoice id and a receipt id (from the invoice's tax-receipt collection)."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-invoice-receipt-statement",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-billed-reconciliation-v2",
+      "area": "invoicing",
+      "title": "Export billed reconciliation line items (Microsoft Graph, async v2)",
+      "method": "POST",
+      "path": "https://graph.microsoft.com/v1.0/reports/partners/billing/reconciliation/billed/export",
+      "authType": "app-only",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://graph.microsoft.com; scope PartnerBilling.Read.All" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "ExportRequest",
+      "requestFields": [
+        { "name": "invoiceId", "type": "string", "required": true, "note": "invoice to export, e.g. G016907411" },
+        { "name": "attributeSet", "type": "string", "required": false, "note": "full (default) | basic" }
+      ],
+      "responseShape": "202 + operation Location",
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $GRAPH_TOKEN\" -H \"Content-Type: application/json\" -d '{\"invoiceId\":\"G016907411\",\"attributeSet\":\"full\"}' \"https://graph.microsoft.com/v1.0/reports/partners/billing/reconciliation/billed/export\"",
+        "csharp": "var res = await http.PostAsync(\"https://graph.microsoft.com/v1.0/reports/partners/billing/reconciliation/billed/export\", content); var op = res.Headers.Location;",
+        "typescript": "const res = await fetch(\"https://graph.microsoft.com/v1.0/reports/partners/billing/reconciliation/billed/export\", { method: \"POST\", headers: { Authorization: `Bearer ${graphToken}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "Microsoft Graph v2; replaces the older v1 billed-recon endpoint. Returns 202 + a Location operation URL - poll it (honor Retry-After), then download the manifest's Azure Blob files.",
+        "CSP partners only; PartnerBilling.Read.All. Global cloud only (not US Gov / China)."
+      ],
+      "docUrl": "https://learn.microsoft.com/graph/api/partners-billing-billedreconciliation-export?view=graph-rest-1.0",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-unbilled-reconciliation-v2",
+      "area": "invoicing",
+      "title": "Export unbilled reconciliation line items (Microsoft Graph, async v2)",
+      "method": "POST",
+      "path": "https://graph.microsoft.com/v1.0/reports/partners/billing/reconciliation/unbilled/export",
+      "authType": "app-only",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://graph.microsoft.com; scope PartnerBilling.Read.All" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "ExportRequest",
+      "requestFields": [
+        { "name": "currencyCode", "type": "string", "required": true, "note": "e.g. USD" },
+        { "name": "billingPeriod", "type": "string", "required": true, "note": "current | last" },
+        { "name": "attributeSet", "type": "string", "required": false, "note": "full (default) | basic" }
+      ],
+      "responseShape": "202 + operation Location",
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $GRAPH_TOKEN\" -H \"Content-Type: application/json\" -d '{\"currencyCode\":\"USD\",\"billingPeriod\":\"current\",\"attributeSet\":\"full\"}' \"https://graph.microsoft.com/v1.0/reports/partners/billing/reconciliation/unbilled/export\"",
+        "csharp": "var res = await http.PostAsync(\"https://graph.microsoft.com/v1.0/reports/partners/billing/reconciliation/unbilled/export\", content); var op = res.Headers.Location;",
+        "typescript": "const res = await fetch(\"https://graph.microsoft.com/v1.0/reports/partners/billing/reconciliation/unbilled/export\", { method: \"POST\", headers: { Authorization: `Bearer ${graphToken}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "Microsoft Graph v2; both currencyCode and billingPeriod (current|last) are required. Returns 202 + Location - poll then download from the manifest.",
+        "CSP partners only; PartnerBilling.Read.All. Daily-rated usage takes ~24h to appear. Global cloud only."
+      ],
+      "docUrl": "https://learn.microsoft.com/graph/api/partners-billing-unbilledreconciliation-export?view=graph-rest-1.0",
+      "lastVerified": "2026-06-21"
     }
   ]
 }
