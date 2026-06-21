@@ -481,8 +481,11 @@
         "Send the FULL Subscription resource, not a partial patch: GET it first, mutate it, then PATCH it back.",
         "If autoRenewEnabled or next-term instructions are set, include them in the body or they are silently reset.",
         "Change quantity via Quantity; suspend/reactivate via Status (active/suspended); toggle renewal via AutoRenewEnabled.",
+        "Cancel an NCE subscription within its cancellation window by PATCHing Status to 'deleted' (see cancellationAllowedUntilDate).",
+        "Schedule changes for the next term (term/quantity/billing at renewal) via scheduledNextTermInstructions.",
         "NCE license quantity can only be reduced within 7 days of purchase/renewal (else error 800090).",
         "Billing cycle CANNOT be changed here (error 2054) - use update-order instead.",
+        "For SKU/term upgrades or trial-to-paid, use create-subscription-transition instead.",
         "Long-running updates return 202 with a Location header to poll."
       ],
       "docUrl": "https://learn.microsoft.com/partner-center/developer/update-a-subscription-by-id",
@@ -985,6 +988,394 @@
         "Not available in China (21Vianet); available in Global and US Gov."
       ],
       "docUrl": "https://learn.microsoft.com/graph/api/tenantrelationship-list-delegatedadminrelationships?view=graph-rest-1.0",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-subscription-transition-eligibilities",
+      "area": "subscriptions",
+      "title": "Get eligible subscription transitions (NCE)",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/subscriptions/{subscription-id}/transitionEligibilities?eligibilityType={immediate|scheduled}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "TransitionEligibility collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}/transitionEligibilities?eligibilityType=immediate\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/subscriptions/{subscriptionId}/transitionEligibilities?eligibilityType=immediate\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/subscriptions/${subscriptionId}/transitionEligibilities?eligibilityType=immediate`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "eligibilityType is optional (default immediate); use the returned catalogItemId as toCatalogItemId in create-subscription-transition.",
+        "Distinct from GET .../transitions, which returns transition history rather than eligible transitions.",
+        "Empty list for trials or when eligibilityType=scheduled (you can only transition into an existing subscription via an immediate transition)."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/transition-a-new-commerce-subscription",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "create-subscription-transition",
+      "area": "subscriptions",
+      "title": "Create a subscription transition (NCE upgrade / trial-to-paid)",
+      "method": "POST",
+      "path": "/v1/customers/{customer-id}/subscriptions/{subscription-id}/transitions",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "Transition",
+      "requestFields": [
+        { "name": "toCatalogItemId", "type": "string", "required": true, "note": "target product:sku:availability from transitionEligibilities" },
+        { "name": "quantity", "type": "int", "required": true, "note": "number of licenses to transition" },
+        { "name": "transitionType", "type": "string", "required": true, "note": "transition_only or transition_with_license_transfer" },
+        { "name": "toSubscriptionId", "type": "string", "required": false, "note": "transition into an existing subscription (immediate only)" },
+        { "name": "termDuration", "type": "string", "required": false, "note": "ISO 8601, e.g. P1M / P1Y" },
+        { "name": "billingCycle", "type": "string", "required": false }
+      ],
+      "responseShape": "Transition",
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d '{\"toCatalogItemId\":\"...\",\"quantity\":2,\"transitionType\":\"transition_only\"}' \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}/transitions\"",
+        "csharp": "var res = await http.PostAsync($\"/v1/customers/{customerId}/subscriptions/{subscriptionId}/transitions\", content);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/subscriptions/${subscriptionId}/transitions`, { method: \"POST\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "Two-step: GET transitionEligibilities first to get a valid toCatalogItemId, then POST.",
+        "Used to upgrade an NCE subscription to a target SKU/term and to convert an NCE trial to paid.",
+        "transition_with_license_transfer needs Directory Writer (GDAP); provisioning is asynchronous (response has an Events array)."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/transition-a-new-commerce-subscription",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "create-azure-plan-upgrade",
+      "area": "subscriptions",
+      "title": "Upgrade a customer to the Azure plan",
+      "method": "POST",
+      "path": "/v1/productupgrades",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "ProductUpgradeRequest",
+      "requestFields": [
+        { "name": "customerId", "type": "string (guid)", "required": true, "note": "the customer tenant id" },
+        { "name": "productFamily", "type": "string", "required": true, "note": "\"Azure\" (upgrades legacy MS-AZR-0145P to the Azure plan)" }
+      ],
+      "responseShape": null,
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d '{\"customerId\":\"{customer-id}\",\"productFamily\":\"Azure\"}' \"https://api.partnercenter.microsoft.com/v1/productupgrades\"",
+        "csharp": "var res = await http.PostAsync(\"/v1/productupgrades\", content); var location = res.Headers.Location; // productUpgrades/{id}",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/productupgrades\", { method: \"POST\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "Global /v1/productupgrades collection (not subscription-scoped); the customer is identified in the body.",
+        "Returns 202 Accepted with an empty body and a Location header (productUpgrades/{id}) to poll; app+user only.",
+        "Check eligibility first via POST /v1/productUpgrades/eligibility. After upgrade, Get Subscriptions returns only the Azure plan."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/create-product-upgrade-entity",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-invoice-billed-lineitems",
+      "area": "invoicing",
+      "title": "Get invoice billed reconciliation line items",
+      "method": "GET",
+      "path": "/v1/invoices/{invoice-id}/lineitems/{billing-provider}/{invoice-line-item-type}?size={size}&seekOperation=Next",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" },
+        { "name": "MS-ContinuationToken", "required": false, "note": "from the previous response's links.next when seekOperation=Next" }
+      ],
+      "requestShape": null,
+      "responseShape": "InvoiceLineItem collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/invoices/{invoice-id}/lineitems/OneTime/BillingLineItems?size=2000\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/invoices/{invoiceId}/lineitems/OneTime/BillingLineItems?size=2000\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/invoices/${invoiceId}/lineitems/OneTime/BillingLineItems?size=2000`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "billing-provider: OneTime (modern), or Azure/Office (legacy). invoice-line-item-type: BillingLineItems or UsageLineItems.",
+        "OneTime pages via seekOperation=Next + the MS-ContinuationToken header (from links.next); Azure/Office use size+offset. Default/max size 2000.",
+        "This v1 API is in feature freeze; for new-commerce billed recon after 2025-04-21 use the async Graph v2 API."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-invoiceline-items",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-invoice-unbilled-lineitems",
+      "area": "invoicing",
+      "title": "Get unbilled reconciliation line items",
+      "method": "GET",
+      "path": "/v1/invoices/unbilled/lineitems?provider=onetime&invoicelineitemtype=billinglineitems&currencycode={currency}&period={current|previous}&size={size}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" },
+        { "name": "MS-ContinuationToken", "required": false, "note": "from the previous response's links.next when seekOperation=Next" }
+      ],
+      "requestShape": null,
+      "responseShape": "InvoiceLineItem collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/invoices/unbilled/lineitems?provider=onetime&invoicelineitemtype=billinglineitems&currencycode=usd&period=previous&size=2000\"",
+        "csharp": "var res = await http.GetAsync(\"/v1/invoices/unbilled/lineitems?provider=onetime&invoicelineitemtype=billinglineitems&currencycode=usd&period=previous&size=2000\");",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/invoices/unbilled/lineitems?provider=onetime&invoicelineitemtype=billinglineitems&currencycode=usd&period=previous&size=2000\", { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Literal path /invoices/unbilled/lineitems (no invoice-id). Required query: provider, invoicelineitemtype, currencycode, period (current|previous).",
+        "Pages via size (max 2000) + seekOperation=Next with MS-ContinuationToken; allow up to 24h for unbilled data.",
+        "This v1 NCE API is deprecated effective 2026-03-15; use the async v2 GA unbilled API."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-invoice-unbilled-recon-lineitems",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-invoice-statement",
+      "area": "invoicing",
+      "title": "Download an invoice statement (PDF)",
+      "method": "GET",
+      "path": "/v1/invoices/{invoice-id}/documents/statement",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" }
+      ],
+      "requestShape": null,
+      "responseShape": "PDF stream",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" -o invoice.pdf \"https://api.partnercenter.microsoft.com/v1/invoices/{invoice-id}/documents/statement\"",
+        "csharp": "var pdf = await http.GetByteArrayAsync($\"/v1/invoices/{invoiceId}/documents/statement\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/invoices/${invoiceId}/documents/statement`, { headers: { Authorization: `Bearer ${token}` } });\nconst pdf = Buffer.from(await res.arrayBuffer());"
+      },
+      "gotchas": [
+        "App+User only. Response is a binary PDF (Content-Type application/pdf) - read it as bytes, not JSON.",
+        "Path is /documents/statement (singular). For Taiwan tax receipts use .../receipts/{receipt-id}/documents/statement."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-invoice-statement",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-promotions",
+      "area": "catalog",
+      "title": "Get available offer promotions",
+      "method": "GET",
+      "path": "/v1/productpromotions?country={country}&segment={segment}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "Promotion collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/productpromotions?country=US&segment=commercial\"",
+        "csharp": "var res = await http.GetAsync(\"/v1/productpromotions?country=US&segment=commercial\");",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/productpromotions?country=US&segment=commercial\", { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "country and segment are required; segment currently supports only 'commercial'.",
+        "Returns only currently-active promotions (by start/end dates). Covers NCE license-based promotions.",
+        "Supports both app-only and app+user."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-promotions",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-promotion-by-id",
+      "area": "catalog",
+      "title": "Get a promotion by ID",
+      "method": "GET",
+      "path": "/v1/productpromotions/{promotion-id}?country={country}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "Promotion",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/productpromotions/{promotion-id}?country=US\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/productpromotions/{Uri.EscapeDataString(promotionId)}?country=US\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/productpromotions/${encodeURIComponent(promotionId)}?country=US`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "country is required; promotion-id is a delimited product:sku:availability string - URL-encode it.",
+        "Returns the promotion ignoring start/end dates (works after expiry - useful for reconciliation).",
+        "Response may include promotionConstraints for eligibility checks. Supports both app-only and app+user."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-promotion-by-id",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-product-by-id",
+      "area": "catalog",
+      "title": "Get a product by ID",
+      "method": "GET",
+      "path": "/v1/products/{product-id}?country={country}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "Product",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/products/{product-id}?country=US\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/products/{productId}?country=US\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/products/${productId}?country=US`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "country is required; 404 with error 400013 if not found.",
+        "A product is a grouping construct and is not itself purchasable - drill into SKUs/availabilities.",
+        "Supports both app-only and app+user."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-product-by-id",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-sku-by-id",
+      "area": "catalog",
+      "title": "Get a SKU by ID",
+      "method": "GET",
+      "path": "/v1/products/{product-id}/skus/{sku-id}?country={country}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "Sku",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/products/{product-id}/skus/{sku-id}?country=US\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/products/{productId}/skus/{skuId}?country=US\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/products/${productId}/skus/${skuId}?country=US`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "country is required; 404 with error 400013 (product) or 400018 (SKU) if not found.",
+        "If purchasePrerequisites contains 'InventoryCheck' you must call Check Inventory before ordering.",
+        "Supports both app-only and app+user."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-sku-by-id",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "create-agreement",
+      "area": "customers",
+      "title": "Confirm customer acceptance of the MCA (create agreement)",
+      "method": "POST",
+      "path": "/v1/customers/{customer-id}/agreements",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "Agreement",
+      "requestFields": [
+        { "name": "primaryContact", "type": "Contact", "required": true, "note": "who accepted: firstName, lastName, email (phoneNumber optional)" },
+        { "name": "dateAgreed", "type": "string", "required": true, "note": "UTC date-time of acceptance" },
+        { "name": "templateId", "type": "string", "required": true, "note": "from Get agreement metadata for the MCA" },
+        { "name": "type", "type": "string", "required": true, "note": "\"MicrosoftCustomerAgreement\"" }
+      ],
+      "responseShape": "Agreement",
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d @agreement.json \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/agreements\"",
+        "csharp": "var res = await http.PostAsync($\"/v1/customers/{customerId}/agreements\", content); // 201 Created",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/agreements`, { method: \"POST\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "App+User only; public cloud only (not 21Vianet or US Gov). Get the templateId via Get agreement metadata first.",
+        "201 Created on success; userId is derived from the App+User token.",
+        "Re-creating with identical contact fields returns error 600061 - vary at least one field to create another."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/confirm-customer-consent-customer-agreement",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-agreement-template-document",
+      "area": "customers",
+      "title": "Get a download link for the MCA template",
+      "method": "GET",
+      "path": "/v1/agreementtemplates/{agreement-template-id}/document?language={language}&country={country}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "AgreementDocument",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/agreementtemplates/{agreement-template-id}/document?language=en-US&country=US\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/agreementtemplates/{templateId}/document?language=en-US&country=US\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/agreementtemplates/${templateId}/document?language=en-US&country=US`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "App+User only; public cloud + MCA only. Top-level /v1/agreementtemplates path (not under /customers).",
+        "country/language default to US/en-US; values are case-sensitive.",
+        "downloadUri (Word) and displayUri (preview) are freshly generated and EXPIRE after five minutes."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/download-customer-agreement-template",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "get-customer-qualifications",
+      "area": "customers",
+      "title": "Get a customer's qualifications",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/qualifications",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "CustomerQualification collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/qualifications\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/qualifications\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/qualifications`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Supports both app-only and app+user (unlike update-customer-qualification, which is app+user only).",
+        "Returns an array; a customer can hold multiple (e.g. Education + StateOwnedEntity).",
+        "Values: Education, GovernmentCommunityCloud, StateOwnedEntity, Nonprofit, None; vetted types carry vettingStatus."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-customer-qualification-asynchronous",
+      "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "update-customer-qualification",
+      "area": "customers",
+      "title": "Set a customer's qualification",
+      "method": "POST",
+      "path": "/v1/customers/{customer-id}/qualifications",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "CustomerQualificationRequest",
+      "requestFields": [
+        { "name": "qualification", "type": "string", "required": true, "note": "settable: Education, GovernmentCommunityCloud, StateOwnedEntity (None/Nonprofit cannot be set)" },
+        { "name": "educationSegment", "type": "string", "required": false, "note": "required when Education: K12 or HigherEducation" },
+        { "name": "validationCode", "type": "string", "required": false, "note": "required when GovernmentCommunityCloud" },
+        { "name": "website", "type": "string", "required": false, "note": "optional, for Education" }
+      ],
+      "responseShape": "CustomerQualification",
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d '{\"qualification\":\"Education\",\"educationSegment\":\"K12\"}' \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/qualifications\"",
+        "csharp": "var res = await http.PostAsync($\"/v1/customers/{customerId}/qualifications\", content);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/qualifications`, { method: \"POST\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "POST (not PUT); app+user only. Only Education, GovernmentCommunityCloud, StateOwnedEntity can be set.",
+        "Education requires educationSegment (K12 or HigherEducation); GCC requires a validationCode + a GDAP role.",
+        "Vetted types (Education/GCC) start in a review/vetting flow rather than immediately Approved."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/update-customer-qualification-asynchronous",
       "lastVerified": "2026-06-21"
     }
   ]

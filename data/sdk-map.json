@@ -27,6 +27,12 @@
     { "sdkPattern": "Domains.ByDomain({domain}).Exists()", "restScenarioId": "check-domain-availability", "notes": "HEAD /v1/domains/{domain}; 404 = available, 200 = in use." },
     { "sdkPattern": "AuditRecords.Query(filter).Get()", "restScenarioId": "get-audit-records", "notes": "GET /v1/auditrecords?startDate=..; 90-day window." },
     { "sdkPattern": "Customers.ById({customerId}).ServiceRequests.Get()", "restScenarioId": "list-service-requests", "notes": "GET /v1/customers/{customerId}/servicerequests; app+user only." },
+    { "sdkPattern": "Customers.ById({customerId}).Subscriptions.ById({id}).Transitions.Create(transition)", "restScenarioId": "create-subscription-transition", "notes": "POST /v1/customers/{customerId}/subscriptions/{id}/transitions; check transitionEligibilities first." },
+    { "sdkPattern": "Customers.ById({customerId}).Agreements.Create(agreement)", "restScenarioId": "create-agreement", "notes": "POST /v1/customers/{customerId}/agreements; record MCA acceptance (public cloud only)." },
+    { "sdkPattern": "Customers.ById({customerId}).Qualification.Get()", "restScenarioId": "get-customer-qualifications", "notes": "GET /v1/customers/{customerId}/qualifications." },
+    { "sdkPattern": "Invoices.ById({invoiceId}).Documents.Statement.Get()", "restScenarioId": "get-invoice-statement", "notes": "GET /v1/invoices/{invoiceId}/documents/statement; returns a PDF stream." },
+    { "sdkPattern": "ProductPromotions.ByCountry({country}).Get()", "restScenarioId": "get-promotions", "notes": "GET /v1/productpromotions?country=..&segment=commercial." },
+    { "sdkPattern": "Products.ById({productId}).Get()", "restScenarioId": "get-product-by-id", "notes": "GET /v1/products/{productId}?country=.." },
     { "sdkPattern": "Profiles.MpnProfile.Get()", "restScenarioId": "verify-mpn", "notes": "GET /v1/profiles/mpn (omit mpnId for the signed-in partner)." }
   ]
 }
