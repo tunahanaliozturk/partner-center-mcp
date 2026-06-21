@@ -189,8 +189,10 @@ npm run build
 The knowledge pack lives in `data/` (date-versioned; each record carries a `docUrl` and
 `lastVerified`). Schemas in [`src/knowledge/schema.ts`](src/knowledge/schema.ts) validate every
 file at load time, so malformed or drifted data fails fast. `npm run check-docs` verifies every
-`docUrl` still resolves and flags stale entries; a weekly GitHub Action runs it and opens an issue
-on drift.
+`docUrl` still resolves, flags stale entries, and detects content drift (page-hash baseline); a
+weekly GitHub Action runs it and opens an issue on drift. `npm run eval` runs a deterministic
+golden-case suite; `npm run eval:llm` (needs `ANTHROPIC_API_KEY`) checks that a real model picks
+the right tool for a question; `npm run export` emits an OpenAPI spec + Postman collection.
 
 To regenerate the demo GIF (after `npm run build`): install [vhs](https://github.com/charmbracelet/vhs)
 and run `vhs demo.tape` (writes `assets/demo.gif`).

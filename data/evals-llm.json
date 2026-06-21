@@ -1,0 +1,21 @@
+{
+  "version": "2026-06",
+  "description": "LLM tool-selection eval: given a natural-language question and the server's tools, the model must pick the right tool. Run with scripts/eval-llm.mjs (needs ANTHROPIC_API_KEY).",
+  "cases": [
+    { "question": "I'm calling Partner Center and getting HTTP 401 with code 900420. What's wrong and how do I fix it?", "expect": ["pc_lookup_error", "pc_decode_error", "pc_diagnose"] },
+    { "question": "Here's an error response I got, decode it: {\"code\":\"2054\",\"correlationId\":\"aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee\"}", "expect": ["pc_decode_error", "pc_lookup_error"] },
+    { "question": "Translate this archived SDK call to REST: partner.Customers.ById(id).Subscriptions.Get()", "expect": ["pc_migrate_from_sdk"] },
+    { "question": "Walk me through buying a New Commerce license for a customer end to end.", "expect": ["pc_plan_purchase"] },
+    { "question": "What are the valid billingCycle values for a cart line item?", "expect": ["pc_get_enums"] },
+    { "question": "Is this auth code still valid? token = getToken(\"https://graph.windows.net\")", "expect": ["pc_check_auth"] },
+    { "question": "When does MFA become mandatory for Partner Center API calls?", "expect": ["pc_whats_new"] },
+    { "question": "Give me a ready-to-send request to create a cart for customer abc.", "expect": ["pc_build_request", "pc_generate_call"] },
+    { "question": "What fields does a Subscription resource have in the response?", "expect": ["pc_get_resource"] },
+    { "question": "Generate TypeScript to list a customer's subscriptions.", "expect": ["pc_generate_call"] },
+    { "question": "How do I onboard GDAP access to a customer tenant step by step?", "expect": ["pc_plan_gdap_onboarding"] },
+    { "question": "How do I reconcile an invoice and download the statement?", "expect": ["pc_plan_reconciliation"] },
+    { "question": "Is the POST /v1/customers/{id}/subscriptions call I wrote correct?", "expect": ["pc_validate_request"] },
+    { "question": "What's the base URL and login authority for the China (21Vianet) cloud?", "expect": ["pc_get_reference", "pc_auth_guidance"] },
+    { "question": "List the scenarios you support for invoicing.", "expect": ["pc_list_scenarios"] }
+  ]
+}
