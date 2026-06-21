@@ -2,7 +2,8 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { z } from "zod";
 import {
-  ScenarioSchema, ErrorEntrySchema, AuthSchema, SdkMapSchema, ReferenceSchema, type Knowledge,
+  ScenarioSchema, ErrorEntrySchema, AuthSchema, SdkMapSchema, ReferenceSchema,
+  EnumsSchema, DeprecationsSchema, ResourcesSchema, type Knowledge,
 } from "./schema.js";
 
 function read<T>(dir: string, file: string, schema: z.ZodType<T>): T {
@@ -25,5 +26,8 @@ export function loadKnowledge(dir: string): Knowledge {
   const auth = read(dir, "auth.json", AuthSchema.extend({ version: z.string() }));
   const sdkMap = read(dir, "sdk-map.json", SdkMapSchema.extend({ version: z.string() })).mappings;
   const reference = read(dir, "reference.json", ReferenceSchema);
-  return { scenarios, errors, auth, sdkMap, reference };
+  const enums = read(dir, "enums.json", EnumsSchema).enums;
+  const deprecations = read(dir, "deprecations.json", DeprecationsSchema).items;
+  const resources = read(dir, "resources.json", ResourcesSchema).resources;
+  return { scenarios, errors, auth, sdkMap, reference, enums, deprecations, resources };
 }

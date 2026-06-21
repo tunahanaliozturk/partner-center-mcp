@@ -1,0 +1,74 @@
+{
+  "version": "2026-06",
+  "resources": {
+    "Customer": {
+      "description": "A CSP customer (response of get-customer-by-id / create-customer).",
+      "fields": [
+        { "name": "id", "type": "string (guid)", "note": "customer tenant id" },
+        { "name": "commerceId", "type": "string" },
+        { "name": "companyProfile", "type": "CustomerCompanyProfile", "note": "tenantId, domain, companyName" },
+        { "name": "billingProfile", "type": "CustomerBillingProfile", "note": "email, culture, language, defaultAddress" },
+        { "name": "relationshipToPartner", "type": "string", "note": "e.g. reseller, none" },
+        { "name": "userCredentials", "type": "object", "note": "only on create: admin userName + password (save it)" },
+        { "name": "enableGDAPByDefault", "type": "boolean" }
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/customer-resources"
+    },
+    "Subscription": {
+      "description": "A customer subscription (response of get-subscription-by-id).",
+      "fields": [
+        { "name": "id", "type": "string (guid)" },
+        { "name": "offerId", "type": "string" },
+        { "name": "friendlyName", "type": "string" },
+        { "name": "quantity", "type": "int", "note": "seat count" },
+        { "name": "status", "type": "string", "note": "see subscriptionStatus enum" },
+        { "name": "billingCycle", "type": "string", "note": "see billingCycle enum" },
+        { "name": "termDuration", "type": "string", "note": "ISO 8601 (NCE)" },
+        { "name": "autoRenewEnabled", "type": "boolean" },
+        { "name": "parentSubscriptionId", "type": "string", "note": "present for add-ons" },
+        { "name": "cancellationAllowedUntilDate", "type": "date", "note": "NCE cancellation window" },
+        { "name": "commitmentEndDate", "type": "date" }
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/subscription-resources"
+    },
+    "Order": {
+      "description": "An order placed for a customer (response of get-order-by-id / checkout).",
+      "fields": [
+        { "name": "id", "type": "string" },
+        { "name": "referenceCustomerId", "type": "string (guid)" },
+        { "name": "billingCycle", "type": "string" },
+        { "name": "lineItems", "type": "OrderLineItem[]", "note": "offerId, quantity, subscriptionId, provisioningStatus" },
+        { "name": "status", "type": "string", "note": "pending, completed, cancelled" },
+        { "name": "creationDate", "type": "date" }
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/order-resources"
+    },
+    "Invoice": {
+      "description": "A partner invoice (response of get-invoice-by-id).",
+      "fields": [
+        { "name": "id", "type": "string", "note": "invoice id (not a GUID)" },
+        { "name": "invoiceDate", "type": "date" },
+        { "name": "billingPeriodStartDate", "type": "date" },
+        { "name": "billingPeriodEndDate", "type": "date" },
+        { "name": "totalCharges", "type": "decimal" },
+        { "name": "amountDue", "type": "decimal" },
+        { "name": "currencyCode", "type": "string" },
+        { "name": "documentType", "type": "string", "note": "Invoice / CreditNote" },
+        { "name": "invoiceDetails", "type": "InvoiceDetail[]", "note": "per billing-provider links to line items" }
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/invoice-resources"
+    },
+    "CartLineItem": {
+      "description": "A line item in a cart (request of create-cart).",
+      "fields": [
+        { "name": "id", "type": "int", "note": "zero-based index" },
+        { "name": "catalogItemId", "type": "string", "note": "fresh from get-sku-availabilities" },
+        { "name": "quantity", "type": "int" },
+        { "name": "billingCycle", "type": "string", "note": "see billingCycle enum" },
+        { "name": "termDuration", "type": "string", "note": "ISO 8601; omit for Azure plan / perpetual software" },
+        { "name": "provisioningContext", "type": "object", "note": "required for some offers (e.g. scope/duration)" }
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/create-a-cart"
+    }
+  }
+}

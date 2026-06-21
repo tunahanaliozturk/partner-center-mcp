@@ -37,6 +37,7 @@ export const ErrorEntrySchema = z.object({
   causes: z.array(z.string()),
   remediation: z.string(),
   docUrl: z.string().url(),
+  relatedScenarios: z.array(z.string()).optional(),
 });
 
 export const AuthSchema = z.object({
@@ -61,11 +62,44 @@ export const ReferenceSchema = z.object({
   nationalClouds: z.string(),
 });
 
+export const EnumsSchema = z.object({
+  version: z.string(),
+  enums: z.record(z.object({
+    description: z.string(),
+    values: z.array(z.object({ value: z.string(), note: z.string().optional() })),
+    docUrl: z.string().url().optional(),
+  })),
+});
+
+export const DeprecationsSchema = z.object({
+  version: z.string(),
+  items: z.array(z.object({
+    title: z.string(),
+    status: z.enum(["upcoming", "in-progress", "enforced", "retired"]),
+    date: isoDate,
+    impact: z.string(),
+    action: z.string(),
+    docUrl: z.string().url().optional(),
+  })),
+});
+
+export const ResourcesSchema = z.object({
+  version: z.string(),
+  resources: z.record(z.object({
+    description: z.string(),
+    fields: z.array(z.object({ name: z.string(), type: z.string(), note: z.string().optional() })),
+    docUrl: z.string().url().optional(),
+  })),
+});
+
 export type Scenario = z.infer<typeof ScenarioSchema>;
 export type ErrorEntry = z.infer<typeof ErrorEntrySchema>;
 export type AuthData = z.infer<typeof AuthSchema>;
 export type SdkMapping = z.infer<typeof SdkMapSchema>["mappings"][number];
 export type ReferenceData = z.infer<typeof ReferenceSchema>;
+export type EnumsData = z.infer<typeof EnumsSchema>["enums"];
+export type DeprecationItem = z.infer<typeof DeprecationsSchema>["items"][number];
+export type ResourcesData = z.infer<typeof ResourcesSchema>["resources"];
 
 export interface Knowledge {
   scenarios: Scenario[];
@@ -73,4 +107,7 @@ export interface Knowledge {
   auth: AuthData;
   sdkMap: SdkMapping[];
   reference: ReferenceData;
+  enums: EnumsData;
+  deprecations: DeprecationItem[];
+  resources: ResourcesData;
 }

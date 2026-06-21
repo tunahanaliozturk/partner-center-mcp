@@ -1,0 +1,1 @@
+{ "version": "test", "resources": { "Customer": { "description": "A CSP customer.", "fields": [ { "name": "id", "type": "string (guid)" } ] } } }

@@ -1,0 +1,1 @@
+{ "version": "test", "items": [ { "title": "MFA enforced", "status": "enforced", "date": "2026-04-01", "impact": "App+User needs MFA.", "action": "Use the secure app model." } ] }

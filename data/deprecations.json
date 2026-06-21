@@ -1,0 +1,69 @@
+{
+  "version": "2026-06",
+  "items": [
+    {
+      "title": "MFA enforced for App+User Partner Center API access",
+      "status": "enforced",
+      "date": "2026-04-01",
+      "impact": "From this date all App+User usage of Partner Center APIs requires the MFA claim; non-compliant calls are rejected.",
+      "action": "Generate the secure-app-model refresh token via an MFA sign-in; use GET /v1/partnerRequests (mfaCompliant) to find non-compliant callers; send ValidateMfa: true to verify.",
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/enable-secure-app-model"
+    },
+    {
+      "title": "Azure AD Graph (graph.windows.net) audience retired for Partner Center",
+      "status": "retired",
+      "date": "2025-08-01",
+      "impact": "Tokens with the graph.windows.net audience return 401 / 900420.",
+      "action": "Request tokens with resource https://api.partnercenter.microsoft.com.",
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/deprecate-azure-active-directory-graph-token"
+    },
+    {
+      "title": "DAP (delegated admin privileges) replaced by GDAP",
+      "status": "enforced",
+      "date": "2023-05-22",
+      "impact": "Open-ended DAP relationships are removed; admin-on-behalf-of needs granular, time-bound GDAP.",
+      "action": "Create GDAP relationships (Microsoft Graph) and request only the Entra roles each operation needs.",
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/gdap-and-secure-application-model"
+    },
+    {
+      "title": "Partner Center .NET SDK 3.4.0 archived",
+      "status": "retired",
+      "date": "2023-06-01",
+      "impact": "The SDK is unmaintained; Microsoft directs partners to the REST APIs.",
+      "action": "Call the Partner Center REST APIs directly (use pc_migrate_from_sdk to translate).",
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-started"
+    },
+    {
+      "title": "v1 unbilled reconciliation (NCE) API deprecated",
+      "status": "in-progress",
+      "date": "2026-03-15",
+      "impact": "The v1 /v1/invoices/unbilled/lineitems NCE API is deprecated and will be retired.",
+      "action": "Move to the async v2 Microsoft Graph unbilled export (reports/partners/billing/reconciliation/unbilled/export).",
+      "docUrl": "https://learn.microsoft.com/graph/api/partners-billing-unbilledreconciliation-export?view=graph-rest-1.0"
+    },
+    {
+      "title": "v1 billed reconciliation API in feature freeze",
+      "status": "in-progress",
+      "date": "2025-04-21",
+      "impact": "The v1 billed reconciliation endpoint is frozen; new-commerce billed recon after this date uses the v2 Graph API.",
+      "action": "Use the async v2 Microsoft Graph billed export (reports/partners/billing/reconciliation/billed/export).",
+      "docUrl": "https://learn.microsoft.com/graph/api/partners-billing-billedreconciliation-export?view=graph-rest-1.0"
+    },
+    {
+      "title": "ADAL retired; use MSAL",
+      "status": "retired",
+      "date": "2023-06-30",
+      "impact": "Azure AD Authentication Library (ADAL) is end-of-life.",
+      "action": "Use MSAL with the secure application model.",
+      "docUrl": "https://learn.microsoft.com/entra/identity-platform/msal-overview"
+    },
+    {
+      "title": "AzureAD / MSOnline PowerShell modules deprecated",
+      "status": "in-progress",
+      "date": "2025-03-30",
+      "impact": "The AzureAD and MSOnline modules are deprecated and being retired.",
+      "action": "Use Microsoft Graph PowerShell (and the community Partner Center PowerShell module).",
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/enable-secure-app-model"
+    }
+  ]
+}

@@ -1,0 +1,102 @@
+{
+  "version": "2026-06",
+  "enums": {
+    "billingCycle": {
+      "description": "How a subscription/order is billed (NCE uses snake_case JSON values).",
+      "values": [
+        { "value": "monthly", "note": "billed monthly" },
+        { "value": "annual", "note": "billed yearly" },
+        { "value": "one_time", "note": "single upfront charge (perpetual software, reservations)" },
+        { "value": "triennial", "note": "billed every three years (where offered)" },
+        { "value": "none", "note": "no recurring billing" }
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/create-a-cart"
+    },
+    "termDuration": {
+      "description": "ISO 8601 commitment term for a line item / subscription.",
+      "values": [
+        { "value": "P1M", "note": "1 month" },
+        { "value": "P1Y", "note": "1 year" },
+        { "value": "P3Y", "note": "3 years" },
+        { "value": "", "note": "omit for Azure plan and perpetual software" }
+      ]
+    },
+    "targetView": {
+      "description": "Catalog view filter for get-products (which product family to return).",
+      "values": [
+        { "value": "OnlineServices", "note": "NCE license-based products" },
+        { "value": "Azure", "note": "Azure consumption (Azure plan)" },
+        { "value": "AzureReservations", "note": "Azure reservations" },
+        { "value": "MicrosoftAzure", "note": "Azure plan + reservations" },
+        { "value": "Software", "note": "perpetual software" },
+        { "value": "SoftwareSUSELinux", "note": "SUSE Linux software" },
+        { "value": "MarketplaceSaaS", "note": "marketplace SaaS offers" }
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-products"
+    },
+    "targetSegment": {
+      "description": "Customer segment for catalog/availability filtering.",
+      "values": [
+        { "value": "commercial" },
+        { "value": "education" },
+        { "value": "government" },
+        { "value": "nonprofit" }
+      ]
+    },
+    "transitionType": {
+      "description": "How an NCE subscription transition handles licenses.",
+      "values": [
+        { "value": "transition_only", "note": "move to the target offer without moving user license assignments" },
+        { "value": "transition_with_license_transfer", "note": "also move assigned licenses (needs Directory Writer / GDAP)" }
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/transition-a-new-commerce-subscription"
+    },
+    "subscriptionStatus": {
+      "description": "Lifecycle state of a subscription (PATCH Status to change where allowed).",
+      "values": [
+        { "value": "active" },
+        { "value": "suspended", "note": "set to suspend; set active to reactivate" },
+        { "value": "deleted", "note": "NCE cancellation within the cancellation window" },
+        { "value": "expired" },
+        { "value": "pending", "note": "provisioning in progress" },
+        { "value": "none" }
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/update-a-subscription-by-id"
+    },
+    "qualification": {
+      "description": "Customer qualification types (set only education / governmentCommunityCloud / stateOwnedEntity).",
+      "values": [
+        { "value": "none" },
+        { "value": "education", "note": "requires educationSegment K12 or HigherEducation" },
+        { "value": "governmentCommunityCloud", "note": "requires a validationCode + GDAP role" },
+        { "value": "stateOwnedEntity" },
+        { "value": "nonprofit", "note": "read-only; cannot be set via the qualifications API" }
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/update-customer-qualification-asynchronous"
+    },
+    "agreementType": {
+      "description": "Agreement type for get-agreements / create-agreement.",
+      "values": [
+        { "value": "MicrosoftCustomerAgreement", "note": "the MCA (pass explicitly)" },
+        { "value": "MicrosoftCloudAgreement", "note": "legacy MCA; the default when agreementType is omitted" }
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-confirmation-of-customer-agreement"
+    },
+    "billingType": {
+      "description": "How a subscription line item is metered.",
+      "values": [
+        { "value": "license", "note": "seat/license-based" },
+        { "value": "usage", "note": "consumption-based (Azure)" },
+        { "value": "benefit", "note": "savings plan / benefit line item" }
+      ]
+    },
+    "provisioningStatus": {
+      "description": "Async provisioning result on orders/subscriptions.",
+      "values": [
+        { "value": "success" },
+        { "value": "pending" },
+        { "value": "failed" }
+      ]
+    }
+  }
+}

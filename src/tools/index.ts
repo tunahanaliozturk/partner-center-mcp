@@ -11,6 +11,12 @@ import { diagnose } from "./diagnose.js";
 import { getReference } from "./getReference.js";
 import { validateRequest } from "./validateRequest.js";
 import { planPurchase } from "./planPurchase.js";
+import { getEnums } from "./getEnums.js";
+import { whatsNew } from "./whatsNew.js";
+import { getResource } from "./getResource.js";
+import { buildRequest } from "./buildRequest.js";
+import { decodeError } from "./decodeError.js";
+import { planTransfer, planGdapOnboarding, planReconciliation } from "./planWorkflows.js";
 
 export const allTools: Tool[] = [
   listScenarios, getScenario, searchDocs,
@@ -18,4 +24,7 @@ export const allTools: Tool[] = [
   generateCall, migrateFromSdk,
   lookupError, diagnose, getReference,
   validateRequest, planPurchase,
+  getEnums, whatsNew, getResource,
+  buildRequest, decodeError,
+  planTransfer, planGdapOnboarding, planReconciliation,
 ];
