@@ -55,6 +55,15 @@ test("every error has a non-empty remediation, at least one cause, and a real HT
   }
 });
 
+test("every error's relatedScenarios point at real scenario ids", () => {
+  const ids = new Set(k.scenarios.map((s) => s.id));
+  for (const e of k.errors) {
+    for (const id of e.relatedScenarios ?? []) {
+      expect(ids.has(id), `${e.errorCode} -> ${id}`).toBe(true);
+    }
+  }
+});
+
 test("reference base URLs and auth clouds stay in sync", () => {
   for (const cloud of Object.keys(k.auth.clouds)) {
     expect(k.reference.baseUrls[cloud], cloud).toBeTruthy();
