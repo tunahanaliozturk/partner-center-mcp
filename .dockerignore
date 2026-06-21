@@ -1,0 +1,10 @@
+node_modules
+dist
+.git
+.github
+*.log
+doc-report.md
+mcp-publisher
+mcp-publisher.exe
+test
+demo.tape
