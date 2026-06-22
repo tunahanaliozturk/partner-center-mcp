@@ -4,3 +4,8 @@ dist/
 mcp-publisher
 mcp-publisher.exe
 doc-report.md
+
+# .NET
+[Bb]in/
+[Oo]bj/
+*.nupkg

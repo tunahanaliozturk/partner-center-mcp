@@ -1,0 +1,19 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schemas/draft/2025-07-09/server.json",
+  "name": "io.github.tunahanaliozturk/partner-center-mcp",
+  "description": "Unofficial knowledge & codegen assistant for the Microsoft Partner Center REST API (.NET). Not affiliated with Microsoft.",
+  "repository": {
+    "url": "https://github.com/tunahanaliozturk/partner-center-mcp",
+    "source": "github"
+  },
+  "version_detail": { "version": "0.6.0" },
+  "packages": [
+    {
+      "registry_name": "nuget",
+      "name": "tunahanaliozturk.PartnerCenterMcp",
+      "version": "0.6.0",
+      "package_arguments": [],
+      "environment_variables": []
+    }
+  ]
+}
