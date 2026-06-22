@@ -1,8 +1,8 @@
 name: Publish
 
 # Release flow: bump the version, then `git tag vX.Y.Z && git push origin vX.Y.Z`.
-# This workflow publishes to npm (via OIDC Trusted Publishing — no token secret)
-# and to the official MCP Registry (via GitHub OIDC — no secret).
+# Publishes the Node package to npm (OIDC Trusted Publishing) + the official MCP
+# Registry (GitHub OIDC), and the .NET package to NuGet (if NUGET_API_KEY is set).
 on:
   push:
     tags: ["v*"]
@@ -56,3 +56,26 @@ jobs:
 
       - name: Publish to the MCP Registry
         run: ./mcp-publisher publish
+
+  publish-dotnet:
+    runs-on: ubuntu-latest
+    env:
+      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Build, test, and pack (version from tag)
+        working-directory: dotnet
+        run: |
+          VERSION="${GITHUB_REF#refs/tags/v}"
+          jq --arg v "$VERSION" '.version_detail.version = $v | .packages[0].version = $v' PartnerCenterMcp/.mcp/server.json > s.tmp && mv s.tmp PartnerCenterMcp/.mcp/server.json
+          dotnet test PartnerCenterMcp.Tests -c Release
+          dotnet pack PartnerCenterMcp -c Release -p:Version="$VERSION" -o ./artifacts
+
+      - name: Push to NuGet (only if NUGET_API_KEY is set)
+        if: ${{ env.NUGET_API_KEY != '' }}
+        working-directory: dotnet
+        run: dotnet nuget push "artifacts/*.nupkg" --source https://api.nuget.org/v3/index.json --api-key "$NUGET_API_KEY" --skip-duplicate
