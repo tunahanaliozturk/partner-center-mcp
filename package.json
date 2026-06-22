@@ -1,6 +1,6 @@
 {
   "name": "partner-center-mcp",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Unofficial MCP server: knowledge and codegen assistant for the Partner Center REST API (not affiliated with Microsoft)",
   "type": "module",
   "license": "MIT",
