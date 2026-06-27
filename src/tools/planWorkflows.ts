@@ -60,13 +60,15 @@ export const planGdapOnboarding = makePlanTool(
   "Establish granular delegated admin (GDAP) access to a customer tenant.",
   [
     { scenarioId: "create-gdap-relationship", why: "Create the relationship (Graph) with the needed Entra roles + duration; optionally target a specific customer." },
-    { scenarioId: "get-gdap-relationship-by-id", why: "After locking for approval and the customer approving the admin.microsoft.com link, poll until status is active." },
+    { scenarioId: "create-gdap-relationship-request", why: "POST a request with action lockForApproval to finalize the relationship, then send the customer the admin.microsoft.com approval link." },
+    { scenarioId: "get-gdap-relationship-by-id", why: "After the customer approves, poll until status is active." },
+    { scenarioId: "create-gdap-access-assignment", why: "Bind a partner security group to the Entra roles in the customer tenant - this is what grants admin-on-behalf-of (AOBO)." },
     { scenarioId: "get-gdap-relationships", why: "Confirm the active relationship in the partner's GDAP list." },
   ],
   [
     "These are Microsoft Graph APIs (audience https://graph.microsoft.com, scope DelegatedAdminRelationship.ReadWrite.All) - NOT Partner Center.",
-    "Steps not represented as separate scenarios: POST a delegatedAdminRelationshipRequest (action lockForApproval), send the customer the admin.microsoft.com approval link, then create accessAssignments (security groups -> roles) for admin-on-behalf-of.",
-    "Not available in China (21Vianet).",
+    "The approval link is https://admin.microsoft.com/AdminPortal/Home#/partners/invitation/granularAdminRelationships/{request-id}, using the id returned by the lockForApproval request.",
+    "App-only access assignments require provisioning the service principal appId 2832473f-ec63-45fb-976f-5d45a7d4bb91 (Partner Customer Delegated Administration). Not available in China (21Vianet).",
   ],
 );
 

@@ -2201,6 +2201,333 @@
       ],
       "docUrl": "https://learn.microsoft.com/graph/api/partners-billing-unbilledreconciliation-export?view=graph-rest-1.0",
       "lastVerified": "2026-06-21"
+    },
+    {
+      "id": "create-gdap-access-assignment",
+      "area": "security",
+      "title": "Create a GDAP access assignment (Microsoft Graph)",
+      "method": "POST",
+      "path": "https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships/{relationship-id}/accessAssignments",
+      "authType": "app+user",
+      "headers": [
+        {
+          "name": "Authorization",
+          "required": true,
+          "note": "Bearer token, audience https://graph.microsoft.com; scope DelegatedAdminRelationship.ReadWrite.All"
+        },
+        {
+          "name": "Content-Type",
+          "required": true,
+          "note": "application/json"
+        }
+      ],
+      "requestShape": "delegatedAdminAccessAssignment",
+      "requestFields": [
+        {
+          "name": "accessContainer.accessContainerId",
+          "type": "string",
+          "required": true,
+          "note": "object id of the partner security group whose members get the roles"
+        },
+        {
+          "name": "accessContainer.accessContainerType",
+          "type": "string",
+          "required": true,
+          "note": "securityGroup"
+        },
+        {
+          "name": "accessDetails.unifiedRoles",
+          "type": "unifiedRole[]",
+          "required": true,
+          "note": "each has roleDefinitionId (Entra role template GUID); must be a subset of the relationship's roles"
+        }
+      ],
+      "responseShape": "delegatedAdminAccessAssignment",
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $GRAPH_TOKEN\" -H \"Content-Type: application/json\" -d '{\"accessContainer\":{\"accessContainerId\":\"<group-id>\",\"accessContainerType\":\"securityGroup\"},\"accessDetails\":{\"unifiedRoles\":[{\"roleDefinitionId\":\"29232cdf-9323-42fd-ade2-1d097af3e4de\"}]}}' \"https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships/{relationship-id}/accessAssignments\"",
+        "csharp": "var res = await http.PostAsync($\"https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships/{relationshipId}/accessAssignments\", content);",
+        "typescript": "const res = await fetch(`https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships/${relationshipId}/accessAssignments`, { method: \"POST\", headers: { Authorization: `Bearer ${graphToken}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "This is what actually grants admin-on-behalf-of (AOBO): it binds a partner security group to a set of Entra roles in the customer tenant. Do it only after the relationship is active (customer approved).",
+        "Returns 201 with a Location header; the new assignment starts status 'pending' and transitions to 'active'. unifiedRoles must be a subset of the relationship's roles.",
+        "App-only calls require provisioning the service principal appId 2832473f-ec63-45fb-976f-5d45a7d4bb91 (Partner Customer Delegated Administration) in the partner tenant. Not available in China (21Vianet)."
+      ],
+      "docUrl": "https://learn.microsoft.com/graph/api/delegatedadminrelationship-post-accessassignments?view=graph-rest-1.0",
+      "lastVerified": "2026-06-27"
+    },
+    {
+      "id": "list-gdap-access-assignments",
+      "area": "security",
+      "title": "List GDAP access assignments (Microsoft Graph)",
+      "method": "GET",
+      "path": "https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships/{relationship-id}/accessAssignments",
+      "authType": "app+user",
+      "headers": [
+        {
+          "name": "Authorization",
+          "required": true,
+          "note": "Bearer token, audience https://graph.microsoft.com; scope DelegatedAdminRelationship.Read.All"
+        }
+      ],
+      "requestShape": null,
+      "responseShape": "delegatedAdminAccessAssignment collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $GRAPH_TOKEN\" \"https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships/{relationship-id}/accessAssignments\"",
+        "csharp": "var res = await http.GetAsync($\"https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships/{relationshipId}/accessAssignments\");",
+        "typescript": "const res = await fetch(`https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships/${relationshipId}/accessAssignments`, { headers: { Authorization: `Bearer ${graphToken}` } });"
+      },
+      "gotchas": [
+        "Each item carries an @odata.etag; capture it to send as If-Match when updating that assignment.",
+        "Graph API, not Partner Center. Not available in China (21Vianet)."
+      ],
+      "docUrl": "https://learn.microsoft.com/graph/api/delegatedadminrelationship-list-accessassignments?view=graph-rest-1.0",
+      "lastVerified": "2026-06-27"
+    },
+    {
+      "id": "update-gdap-access-assignment",
+      "area": "security",
+      "title": "Update a GDAP access assignment's roles (Microsoft Graph)",
+      "method": "PATCH",
+      "path": "https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships/{relationship-id}/accessAssignments/{access-assignment-id}",
+      "authType": "app+user",
+      "headers": [
+        {
+          "name": "Authorization",
+          "required": true,
+          "note": "Bearer token, audience https://graph.microsoft.com; scope DelegatedAdminRelationship.ReadWrite.All"
+        },
+        {
+          "name": "Content-Type",
+          "required": true,
+          "note": "application/json"
+        }
+      ],
+      "requestShape": "delegatedAdminAccessAssignment",
+      "requestFields": [
+        {
+          "name": "accessDetails.unifiedRoles",
+          "type": "unifiedRole[]",
+          "required": true,
+          "note": "the new full set of roleDefinitionId values for the assignment (subset of the relationship's roles)"
+        }
+      ],
+      "responseShape": "delegatedAdminAccessAssignment",
+      "examples": {
+        "curl": "curl -X PATCH -H \"Authorization: Bearer $GRAPH_TOKEN\" -H \"Content-Type: application/json\" -d '{\"accessDetails\":{\"unifiedRoles\":[{\"roleDefinitionId\":\"29232cdf-9323-42fd-ade2-1d097af3e4de\"}]}}' \"https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships/{relationship-id}/accessAssignments/{access-assignment-id}\"",
+        "csharp": "var res = await http.PatchAsync($\"https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships/{relationshipId}/accessAssignments/{assignmentId}\", content);",
+        "typescript": "const res = await fetch(`https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships/${relationshipId}/accessAssignments/${assignmentId}`, { method: \"PATCH\", headers: { Authorization: `Bearer ${graphToken}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "Send the complete desired unifiedRoles set, not a delta - it replaces the assignment's roles. Roles must remain a subset of the relationship's roles.",
+        "Returns 200; only roles can be changed (not the security group). Use list-gdap-access-assignments to get the assignment id and etag first. Not available in China (21Vianet)."
+      ],
+      "docUrl": "https://learn.microsoft.com/graph/api/delegatedadminaccessassignment-update?view=graph-rest-1.0",
+      "lastVerified": "2026-06-27"
+    },
+    {
+      "id": "create-gdap-relationship-request",
+      "area": "security",
+      "title": "Lock/terminate a GDAP relationship via a request (Microsoft Graph)",
+      "method": "POST",
+      "path": "https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships/{relationship-id}/requests",
+      "authType": "app+user",
+      "headers": [
+        {
+          "name": "Authorization",
+          "required": true,
+          "note": "Bearer token, audience https://graph.microsoft.com; scope DelegatedAdminRelationship.ReadWrite.All"
+        },
+        {
+          "name": "Content-Type",
+          "required": true,
+          "note": "application/json"
+        }
+      ],
+      "requestShape": "delegatedAdminRelationshipRequest",
+      "requestFields": [
+        {
+          "name": "action",
+          "type": "string",
+          "required": true,
+          "note": "lockForApproval (finalize a 'created' relationship for customer approval), terminate (end an 'active' one), approve / reject (indirect reseller on an 'approvalPending' one)"
+        }
+      ],
+      "responseShape": "delegatedAdminRelationshipRequest",
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $GRAPH_TOKEN\" -H \"Content-Type: application/json\" -d '{\"action\":\"lockForApproval\"}' \"https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships/{relationship-id}/requests\"",
+        "csharp": "var res = await http.PostAsync($\"https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships/{relationshipId}/requests\", content);",
+        "typescript": "const res = await fetch(`https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships/${relationshipId}/requests`, { method: \"POST\", headers: { Authorization: `Bearer ${graphToken}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "action lockForApproval is GDAP step 3: after it, send the customer the approval link https://admin.microsoft.com/AdminPortal/Home#/partners/invitation/granularAdminRelationships/{request-id} (the id from this response). On approval the relationship becomes active.",
+        "action terminate ends an active relationship; access assignments stop working. The action enum is evolvable - send Prefer: include-unknown-enum-members to receive 'reject'.",
+        "Returns 201 with a Location header to the created request. Not available in China (21Vianet)."
+      ],
+      "docUrl": "https://learn.microsoft.com/graph/api/delegatedadminrelationship-post-requests?view=graph-rest-1.0",
+      "lastVerified": "2026-06-27"
+    },
+    {
+      "id": "list-delegated-admin-customers",
+      "area": "security",
+      "title": "List delegated admin customers (Microsoft Graph)",
+      "method": "GET",
+      "path": "https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminCustomers",
+      "authType": "app+user",
+      "headers": [
+        {
+          "name": "Authorization",
+          "required": true,
+          "note": "Bearer token, audience https://graph.microsoft.com; scope DelegatedAdminRelationship.Read.All"
+        }
+      ],
+      "requestShape": null,
+      "responseShape": "delegatedAdminCustomer collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $GRAPH_TOKEN\" \"https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminCustomers\"",
+        "csharp": "var res = await http.GetAsync(\"https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminCustomers\");",
+        "typescript": "const res = await fetch(\"https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminCustomers\", { headers: { Authorization: `Bearer ${graphToken}` } });"
+      },
+      "gotchas": [
+        "Returns the customers the partner has any GDAP relationship with - a tenant-wide view independent of a single relationship id.",
+        "Each delegatedAdminCustomer exposes a displayName and tenantId; drill into serviceManagementDetails for the admin URLs. Not available in China (21Vianet)."
+      ],
+      "docUrl": "https://learn.microsoft.com/graph/api/tenantrelationship-list-delegatedadmincustomers?view=graph-rest-1.0",
+      "lastVerified": "2026-06-27"
+    },
+    {
+      "id": "delete-gdap-relationship",
+      "area": "security",
+      "title": "Delete a GDAP relationship (Microsoft Graph)",
+      "method": "DELETE",
+      "path": "https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships/{relationship-id}",
+      "authType": "app+user",
+      "headers": [
+        {
+          "name": "Authorization",
+          "required": true,
+          "note": "Bearer token, audience https://graph.microsoft.com; scope DelegatedAdminRelationship.ReadWrite.All"
+        }
+      ],
+      "requestShape": null,
+      "responseShape": null,
+      "examples": {
+        "curl": "curl -X DELETE -H \"Authorization: Bearer $GRAPH_TOKEN\" \"https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships/{relationship-id}\"",
+        "csharp": "var res = await http.DeleteAsync($\"https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships/{relationshipId}\");",
+        "typescript": "const res = await fetch(`https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships/${relationshipId}`, { method: \"DELETE\", headers: { Authorization: `Bearer ${graphToken}` } });"
+      },
+      "gotchas": [
+        "Only a relationship still in the 'created' state can be deleted; an 'active' relationship must be ended with create-gdap-relationship-request (action terminate) instead.",
+        "Returns 204 No Content. Not available in China (21Vianet)."
+      ],
+      "docUrl": "https://learn.microsoft.com/graph/api/delegatedadminrelationship-delete?view=graph-rest-1.0",
+      "lastVerified": "2026-06-27"
+    },
+    {
+      "id": "get-azure-entitlements",
+      "area": "subscriptions",
+      "title": "Get a list of Azure entitlements for a subscription",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/subscriptions/{subscription-id}/azureentitlements",
+      "authType": "app+user",
+      "headers": [
+        {
+          "name": "Authorization",
+          "required": true,
+          "note": "Bearer token, audience https://api.partnercenter.microsoft.com"
+        },
+        {
+          "name": "MS-CorrelationId",
+          "required": false,
+          "note": "GUID to trace the request"
+        }
+      ],
+      "requestShape": null,
+      "responseShape": "AzureEntitlement collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}/azureentitlements\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/subscriptions/{subscriptionId}/azureentitlements\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/subscriptions/${subscriptionId}/azureentitlements`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "For an Azure plan, pass the Azure plan's subscription (plan) id as {subscription-id}; the response lists the underlying Azure usage subscriptions (azureEntitlementId values) created under it.",
+        "Each azureEntitlementId is what you use to cancel a single Azure subscription (POST .../azureEntitlements/{entitlement-id}) without cancelling the whole plan.",
+        "Also supports standalone App (app-only) credentials."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-azure-entitlements-for-subscription",
+      "lastVerified": "2026-06-27"
+    },
+    {
+      "id": "register-subscription",
+      "area": "subscriptions",
+      "title": "Register a subscription for Azure reservations",
+      "method": "POST",
+      "path": "/v1/customers/{customer-id}/subscriptions/{subscription-id}/registrations",
+      "authType": "app+user",
+      "headers": [
+        {
+          "name": "Authorization",
+          "required": true,
+          "note": "Bearer token, audience https://api.partnercenter.microsoft.com"
+        },
+        {
+          "name": "MS-RequestId",
+          "required": false,
+          "note": "GUID for idempotency; reuse on retries so the registration runs once"
+        },
+        {
+          "name": "MS-CorrelationId",
+          "required": false,
+          "note": "GUID to trace the request"
+        }
+      ],
+      "requestShape": null,
+      "responseShape": "RegisterSubscription",
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Length: 0\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}/registrations\"",
+        "csharp": "var res = await http.PostAsync($\"/v1/customers/{customerId}/subscriptions/{subscriptionId}/registrations\", null);\nvar statusUrl = res.Headers.Location;",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/subscriptions/${subscriptionId}/registrations`, { method: \"POST\", headers: { Authorization: `Bearer ${token}` } });\nconst statusUrl = res.headers.get(\"Location\");"
+      },
+      "gotchas": [
+        "Registration is a prerequisite before purchasing Azure reservations (Reserved VM Instances) on a subscription.",
+        "No request body. Returns 202 Accepted with a Location header (.../registrationstatus) - poll it with get-subscription-registration-status until status is 'registered'.",
+        "For new commerce, register the Azure plan first: pass the Azure plan id as {subscription-id}."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/register-a-subscription",
+      "lastVerified": "2026-06-27"
+    },
+    {
+      "id": "get-subscription-registration-status",
+      "area": "subscriptions",
+      "title": "Get subscription registration status",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/subscriptions/{subscription-id}/registrationstatus",
+      "authType": "app+user",
+      "headers": [
+        {
+          "name": "Authorization",
+          "required": true,
+          "note": "Bearer token, audience https://api.partnercenter.microsoft.com"
+        },
+        {
+          "name": "MS-CorrelationId",
+          "required": false,
+          "note": "GUID to trace the request"
+        }
+      ],
+      "requestShape": null,
+      "responseShape": "SubscriptionRegistrationStatus",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}/registrationstatus\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/subscriptions/{subscriptionId}/registrationstatus\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/subscriptions/${subscriptionId}/registrationstatus`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "status is one of 'registered', 'registering', or 'notregistered'; poll after register-subscription until it reads 'registered'.",
+        "This is the URL returned in the Location header of register-subscription; you can call it directly with the same {subscription-id}."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-subscription-registration-status",
+      "lastVerified": "2026-06-27"
     }
   ]
 }

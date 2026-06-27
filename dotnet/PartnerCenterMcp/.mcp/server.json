@@ -6,12 +6,12 @@
     "url": "https://github.com/tunahanaliozturk/partner-center-mcp",
     "source": "github"
   },
-  "version_detail": { "version": "0.6.1" },
+  "version_detail": { "version": "0.7.0" },
   "packages": [
     {
       "registry_name": "nuget",
       "name": "tunahanaliozturk.PartnerCenterMcp",
-      "version": "0.6.1",
+      "version": "0.7.0",
       "package_arguments": [],
       "environment_variables": []
     }
