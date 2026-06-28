@@ -109,6 +109,7 @@ PORT=3000 npx -p partner-center-mcp partner-center-mcp-http
 | `pc_build_request` | Build a ready-to-send request: fills path placeholders, generates `MS-RequestId`/`MS-CorrelationId`, and a body skeleton from the scenario's fields. |
 | `pc_plan_transfer` | Ordered billing-ownership transfer workflow (create → poll → verify). |
 | `pc_plan_gdap_onboarding` | Ordered GDAP onboarding workflow (create → approve → verify) over Microsoft Graph. |
+| `pc_plan_csp_onboarding` | Ordered CSP customer onboarding (account linking): invite → verify relationship → confirm agreement → transact. |
 | `pc_plan_reconciliation` | Ordered reconciliation workflow (invoice → billed/unbilled line items → statement). |
 | `pc_lookup_error` | Decode an error code: causes, remediation, and the scenarios it commonly hits. |
 | `pc_decode_error` | Paste a raw error response → decoded code, likely scenarios, and the correlation id for support. |

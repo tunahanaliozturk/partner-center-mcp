@@ -72,6 +72,23 @@ export const planGdapOnboarding = makePlanTool(
   ],
 );
 
+export const planCspOnboarding = makePlanTool(
+  "pc_plan_csp_onboarding",
+  "The ordered CSP customer onboarding (account linking) workflow: invite -> verify relationship -> confirm agreement -> transact.",
+  "Link an existing customer to your CSP account by establishing a reseller relationship and confirming the Microsoft Customer Agreement.",
+  [
+    { scenarioId: "get-reseller-relationship-url", why: "Generate the reseller relationship request (invitation) link and email it to the customer's global admin to approve." },
+    { scenarioId: "get-customer-partners", why: "After the customer approves, confirm the reseller relationship exists (for two-tier, that BOTH you and your indirect provider are listed)." },
+    { scenarioId: "create-agreement", why: "Record the customer's acceptance of the Microsoft Customer Agreement (MCA) - required before transacting." },
+    { scenarioId: "list-customer-subscriptions", why: "Relationship + agreement in place: you can now read and manage the customer's subscriptions." },
+  ],
+  [
+    "All steps use an App+User token (Admin agent) with audience https://api.partnercenter.microsoft.com.",
+    "Customer approval of the relationship link happens out-of-band in their admin portal; poll get-customer-partners until your mpnId appears.",
+    "Two-tier (indirect) partners: use get-indirect-resellers to find the reseller's mpnId for PartnerIdOnRecord when placing orders. For brand-new tenants, create-customer first (which can establish the relationship at the same time).",
+  ],
+);
+
 export const planReconciliation = makePlanTool(
   "pc_plan_reconciliation",
   "The ordered invoice reconciliation workflow (invoice -> billed/unbilled line items -> statement).",

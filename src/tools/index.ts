@@ -16,7 +16,7 @@ import { whatsNew } from "./whatsNew.js";
 import { getResource } from "./getResource.js";
 import { buildRequest } from "./buildRequest.js";
 import { decodeError } from "./decodeError.js";
-import { planTransfer, planGdapOnboarding, planReconciliation } from "./planWorkflows.js";
+import { planTransfer, planGdapOnboarding, planReconciliation, planCspOnboarding } from "./planWorkflows.js";
 
 export const allTools: Tool[] = [
   listScenarios, getScenario, searchDocs,
@@ -26,5 +26,5 @@ export const allTools: Tool[] = [
   validateRequest, planPurchase,
   getEnums, whatsNew, getResource,
   buildRequest, decodeError,
-  planTransfer, planGdapOnboarding, planReconciliation,
+  planTransfer, planGdapOnboarding, planReconciliation, planCspOnboarding,
 ];
