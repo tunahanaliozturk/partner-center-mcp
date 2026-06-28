@@ -2528,6 +2528,74 @@
       ],
       "docUrl": "https://learn.microsoft.com/partner-center/developer/get-subscription-registration-status",
       "lastVerified": "2026-06-27"
+    },
+    {
+      "id": "get-indirect-resellers",
+      "area": "customers",
+      "title": "Get the signed-in partner's indirect resellers or providers",
+      "method": "GET",
+      "path": "/v1/relationships?relationship_type={relationship-type}",
+      "authType": "app+user",
+      "headers": [
+        {
+          "name": "Authorization",
+          "required": true,
+          "note": "Bearer token, audience https://api.partnercenter.microsoft.com"
+        },
+        {
+          "name": "MS-CorrelationId",
+          "required": false,
+          "note": "GUID to trace the request"
+        }
+      ],
+      "requestShape": null,
+      "responseShape": "PartnerRelationship collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/relationships?relationship_type=IsIndirectCloudSolutionProviderOf\"",
+        "csharp": "var res = await http.GetAsync(\"/v1/relationships?relationship_type=IsIndirectCloudSolutionProviderOf\");",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/relationships?relationship_type=IsIndirectCloudSolutionProviderOf\", { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "relationship_type is required: use IsIndirectCloudSolutionProviderOf when signed in as an indirect provider (returns your resellers), or IsIndirectResellerOf when signed in as a reseller (returns your providers). See enum partnerRelationshipType.",
+        "App+User credentials only - this is a two-tier CSP (indirect) operation. Each item exposes the partner's mpnId, used as PartnerIdOnRecord when placing orders for a reseller's customer.",
+        "Only meaningful for indirect providers/resellers; direct-bill partners have no such relationships."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/retrieve-a-list-of-indirect-resellers",
+      "lastVerified": "2026-06-28"
+    },
+    {
+      "id": "get-customer-partners",
+      "area": "customers",
+      "title": "Get the partners (indirect resellers/providers) of a customer",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/relationships",
+      "authType": "app+user",
+      "headers": [
+        {
+          "name": "Authorization",
+          "required": true,
+          "note": "Bearer token, audience https://api.partnercenter.microsoft.com"
+        },
+        {
+          "name": "MS-CorrelationId",
+          "required": false,
+          "note": "GUID to trace the request"
+        }
+      ],
+      "requestShape": null,
+      "responseShape": "PartnerRelationship collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/relationships\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/relationships\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/relationships`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Returns which partners have a reseller relationship with this customer; relationshipType reads e.g. is_indirect_cloud_solution_provider_of and each item carries the partner's mpnId.",
+        "App+User credentials only. Use this to confirm both you and your indirect provider hold a reseller relationship before transacting on the customer's behalf.",
+        "To establish a missing relationship, send the customer the invitation link from get-reseller-relationship-url."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-indirect-resellers-of-a-customer",
+      "lastVerified": "2026-06-28"
     }
   ]
 }

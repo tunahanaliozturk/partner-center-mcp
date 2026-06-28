@@ -97,6 +97,14 @@
         { "value": "pending" },
         { "value": "failed" }
       ]
+    },
+    "partnerRelationshipType": {
+      "description": "relationship_type query value for GET /v1/relationships (two-tier CSP partner relationships).",
+      "values": [
+        { "value": "IsIndirectCloudSolutionProviderOf", "note": "signed-in as indirect provider: returns the indirect resellers it works with" },
+        { "value": "IsIndirectResellerOf", "note": "signed-in as indirect reseller: returns the indirect providers it works with" }
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/retrieve-a-list-of-indirect-resellers"
     }
   }
 }
