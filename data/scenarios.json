@@ -2664,6 +2664,122 @@
       ],
       "docUrl": "https://learn.microsoft.com/partner-center/developer/check-which-licenses-are-assigned-to-a-user",
       "lastVerified": "2026-06-28"
+    },
+    {
+      "id": "delete-user",
+      "area": "customers",
+      "title": "Delete a customer user account (offboarding)",
+      "method": "DELETE",
+      "path": "/v1/customers/{customer-id}/users/{user-id}",
+      "authType": "app+user",
+      "headers": [
+        {
+          "name": "Authorization",
+          "required": true,
+          "note": "Bearer token, audience https://api.partnercenter.microsoft.com"
+        },
+        {
+          "name": "MS-CorrelationId",
+          "required": false,
+          "note": "GUID to trace the request"
+        }
+      ],
+      "requestShape": null,
+      "responseShape": null,
+      "examples": {
+        "curl": "curl -X DELETE -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/users/{user-id}\"",
+        "csharp": "var res = await http.DeleteAsync($\"/v1/customers/{customerId}/users/{userId}\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/users/${userId}`, { method: \"DELETE\", headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Returns 204. The user state is set to inactive for 30 days, then purged and made unrecoverable; within that window restore-user (PATCH state=active) brings it back.",
+        "A deleted (inactive) user is no longer returned by get-customer-users. Remove licenses (assign-licenses licensesToRemove) and directory roles (remove-user-role) first for a clean offboarding.",
+        "App+User credentials only; needs the User Administrator GDAP role."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/delete-user-accounts-for-a-customer",
+      "lastVerified": "2026-06-28"
+    },
+    {
+      "id": "remove-user-role",
+      "area": "customers",
+      "title": "Remove a customer user from a directory role",
+      "method": "DELETE",
+      "path": "/v1/customers/{customer-id}/directoryroles/{role-id}/usermembers/{user-id}",
+      "authType": "app+user",
+      "headers": [
+        {
+          "name": "Authorization",
+          "required": true,
+          "note": "Bearer token, audience https://api.partnercenter.microsoft.com"
+        },
+        {
+          "name": "MS-CorrelationId",
+          "required": false,
+          "note": "GUID to trace the request"
+        }
+      ],
+      "requestShape": null,
+      "responseShape": null,
+      "examples": {
+        "curl": "curl -X DELETE -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/directoryroles/{role-id}/usermembers/{user-id}\"",
+        "csharp": "var res = await http.DeleteAsync($\"/v1/customers/{customerId}/directoryroles/{roleId}/usermembers/{userId}\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/directoryroles/${roleId}/usermembers/${userId}`, { method: \"DELETE\", headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "The inverse of assign-user-role; the response body is empty on success.",
+        "Part of offboarding: strip elevated directory roles before deleting the user.",
+        "App+User credentials only; needs the User Administrator GDAP role."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/remove-customer-user-from-a-role",
+      "lastVerified": "2026-06-28"
+    },
+    {
+      "id": "assign-group-license",
+      "area": "licenses",
+      "title": "Assign/remove licenses on a group (group-based licensing, Microsoft Graph)",
+      "method": "POST",
+      "path": "https://graph.microsoft.com/v1.0/groups/{group-id}/assignLicense",
+      "authType": "app+user",
+      "headers": [
+        {
+          "name": "Authorization",
+          "required": true,
+          "note": "Bearer token, audience https://graph.microsoft.com; scope LicenseAssignment.ReadWrite.All (or Group.ReadWrite.All)"
+        },
+        {
+          "name": "Content-Type",
+          "required": true,
+          "note": "application/json"
+        }
+      ],
+      "requestShape": "assignLicense",
+      "requestFields": [
+        {
+          "name": "addLicenses",
+          "type": "assignedLicense[]",
+          "required": true,
+          "note": "each has skuId and optional disabledPlans (servicePlanId[]); empty array to only remove"
+        },
+        {
+          "name": "removeLicenses",
+          "type": "string[]",
+          "required": true,
+          "note": "skuIds to remove; required but may be an empty array"
+        }
+      ],
+      "responseShape": "group",
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $GRAPH_TOKEN\" -H \"Content-Type: application/json\" -d '{\"addLicenses\":[{\"skuId\":\"<sku-guid>\",\"disabledPlans\":[]}],\"removeLicenses\":[]}' \"https://graph.microsoft.com/v1.0/groups/{group-id}/assignLicense\"",
+        "csharp": "var res = await http.PostAsync($\"https://graph.microsoft.com/v1.0/groups/{groupId}/assignLicense\", content);",
+        "typescript": "const res = await fetch(`https://graph.microsoft.com/v1.0/groups/${groupId}/assignLicense`, { method: \"POST\", headers: { Authorization: `Bearer ${graphToken}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "Group-based licensing: licenses assigned to the group flow to every member automatically - the scalable path for automated onboarding/offboarding instead of per-user assign-licenses.",
+        "Returns 202 Accepted; assignment is processed asynchronously across members. Get valid skuId values from the tenant's subscribedSkus (Graph) / get-subscribed-skus (Partner Center).",
+        "Microsoft Graph, runs against the customer tenant (via a GDAP token); does not support nested groups. removeLicenses is required even if empty."
+      ],
+      "docUrl": "https://learn.microsoft.com/graph/api/group-assignlicense?view=graph-rest-1.0",
+      "lastVerified": "2026-06-28"
     }
   ]
 }

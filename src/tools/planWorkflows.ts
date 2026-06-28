@@ -89,6 +89,41 @@ export const planCspOnboarding = makePlanTool(
   ],
 );
 
+export const planUserOnboarding = makePlanTool(
+  "pc_plan_user_onboarding",
+  "The ordered user onboarding workflow: create the user, assign licenses, and grant any directory roles.",
+  "Onboard a new user in a customer tenant with the licenses (and roles) they need.",
+  [
+    { scenarioId: "get-subscribed-skus", why: "List the customer's available SKUs to pick the skuId(s) to assign (check available seats)." },
+    { scenarioId: "create-user", why: "Create the user account in the customer tenant; set usageLocation so licenses can be assigned." },
+    { scenarioId: "assign-licenses", why: "Assign the chosen skuId(s) to the new user. For scale, prefer assign-group-license and just add the user to a licensed group." },
+    { scenarioId: "assign-user-role", why: "Optionally grant any directory role the user needs (e.g. Helpdesk Administrator)." },
+    { scenarioId: "get-user-licenses", why: "Verify the licenses landed on the user." },
+  ],
+  [
+    "All Partner Center steps use an App+User token with audience https://api.partnercenter.microsoft.com; assign-group-license is Microsoft Graph.",
+    "Group-based licensing (assign-group-license + group membership) scales better than per-user assign-licenses for automated onboarding.",
+    "A user needs a usageLocation before any license can be assigned.",
+  ],
+);
+
+export const planUserOffboarding = makePlanTool(
+  "pc_plan_user_offboarding",
+  "The ordered user offboarding workflow: remove licenses, strip directory roles, then delete the user.",
+  "Offboard a user from a customer tenant cleanly, reclaiming licenses first.",
+  [
+    { scenarioId: "get-user-licenses", why: "Read the user's current licenses so you know which skuIds to reclaim." },
+    { scenarioId: "assign-licenses", why: "Remove the user's licenses via licensesToRemove (reclaim the seats)." },
+    { scenarioId: "remove-user-role", why: "Strip any elevated directory roles before deletion." },
+    { scenarioId: "delete-user", why: "Delete the account; it stays inactive for 30 days (restore-user can recover it within that window)." },
+  ],
+  [
+    "All steps use an App+User token with audience https://api.partnercenter.microsoft.com; needs the User Administrator GDAP role.",
+    "delete-user sets the account inactive for 30 days before it is purged; restore-user reverses it within that window.",
+    "If licenses come from group membership (assign-group-license), reclaim them by removing the user from the group instead of licensesToRemove.",
+  ],
+);
+
 export const planReconciliation = makePlanTool(
   "pc_plan_reconciliation",
   "The ordered invoice reconciliation workflow (invoice -> billed/unbilled line items -> statement).",
