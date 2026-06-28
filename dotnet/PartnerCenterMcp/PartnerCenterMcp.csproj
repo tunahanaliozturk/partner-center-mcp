@@ -13,7 +13,7 @@
     <PackageType>McpServer</PackageType>
     <PackageId>tunahanaliozturk.PartnerCenterMcp</PackageId>
     <ToolCommandName>partner-center-mcp</ToolCommandName>
-    <Version>0.7.0</Version>
+    <Version>0.8.0</Version>
     <Authors>Tunahan Ali Ozturk</Authors>
     <Description>Unofficial MCP server: knowledge and codegen assistant for the Microsoft Partner Center REST API (not affiliated with Microsoft).</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
