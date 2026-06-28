@@ -230,9 +230,9 @@
         "csharp": "var res = await http.PostAsync($\"/v1/customers/{customerId}/users/{userId}/licenseupdates\", content);",
         "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/users/${userId}/licenseupdates`, { method: \"POST\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
       },
-      "gotchas": ["Returns 201 with the LicenseUpdate resource on success.", "Fails if the license is not available in the customer tenant."],
+      "gotchas": ["Returns 201 with the LicenseUpdate resource on success.", "Fails if the license is not available in the customer tenant; get valid skuId values from get-subscribed-skus first.", "licensesToAssign and licensesToRemove must reference SKUs from the same license group; verify the result with get-user-licenses."],
       "docUrl": "https://learn.microsoft.com/partner-center/developer/assign-licenses-to-a-user",
-      "lastVerified": "2026-06-18"
+      "lastVerified": "2026-06-28"
     },
     {
       "id": "get-products",
@@ -2595,6 +2595,74 @@
         "To establish a missing relationship, send the customer the invitation link from get-reseller-relationship-url."
       ],
       "docUrl": "https://learn.microsoft.com/partner-center/developer/get-indirect-resellers-of-a-customer",
+      "lastVerified": "2026-06-28"
+    },
+    {
+      "id": "get-subscribed-skus",
+      "area": "licenses",
+      "title": "Get a customer's available licenses (subscribed SKUs)",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/subscribedskus",
+      "authType": "app+user",
+      "headers": [
+        {
+          "name": "Authorization",
+          "required": true,
+          "note": "Bearer token, audience https://api.partnercenter.microsoft.com"
+        },
+        {
+          "name": "MS-CorrelationId",
+          "required": false,
+          "note": "GUID to trace the request"
+        }
+      ],
+      "requestShape": null,
+      "responseShape": "SubscribedSku collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscribedskus\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/subscribedskus\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/subscribedskus`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Step before assign-licenses: each SubscribedSku exposes productSku.id (the skuId you pass in licensesToAssign) plus availableUnits/consumedUnits so you can check seats before assigning.",
+        "App+User credentials only; needs a GDAP role such as Directory Reader, Global Reader, User Administrator, or License Administrator.",
+        "Returns the default license group's SKUs; a license can only be assigned to a user in the same group."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-available-licenses",
+      "lastVerified": "2026-06-28"
+    },
+    {
+      "id": "get-user-licenses",
+      "area": "licenses",
+      "title": "Get the licenses assigned to a user",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/users/{user-id}/licenses",
+      "authType": "app+user",
+      "headers": [
+        {
+          "name": "Authorization",
+          "required": true,
+          "note": "Bearer token, audience https://api.partnercenter.microsoft.com"
+        },
+        {
+          "name": "MS-CorrelationId",
+          "required": false,
+          "note": "GUID to trace the request"
+        }
+      ],
+      "requestShape": null,
+      "responseShape": "License collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/users/{user-id}/licenses\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/users/{userId}/licenses\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/users/${userId}/licenses`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Verifies what assign-licenses applied: each License lists its skuId and the assigned/excluded servicePlans.",
+        "App+User credentials only; needs a GDAP role such as Directory Reader, License Administrator, User Administrator, or Directory Writers.",
+        "Returns the default license group's assignments for the user."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/check-which-licenses-are-assigned-to-a-user",
       "lastVerified": "2026-06-28"
     }
   ]
