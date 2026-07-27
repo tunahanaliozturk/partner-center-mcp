@@ -46,7 +46,7 @@ export const buildRequest: Tool = {
   description: "Build a ready-to-send Partner Center REST request for a scenario: substitutes path placeholders from params, fills headers (Bearer + generated MS-RequestId/MS-CorrelationId on writes), and produces a request-body skeleton from the scenario's required fields.",
   inputShape: {
     id: z.string(),
-    params: z.record(z.string()).optional(),
+    params: z.record(z.string(), z.string()).optional(),
   },
   run(args, ctx) {
     const k = ctx.knowledge as Knowledge;

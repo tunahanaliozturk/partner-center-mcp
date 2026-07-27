@@ -13,10 +13,13 @@
     <PackageType>McpServer</PackageType>
     <PackageId>tunahanaliozturk.PartnerCenterMcp</PackageId>
     <ToolCommandName>partner-center-mcp</ToolCommandName>
-    <Version>0.8.0</Version>
+    <!-- Local/dev default only. publish.yml passes -p:Version from the git tag,
+         which is what actually ships; this had drifted to 0.8.0 unnoticed. -->
+    <Version>0.9.0</Version>
     <Authors>Tunahan Ali Ozturk</Authors>
     <Description>Unofficial MCP server: knowledge and codegen assistant for the Microsoft Partner Center REST API (not affiliated with Microsoft).</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageProjectUrl>https://github.com/tunahanaliozturk/partner-center-mcp</PackageProjectUrl>
     <RepositoryUrl>https://github.com/tunahanaliozturk/partner-center-mcp</RepositoryUrl>
     <PackageTags>mcp;partner-center;microsoft;csp;azure;rest-api</PackageTags>
@@ -35,6 +38,12 @@
   <!-- Pack the MCP server manifest so NuGet.org lists it as an MCP server. -->
   <ItemGroup>
     <None Include=".mcp\server.json" Pack="true" PackagePath=".mcp\" />
+  </ItemGroup>
+
+  <!-- Without this, `dotnet pack` warns "Readme missing" and the NuGet.org page
+       shows no description. Its links are absolute so they resolve there too. -->
+  <ItemGroup>
+    <None Include="..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>

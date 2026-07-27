@@ -41,7 +41,7 @@ export const ErrorEntrySchema = z.object({
 });
 
 export const AuthSchema = z.object({
-  clouds: z.record(z.object({ tokenResource: z.string(), authority: z.string() })),
+  clouds: z.record(z.string(), z.object({ tokenResource: z.string(), authority: z.string() })),
   patterns: z.object({
     "app-only": z.object({ steps: z.array(z.string()), tokenRequest: z.string(), supportedNote: z.string() }),
     "app+user": z.object({ steps: z.array(z.string()), secureAppModel: z.string(), mfa: z.object({ enforcementDate: z.string(), note: z.string() }) }),
@@ -54,7 +54,7 @@ export const SdkMapSchema = z.object({
 });
 
 export const ReferenceSchema = z.object({
-  baseUrls: z.record(z.string()),
+  baseUrls: z.record(z.string(), z.string()),
   headers: z.array(z.object({ name: z.string(), purpose: z.string() })),
   versioning: z.string(),
   sandbox: z.string(),
@@ -64,7 +64,7 @@ export const ReferenceSchema = z.object({
 
 export const EnumsSchema = z.object({
   version: z.string(),
-  enums: z.record(z.object({
+  enums: z.record(z.string(), z.object({
     description: z.string(),
     values: z.array(z.object({ value: z.string(), note: z.string().optional() })),
     docUrl: z.string().url().optional(),
@@ -85,7 +85,7 @@ export const DeprecationsSchema = z.object({
 
 export const ResourcesSchema = z.object({
   version: z.string(),
-  resources: z.record(z.object({
+  resources: z.record(z.string(), z.object({
     description: z.string(),
     fields: z.array(z.object({ name: z.string(), type: z.string(), note: z.string().optional() })),
     docUrl: z.string().url().optional(),

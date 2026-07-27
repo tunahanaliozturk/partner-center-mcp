@@ -7,8 +7,15 @@ export default defineConfig({
       provider: "v8",
       reporter: ["text", "lcov"],
       include: ["src/**/*.ts"],
-      // No thresholds yet: measure first, then set the floor at the observed
-      // number so it can only ratchet upward.
+      // Floors set from the measured baseline (80.32 / 65.10 / 73.60 / 84.83),
+      // rounded down so rounding jitter cannot cause a false failure. Raise
+      // these when coverage improves; never lower them to make a build pass.
+      thresholds: {
+        statements: 80,
+        branches: 65,
+        functions: 73,
+        lines: 84,
+      },
     },
   },
 });

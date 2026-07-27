@@ -57,13 +57,13 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",
-    "zod": "^3.23.0"
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.5",
-    "@types/node": "^20.0.0",
+    "@types/node": "^20.19.43",
     "@vitest/coverage-v8": "^4.1.10",
-    "typescript": "^5.5.0",
+    "typescript": "^7.0.2",
     "vitest": "^4.1.10"
   },
   "overrides": {

@@ -1,8 +1,9 @@
 # partner-center-mcp (.NET)
 
-A C# port of [partner-center-mcp](../README.md) for the .NET ecosystem — same tools and the
-**same knowledge pack** (the JSON files under [`../data`](../data) are embedded at build time, so
-there is one source of truth shared with the Node version).
+A C# port of [partner-center-mcp](https://github.com/tunahanaliozturk/partner-center-mcp#readme)
+for the .NET ecosystem — same tools and the **same knowledge pack** (the JSON files under
+[`data/`](https://github.com/tunahanaliozturk/partner-center-mcp/tree/master/data) are embedded at
+build time, so there is one source of truth shared with the Node version).
 
 Unofficial, community project — not affiliated with Microsoft.
 

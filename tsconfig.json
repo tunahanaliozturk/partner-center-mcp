@@ -12,7 +12,10 @@
     "declaration": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    // TypeScript 7 no longer auto-includes every @types/* package, so the
+    // ambient Node types must be declared. Also correct under 5.x.
+    "types": ["node"]
   },
   "include": ["src"]
 }
