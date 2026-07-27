@@ -8,11 +8,17 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      # Without this a single red version cancels the others, hiding whether the
+      # failure is version-specific.
+      fail-fast: false
+      matrix:
+        node-version: [20, 22, 24]
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
         with:
-          node-version: "lts/*"
+          node-version: ${{ matrix.node-version }}
       - run: npm ci
       - run: npm run lint
       - name: Audit (report only, never blocks)
