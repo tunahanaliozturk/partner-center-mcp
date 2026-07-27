@@ -9,9 +9,19 @@
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { createHash } from "node:crypto";
 
-// A stable-ish hash of the page's visible text (first 4k chars, tags/scripts stripped).
+// A hash of the article's visible text (first 4k chars, tags/scripts stripped).
+//
+// Anchored at the first <h1> on purpose. Hashing from the top of the document
+// swept in ~600 characters of site chrome ("Skip to main content", the
+// browser-upgrade banner, the Ask Learn toolbar), so a single Learn template
+// change flipped every hash at once — that is what produced the 81-page false
+// positive in issue #1. Starting at the article title keeps the window on
+// content we actually care about.
 function contentHash(html) {
-  const text = String(html)
+  const raw = String(html);
+  const h1 = raw.search(/<h1[\s>]/i);
+  const body = h1 >= 0 ? raw.slice(h1) : raw;
+  const text = body
     .replace(/<script[\s\S]*?<\/script>/gi, " ")
     .replace(/<style[\s\S]*?<\/style>/gi, " ")
     .replace(/<[^>]+>/g, " ")
@@ -86,6 +96,12 @@ const updateBaseline = process.env.UPDATE_HASHES || process.argv.includes("--upd
 const drifted = (baseline && !updateBaseline)
   ? results.filter((r) => r.ok && r.hash && baseline[r.url] && baseline[r.url] !== r.hash)
   : [];
+// Drift detection skips URLs the baseline has never seen, so a doc added with a
+// new scenario is silently never content-checked. 17 URLs had accumulated that
+// way. Report them so they cannot pile up unnoticed again.
+const unbaselined = (baseline && !updateBaseline)
+  ? results.filter((r) => r.ok && r.hash && !baseline[r.url])
+  : [];
 if (updateBaseline) writeFileSync(hashesUrl, JSON.stringify(current, null, 2) + "\n");
 
 // Staleness check.
@@ -101,7 +117,8 @@ lines.push("# Documentation freshness report", "");
 lines.push(`- Checked **${urls.length}** unique doc URLs across ${scenarios.length} scenarios and ${errors.length} errors.`);
 lines.push(`- Dead/unreachable links: **${dead.length}**`);
 lines.push(`- Scenarios stale (> ${STALE_DAYS} days): **${stale.length}**`);
-lines.push(`- Pages with changed content vs baseline: **${drifted.length}**`, "");
+lines.push(`- Pages with changed content vs baseline: **${drifted.length}**`);
+lines.push(`- Pages not yet in the baseline (never content-checked): **${unbaselined.length}**`, "");
 
 if (dead.length) {
   lines.push("## ❌ Dead or unreachable links", "");
@@ -125,11 +142,17 @@ if (drifted.length) {
   lines.push("", "_Re-verify against the docs, bump lastVerified, then run `npm run check-docs:update` to refresh the baseline._", "");
 }
 
-if (!dead.length && !stale.length && !drifted.length) lines.push("✅ All doc links resolve, content is unchanged, and every scenario is within the freshness window.", "");
+if (unbaselined.length) {
+  lines.push("## 🆕 Not yet baselined (verify once, then refresh the baseline)", "");
+  for (const u of unbaselined) lines.push(`- ${u.url}\n  - referenced by: ${refs.get(u.url).join(", ")}`);
+  lines.push("", "_These are not being content-checked at all until `npm run check-docs:update` records them._", "");
+}
+
+if (!dead.length && !stale.length && !drifted.length && !unbaselined.length) lines.push("✅ All doc links resolve, content is unchanged, every URL is baselined, and every scenario is within the freshness window.", "");
 
 const report = lines.join("\n");
 writeFileSync(new URL("../doc-report.md", import.meta.url), report);
 if (process.env.GITHUB_STEP_SUMMARY) writeFileSync(process.env.GITHUB_STEP_SUMMARY, report, { flag: "a" });
 console.log(report);
 
-if (dead.length || stale.length || drifted.length) process.exit(1);
+if (dead.length || stale.length || drifted.length || unbaselined.length) process.exit(1);

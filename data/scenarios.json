@@ -1401,12 +1401,49 @@
         "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/extensions/product/checkInventory?country=US\", { method: \"POST\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
       },
       "gotchas": [
+        "RETIRING 2026-09-25: migrate to the check-inventory-by-resource-type scenario, which adds a required resourceType filter.",
         "Only needed for SKUs whose purchasePrerequisites contains 'InventoryCheck'; skip otherwise.",
         "Required InventoryContext keys vary by SKU (declared in the SKU's inventoryVariables).",
-        "Items not found in the catalog are silently omitted from the result."
+        "Items not found in the catalog are silently omitted from the result.",
+        "The docs accept app-only credentials here too, not only app+user.",
+        "For Azure RI purchases the azureSubscriptionId must already be registered and RI-enabled."
       ],
       "docUrl": "https://learn.microsoft.com/partner-center/developer/check-inventory",
-      "lastVerified": "2026-06-21"
+      "lastVerified": "2026-07-27"
+    },
+    {
+      "id": "check-inventory-by-resource-type",
+      "area": "catalog",
+      "title": "Check inventory for catalog items filtered by resource type",
+      "method": "POST",
+      "path": "/v1/extensions/product/checkinventorybyresourcetype?country={country}&resourceType={resourceType}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "InventoryCheckRequest",
+      "requestFields": [
+        { "name": "TargetItems", "type": "InventoryItem[]", "required": true, "note": "each needs ProductId; SkuId optional" },
+        { "name": "InventoryContext", "type": "object", "required": false, "note": "per-SKU keys from the SKU's inventoryVariables (e.g. customerId, azureSubscriptionId, armRegionName)" }
+      ],
+      "responseShape": "InventoryItem collection",
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d '{\"TargetItems\":[{\"ProductId\":\"DZH318Z0BQ3P\"}]}' \"https://api.partnercenter.microsoft.com/v1/extensions/product/checkinventorybyresourcetype?country=US&resourceType=VirtualMachines\"",
+        "csharp": "var res = await http.PostAsync(\"/v1/extensions/product/checkinventorybyresourcetype?country=US&resourceType=VirtualMachines\", content);",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/extensions/product/checkinventorybyresourcetype?country=US&resourceType=VirtualMachines\", { method: \"POST\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "Replaces checkInventory, which retires 2026-09-25.",
+        "resourceType is a REQUIRED query parameter; the accepted values are in the resourceType enum (pc_get_enums).",
+        "A product missing from the response means unavailable for that subscription and region ONLY - do not read it as globally unavailable.",
+        "A SKU present with isRestricted true carries the reason in restrictions[] (e.g. reasonCode NotAvailableForSubscription).",
+        "Items not matching the requested resourceType are omitted, as are items absent from the catalog.",
+        "The docs accept app-only credentials here too, not only app+user.",
+        "For Azure RI purchases the azureSubscriptionId must already be registered and RI-enabled."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/check-inventory-by-resource-type",
+      "lastVerified": "2026-07-27"
     },
     {
       "id": "update-order",

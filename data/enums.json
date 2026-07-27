@@ -1,5 +1,5 @@
 {
-  "version": "2026-06",
+  "version": "2026-07",
   "enums": {
     "billingCycle": {
       "description": "How a subscription/order is billed (NCE uses snake_case JSON values).",
@@ -105,6 +105,43 @@
         { "value": "IsIndirectResellerOf", "note": "signed-in as indirect reseller: returns the indirect providers it works with" }
       ],
       "docUrl": "https://learn.microsoft.com/partner-center/developer/retrieve-a-list-of-indirect-resellers"
+    },
+    "resourceType": {
+      "description": "Required resourceType query value for checkInventoryByResourceType (the successor to checkInventory).",
+      "values": [
+        { "value": "AppService", "note": "App Service" },
+        { "value": "Avs", "note": "Azure VMware Solution" },
+        { "value": "AzureDataExplorer", "note": "Azure Data Explorer" },
+        { "value": "AzureFiles", "note": "Azure Files" },
+        { "value": "Backup", "note": "Azure Backup" },
+        { "value": "BlockBlob", "note": "Block Blob Storage" },
+        { "value": "CopilotCredit", "note": "Copilot Credit" },
+        { "value": "CosmosDb", "note": "Azure Cosmos DB" },
+        { "value": "Databricks", "note": "Azure Databricks" },
+        { "value": "DataFactory", "note": "Azure Data Factory" },
+        { "value": "DedicatedHost", "note": "Azure Dedicated Host" },
+        { "value": "FabricCapacity", "note": "Microsoft Fabric Capacity" },
+        { "value": "FoundryAgent", "note": "Foundry Agent" },
+        { "value": "ManagedDisk", "note": "Azure Managed Disk" },
+        { "value": "MariaDB", "note": "Azure Database for MariaDB" },
+        { "value": "MDC", "note": "Microsoft Defender for Cloud" },
+        { "value": "MySql", "note": "Azure Database for MySQL" },
+        { "value": "Nutanix", "note": "Nutanix" },
+        { "value": "OpenAIPTU", "note": "Azure OpenAI PTU" },
+        { "value": "PostgreSql", "note": "Azure Database for PostgreSQL" },
+        { "value": "RedHat", "note": "Red Hat" },
+        { "value": "RedHatOsa", "note": "Red Hat OpenShift on Azure" },
+        { "value": "RedisCache", "note": "Azure Cache for Redis" },
+        { "value": "SapHana", "note": "SAP HANA on Azure" },
+        { "value": "Sentinel", "note": "Microsoft Sentinel" },
+        { "value": "SqlDatabases", "note": "Azure SQL Databases" },
+        { "value": "SqlDataWarehouse", "note": "Azure SQL Data Warehouse" },
+        { "value": "SuseLinux", "note": "SUSE Linux" },
+        { "value": "Synapse", "note": "Azure Synapse Analytics" },
+        { "value": "VirtualMachines", "note": "Azure Virtual Machines" },
+        { "value": "VMwareCloudSimple", "note": "VMware CloudSimple" }
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/check-inventory-by-resource-type"
     }
   }
 }
