@@ -17,13 +17,19 @@ export const decodeError: Tool = {
     let code: string | undefined;
     let httpStatus: number | undefined;
     try {
+      // Arbitrary user-pasted JSON; the optional-chained reads below
+      // (j.error?.code) do not typecheck under unknown.
+      // biome-ignore lint/suspicious/noExplicitAny: see above
       const j = JSON.parse(raw) as Record<string, any>;
       code = String(j.errorCode ?? j.code ?? j.error?.code ?? "").trim() || undefined;
       const st = j.httpStatus ?? j.status ?? j.statusCode;
       if (st != null && !Number.isNaN(Number(st))) httpStatus = Number(st);
     } catch { /* not JSON */ }
     if (!code) code = raw.match(/\b(9\d{5}|\d{4,6})\b/)?.[1];
-    if (httpStatus == null) httpStatus = raw.match(/\b(4\d{2}|5\d{2})\b/) ? Number(raw.match(/\b(4\d{2}|5\d{2})\b/)![1]) : undefined;
+    if (httpStatus == null) {
+      const statusMatch = raw.match(/\b(4\d{2}|5\d{2})\b/);
+      if (statusMatch?.[1]) httpStatus = Number(statusMatch[1]);
+    }
     const correlationId = raw.match(/correlation[^0-9a-f]{0,4}(" *: *"?)?\s*([0-9a-f-]{36})/i)?.[2]
       ?? raw.match(GUID)?.[0];
 
@@ -32,8 +38,8 @@ export const decodeError: Tool = {
 
     const relatedScenarios = (match?.relatedScenarios ?? [])
       .map((id) => k.scenarios.find((s) => s.id === id))
-      .filter(Boolean)
-      .map((s) => ({ id: s!.id, title: s!.title, docUrl: s!.docUrl }));
+      .filter((s): s is Knowledge["scenarios"][number] => s !== undefined)
+      .map((s) => ({ id: s.id, title: s.title, docUrl: s.docUrl }));
 
     return ok({
       parsed: { code: code ?? null, httpStatus: httpStatus ?? null, correlationId: correlationId ?? null },

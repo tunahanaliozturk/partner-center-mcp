@@ -43,6 +43,8 @@
     "test": "vitest run",
     "check-docs": "node scripts/check-docs.mjs",
     "check-docs:update": "node scripts/check-docs.mjs --update",
+    "lint": "biome check --error-on-warnings .",
+    "lint:fix": "biome check --error-on-warnings --write .",
     "eval": "node scripts/eval.mjs",
     "eval:llm": "node scripts/eval-llm.mjs",
     "export": "node scripts/export.mjs",
@@ -57,6 +59,7 @@
     "zod": "^3.23.0"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.5.5",
     "@types/node": "^20.0.0",
     "typescript": "^5.5.0",
     "vitest": "^4.1.10"
