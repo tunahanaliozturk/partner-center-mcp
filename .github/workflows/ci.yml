@@ -24,7 +24,9 @@ jobs:
       - name: Audit (report only, never blocks)
         run: npm audit --audit-level=moderate
         continue-on-error: true
-      - run: npm test
+      # Coverage rather than plain `npm test`: the thresholds in vitest.config.ts
+      # only gate anything if they actually run here.
+      - run: npm run test:coverage
       - run: npm run build
       - run: npm run eval
       - run: npm run export
