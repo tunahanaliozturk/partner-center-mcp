@@ -1,6 +1,14 @@
 {
-  "version": "2026-06",
+  "version": "2026-07",
   "items": [
+    {
+      "title": "checkInventory API retired in favour of checkInventoryByResourceType",
+      "status": "upcoming",
+      "date": "2026-09-25",
+      "impact": "POST /v1/extensions/product/checkInventory stops working; inventory checks must filter by resource type.",
+      "action": "Move to POST /v1/extensions/product/checkinventorybyresourcetype and pass the required resourceType query parameter (accepted values are in the resourceType enum).",
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/check-inventory-by-resource-type"
+    },
     {
       "title": "MFA enforced for App+User Partner Center API access",
       "status": "enforced",

@@ -437,7 +437,52 @@
                 }
               ]
             },
-            "description": "Only needed for SKUs whose purchasePrerequisites contains 'InventoryCheck'; skip otherwise.\nRequired InventoryContext keys vary by SKU (declared in the SKU's inventoryVariables).\nItems not found in the catalog are silently omitted from the result.\n\nDocs: https://learn.microsoft.com/partner-center/developer/check-inventory"
+            "description": "RETIRING 2026-09-25: migrate to the check-inventory-by-resource-type scenario, which adds a required resourceType filter.\nOnly needed for SKUs whose purchasePrerequisites contains 'InventoryCheck'; skip otherwise.\nRequired InventoryContext keys vary by SKU (declared in the SKU's inventoryVariables).\nItems not found in the catalog are silently omitted from the result.\nThe docs accept app-only credentials here too, not only app+user.\nFor Azure RI purchases the azureSubscriptionId must already be registered and RI-enabled.\n\nDocs: https://learn.microsoft.com/partner-center/developer/check-inventory"
+          }
+        },
+        {
+          "name": "Check inventory for catalog items filtered by resource type",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/extensions/product/checkinventorybyresourcetype?country={country}&resourceType={resourceType}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "extensions",
+                "product",
+                "checkinventorybyresourcetype"
+              ],
+              "query": [
+                {
+                  "key": "country",
+                  "value": "{country}"
+                },
+                {
+                  "key": "resourceType",
+                  "value": "{resourceType}"
+                }
+              ]
+            },
+            "description": "Replaces checkInventory, which retires 2026-09-25.\nresourceType is a REQUIRED query parameter; the accepted values are in the resourceType enum (pc_get_enums).\nA product missing from the response means unavailable for that subscription and region ONLY - do not read it as globally unavailable.\nA SKU present with isRestricted true carries the reason in restrictions[] (e.g. reasonCode NotAvailableForSubscription).\nItems not matching the requested resourceType are omitted, as are items absent from the catalog.\nThe docs accept app-only credentials here too, not only app+user.\nFor Azure RI purchases the azureSubscriptionId must already be registered and RI-enabled.\n\nDocs: https://learn.microsoft.com/partner-center/developer/check-inventory-by-resource-type"
           }
         }
       ]
