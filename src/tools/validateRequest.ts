@@ -28,7 +28,7 @@ export const validateRequest: Tool = {
     url: z.string(),
     authType: z.enum(["app-only", "app+user"]).optional(),
     cloud: z.enum(["commercial", "china-21vianet", "us-gov"]).optional(),
-    headers: z.record(z.string()).optional(),
+    headers: z.record(z.string(), z.string()).optional(),
   },
   run(args, ctx) {
     const k = ctx.knowledge as Knowledge;
