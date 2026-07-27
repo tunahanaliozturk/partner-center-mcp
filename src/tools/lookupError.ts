@@ -14,8 +14,8 @@ export const lookupError: Tool = {
       ...e,
       relatedScenarios: (e.relatedScenarios ?? [])
         .map((id) => k.scenarios.find((s) => s.id === id))
-        .filter(Boolean)
-        .map((s) => ({ id: s!.id, title: s!.title, docUrl: s!.docUrl })),
+        .filter((s): s is Knowledge["scenarios"][number] => s !== undefined)
+        .map((s) => ({ id: s.id, title: s.title, docUrl: s.docUrl })),
     });
     if (args.code) {
       const hit = errors.find((e) => e.errorCode === args.code);

@@ -7,10 +7,10 @@ interface Finding { severity: "error" | "warning" | "info"; message: string; fix
 
 // Does an input path match a scenario path template (segments, placeholders)?
 function pathMatches(scenarioPath: string, inputPath: string): boolean {
-  const sp = scenarioPath.split("?")[0].split("/").filter(Boolean);
-  const ip = inputPath.split("?")[0].split("/").filter(Boolean);
+  const sp = (scenarioPath.split("?")[0] ?? "").split("/").filter(Boolean);
+  const ip = (inputPath.split("?")[0] ?? "").split("/").filter(Boolean);
   if (sp.length !== ip.length) return false;
-  return sp.every((seg, i) => (seg.startsWith("{") && seg.endsWith("}")) || seg.toLowerCase() === ip[i].toLowerCase());
+  return sp.every((seg, i) => (seg.startsWith("{") && seg.endsWith("}")) || seg.toLowerCase() === ip[i]?.toLowerCase());
 }
 
 function normalizePath(url: string): string {
@@ -46,7 +46,7 @@ export const validateRequest: Tool = {
       findings.push({ severity: "info", message: `No known scenario matches the path ${path}. It may still be valid; check pc_list_scenarios.` });
     } else if (!matched) {
       const methods = [...new Set(samePath.map((s) => s.method))].join(", ");
-      findings.push({ severity: "error", message: `Path matches a known scenario but the method ${args.method} is wrong; expected ${methods}.`, fix: `Use ${methods} for ${samePath[0].path}.` });
+      findings.push({ severity: "error", message: `Path matches a known scenario but the method ${args.method} is wrong; expected ${methods}.`, fix: `Use ${methods} for ${samePath[0]?.path ?? path}.` });
     }
 
     // Auth / header checks against the matched scenario.

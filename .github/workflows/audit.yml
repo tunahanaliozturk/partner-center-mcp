@@ -1,0 +1,54 @@
+name: Dependency audit
+
+# Weekly npm audit. Never blocks CI: on findings it opens (or updates) an issue,
+# because an advisory with no upstream fix must not lock unrelated PRs. That is
+# exactly what happened with GHSA-frvp-7c67-39w9 (@hono/node-server), where the
+# only remedy was a hand-written override.
+on:
+  schedule:
+    - cron: "0 6 * * 2" # Tuesdays 06:00 UTC, a day after the doc-freshness check
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "24"
+      - run: npm ci
+
+      # The step's exit code must come from `npm audit`, not from the trailing
+      # echo, or `outcome` is always 'success' and the issue never opens.
+      - id: audit
+        run: |
+          {
+            echo '## `npm audit` findings'
+            echo ''
+            echo '```'
+          } > audit-report.md
+          set +e
+          npm audit --audit-level=moderate >> audit-report.md 2>&1
+          code=$?
+          set -e
+          echo '```' >> audit-report.md
+          exit $code
+        continue-on-error: true
+
+      - name: Open or update audit issue
+        if: steps.audit.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh label create dependency-audit --color D93F0B --description "npm audit findings" 2>/dev/null || true
+          existing=$(gh issue list --state open --label dependency-audit --json number -q '.[0].number')
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body-file audit-report.md
+          else
+            gh issue create --title "🔒 Dependency vulnerabilities detected" --label dependency-audit --body-file audit-report.md
+          fi

@@ -1,0 +1,37 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.5.5/schema.json",
+  "files": {
+    "includes": ["src/**/*.ts", "test/**/*.ts", "scripts/**/*.mjs"]
+  },
+  // Linter only. The formatter is disabled on purpose: this codebase uses compact
+  // single-line guard clauses that Biome's formatter would rewrite wholesale, which
+  // is style churn rather than improvement.
+  "formatter": { "enabled": false },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "preset": "recommended",
+      "style": {
+        // The codebase consistently uses string concatenation. Rewriting it to
+        // template literals is taste, not correctness.
+        "useTemplate": "off"
+      }
+    }
+  },
+  "assist": { "enabled": false },
+  "overrides": [
+    {
+      // Tests read ToolResult.data, which is typed `unknown`, so `as any` is the
+      // idiomatic way to assert on tool output. Rewriting ~50 sites would churn
+      // working tests for no gain.
+      "includes": ["test/**/*.ts"],
+      "linter": { "rules": { "suspicious": { "noExplicitAny": "off" } } }
+    },
+    {
+      // This tool emits source code as strings; the ${...} markers are literal
+      // output, not an unintended template literal.
+      "includes": ["src/tools/generateCall.ts"],
+      "linter": { "rules": { "suspicious": { "noTemplateCurlyInString": "off" } } }
+    }
+  ]
+}

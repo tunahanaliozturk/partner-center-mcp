@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "Partner Center REST (unofficial, generated)",
-    "version": "0.5.0",
+    "version": "0.8.0",
     "description": "Generated from partner-center-mcp's verified scenario pack. Not affiliated with Microsoft."
   },
   "servers": [
@@ -239,7 +239,7 @@
       "post": {
         "operationId": "assign-licenses",
         "summary": "Assign licenses to a user",
-        "description": "Returns 201 with the LicenseUpdate resource on success.\nFails if the license is not available in the customer tenant.",
+        "description": "Returns 201 with the LicenseUpdate resource on success.\nFails if the license is not available in the customer tenant; get valid skuId values from get-subscribed-skus first.\nlicensesToAssign and licensesToRemove must reference SKUs from the same license group; verify the result with get-user-licenses.",
         "parameters": [
           {
             "name": "customer-id",
@@ -2320,6 +2320,37 @@
             }
           }
         }
+      },
+      "delete": {
+        "operationId": "delete-user",
+        "summary": "Delete a customer user account (offboarding)",
+        "description": "Returns 204. The user state is set to inactive for 30 days, then purged and made unrecoverable; within that window restore-user (PATCH state=active) brings it back.\nA deleted (inactive) user is no longer returned by get-customer-users. Remove licenses (assign-licenses licensesToRemove) and directory roles (remove-user-role) first for a clean offboarding.\nApp+User credentials only; needs the User Administrator GDAP role.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "user-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/delete-user-accounts-for-a-customer"
+        }
       }
     },
     "/v1/profiles/billing": {
@@ -2460,6 +2491,254 @@
         },
         "externalDocs": {
           "url": "https://learn.microsoft.com/partner-center/developer/get-invoice-receipt-statement"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/subscriptions/{subscription-id}/azureentitlements": {
+      "get": {
+        "operationId": "get-azure-entitlements",
+        "summary": "Get a list of Azure entitlements for a subscription",
+        "description": "For an Azure plan, pass the Azure plan's subscription (plan) id as {subscription-id}; the response lists the underlying Azure usage subscriptions (azureEntitlementId values) created under it.\nEach azureEntitlementId is what you use to cancel a single Azure subscription (POST .../azureEntitlements/{entitlement-id}) without cancelling the whole plan.\nAlso supports standalone App (app-only) credentials.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "subscription-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-azure-entitlements-for-subscription"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/subscriptions/{subscription-id}/registrations": {
+      "post": {
+        "operationId": "register-subscription",
+        "summary": "Register a subscription for Azure reservations",
+        "description": "Registration is a prerequisite before purchasing Azure reservations (Reserved VM Instances) on a subscription.\nNo request body. Returns 202 Accepted with a Location header (.../registrationstatus) - poll it with get-subscription-registration-status until status is 'registered'.\nFor new commerce, register the Azure plan first: pass the Azure plan id as {subscription-id}.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "subscription-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/register-a-subscription"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/subscriptions/{subscription-id}/registrationstatus": {
+      "get": {
+        "operationId": "get-subscription-registration-status",
+        "summary": "Get subscription registration status",
+        "description": "status is one of 'registered', 'registering', or 'notregistered'; poll after register-subscription until it reads 'registered'.\nThis is the URL returned in the Location header of register-subscription; you can call it directly with the same {subscription-id}.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "subscription-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-subscription-registration-status"
+        }
+      }
+    },
+    "/v1/relationships": {
+      "get": {
+        "operationId": "get-indirect-resellers",
+        "summary": "Get the signed-in partner's indirect resellers or providers",
+        "description": "relationship_type is required: use IsIndirectCloudSolutionProviderOf when signed in as an indirect provider (returns your resellers), or IsIndirectResellerOf when signed in as a reseller (returns your providers). See enum partnerRelationshipType.\nApp+User credentials only - this is a two-tier CSP (indirect) operation. Each item exposes the partner's mpnId, used as PartnerIdOnRecord when placing orders for a reseller's customer.\nOnly meaningful for indirect providers/resellers; direct-bill partners have no such relationships.",
+        "parameters": [
+          {
+            "name": "relationship_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/retrieve-a-list-of-indirect-resellers"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/relationships": {
+      "get": {
+        "operationId": "get-customer-partners",
+        "summary": "Get the partners (indirect resellers/providers) of a customer",
+        "description": "Returns which partners have a reseller relationship with this customer; relationshipType reads e.g. is_indirect_cloud_solution_provider_of and each item carries the partner's mpnId.\nApp+User credentials only. Use this to confirm both you and your indirect provider hold a reseller relationship before transacting on the customer's behalf.\nTo establish a missing relationship, send the customer the invitation link from get-reseller-relationship-url.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-indirect-resellers-of-a-customer"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/subscribedskus": {
+      "get": {
+        "operationId": "get-subscribed-skus",
+        "summary": "Get a customer's available licenses (subscribed SKUs)",
+        "description": "Step before assign-licenses: each SubscribedSku exposes productSku.id (the skuId you pass in licensesToAssign) plus availableUnits/consumedUnits so you can check seats before assigning.\nApp+User credentials only; needs a GDAP role such as Directory Reader, Global Reader, User Administrator, or License Administrator.\nReturns the default license group's SKUs; a license can only be assigned to a user in the same group.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-available-licenses"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/users/{user-id}/licenses": {
+      "get": {
+        "operationId": "get-user-licenses",
+        "summary": "Get the licenses assigned to a user",
+        "description": "Verifies what assign-licenses applied: each License lists its skuId and the assigned/excluded servicePlans.\nApp+User credentials only; needs a GDAP role such as Directory Reader, License Administrator, User Administrator, or Directory Writers.\nReturns the default license group's assignments for the user.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "user-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/check-which-licenses-are-assigned-to-a-user"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/directoryroles/{role-id}/usermembers/{user-id}": {
+      "delete": {
+        "operationId": "remove-user-role",
+        "summary": "Remove a customer user from a directory role",
+        "description": "The inverse of assign-user-role; the response body is empty on success.\nPart of offboarding: strip elevated directory roles before deleting the user.\nApp+User credentials only; needs the User Administrator GDAP role.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "role-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "user-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/remove-customer-user-from-a-role"
         }
       }
     }

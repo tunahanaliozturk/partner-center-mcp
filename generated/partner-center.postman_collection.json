@@ -1016,6 +1016,157 @@
             },
             "description": "Only within the 30-day window after deletion; after that the account is purged.\nApp+User only; needs GDAP User Administrator or Directory Writer.\nFind the deleted user-id via the deleted (UserState=Inactive) users list.\n\nDocs: https://learn.microsoft.com/partner-center/developer/restore-a-user-for-a-customer"
           }
+        },
+        {
+          "name": "Get the signed-in partner's indirect resellers or providers",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "MS-CorrelationId",
+                "value": "GUID to trace the request",
+                "description": "GUID to trace the request"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/relationships?relationship_type={relationship-type}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "relationships"
+              ],
+              "query": [
+                {
+                  "key": "relationship_type",
+                  "value": "{relationship-type}"
+                }
+              ]
+            },
+            "description": "relationship_type is required: use IsIndirectCloudSolutionProviderOf when signed in as an indirect provider (returns your resellers), or IsIndirectResellerOf when signed in as a reseller (returns your providers). See enum partnerRelationshipType.\nApp+User credentials only - this is a two-tier CSP (indirect) operation. Each item exposes the partner's mpnId, used as PartnerIdOnRecord when placing orders for a reseller's customer.\nOnly meaningful for indirect providers/resellers; direct-bill partners have no such relationships.\n\nDocs: https://learn.microsoft.com/partner-center/developer/retrieve-a-list-of-indirect-resellers"
+          }
+        },
+        {
+          "name": "Get the partners (indirect resellers/providers) of a customer",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "MS-CorrelationId",
+                "value": "GUID to trace the request",
+                "description": "GUID to trace the request"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/relationships",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "relationships"
+              ],
+              "query": []
+            },
+            "description": "Returns which partners have a reseller relationship with this customer; relationshipType reads e.g. is_indirect_cloud_solution_provider_of and each item carries the partner's mpnId.\nApp+User credentials only. Use this to confirm both you and your indirect provider hold a reseller relationship before transacting on the customer's behalf.\nTo establish a missing relationship, send the customer the invitation link from get-reseller-relationship-url.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-indirect-resellers-of-a-customer"
+          }
+        },
+        {
+          "name": "Delete a customer user account (offboarding)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "MS-CorrelationId",
+                "value": "GUID to trace the request",
+                "description": "GUID to trace the request"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/users/{user-id}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "users",
+                "%7Buser-id%7D"
+              ],
+              "query": []
+            },
+            "description": "Returns 204. The user state is set to inactive for 30 days, then purged and made unrecoverable; within that window restore-user (PATCH state=active) brings it back.\nA deleted (inactive) user is no longer returned by get-customer-users. Remove licenses (assign-licenses licensesToRemove) and directory roles (remove-user-role) first for a clean offboarding.\nApp+User credentials only; needs the User Administrator GDAP role.\n\nDocs: https://learn.microsoft.com/partner-center/developer/delete-user-accounts-for-a-customer"
+          }
+        },
+        {
+          "name": "Remove a customer user from a directory role",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "MS-CorrelationId",
+                "value": "GUID to trace the request",
+                "description": "GUID to trace the request"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/directoryroles/{role-id}/usermembers/{user-id}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "directoryroles",
+                "%7Brole-id%7D",
+                "usermembers",
+                "%7Buser-id%7D"
+              ],
+              "query": []
+            },
+            "description": "The inverse of assign-user-role; the response body is empty on success.\nPart of offboarding: strip elevated directory roles before deleting the user.\nApp+User credentials only; needs the User Administrator GDAP role.\n\nDocs: https://learn.microsoft.com/partner-center/developer/remove-customer-user-from-a-role"
+          }
         }
       ]
     },
@@ -1744,7 +1895,116 @@
               ],
               "query": []
             },
-            "description": "Returns 201 with the LicenseUpdate resource on success.\nFails if the license is not available in the customer tenant.\n\nDocs: https://learn.microsoft.com/partner-center/developer/assign-licenses-to-a-user"
+            "description": "Returns 201 with the LicenseUpdate resource on success.\nFails if the license is not available in the customer tenant; get valid skuId values from get-subscribed-skus first.\nlicensesToAssign and licensesToRemove must reference SKUs from the same license group; verify the result with get-user-licenses.\n\nDocs: https://learn.microsoft.com/partner-center/developer/assign-licenses-to-a-user"
+          }
+        },
+        {
+          "name": "Get a customer's available licenses (subscribed SKUs)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "MS-CorrelationId",
+                "value": "GUID to trace the request",
+                "description": "GUID to trace the request"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscribedskus",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "subscribedskus"
+              ],
+              "query": []
+            },
+            "description": "Step before assign-licenses: each SubscribedSku exposes productSku.id (the skuId you pass in licensesToAssign) plus availableUnits/consumedUnits so you can check seats before assigning.\nApp+User credentials only; needs a GDAP role such as Directory Reader, Global Reader, User Administrator, or License Administrator.\nReturns the default license group's SKUs; a license can only be assigned to a user in the same group.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-a-list-of-available-licenses"
+          }
+        },
+        {
+          "name": "Get the licenses assigned to a user",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "MS-CorrelationId",
+                "value": "GUID to trace the request",
+                "description": "GUID to trace the request"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/users/{user-id}/licenses",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "users",
+                "%7Buser-id%7D",
+                "licenses"
+              ],
+              "query": []
+            },
+            "description": "Verifies what assign-licenses applied: each License lists its skuId and the assigned/excluded servicePlans.\nApp+User credentials only; needs a GDAP role such as Directory Reader, License Administrator, User Administrator, or Directory Writers.\nReturns the default license group's assignments for the user.\n\nDocs: https://learn.microsoft.com/partner-center/developer/check-which-licenses-are-assigned-to-a-user"
+          }
+        },
+        {
+          "name": "Assign/remove licenses on a group (group-based licensing, Microsoft Graph)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://graph.microsoft.com; scope LicenseAssignment.ReadWrite.All (or Group.ReadWrite.All)"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://graph.microsoft.com/v1.0/groups/{group-id}/assignLicense",
+              "protocol": "https",
+              "host": [
+                "graph",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1.0",
+                "groups",
+                "%7Bgroup-id%7D",
+                "assignLicense"
+              ],
+              "query": []
+            },
+            "description": "Group-based licensing: licenses assigned to the group flow to every member automatically - the scalable path for automated onboarding/offboarding instead of per-user assign-licenses.\nReturns 202 Accepted; assignment is processed asynchronously across members. Get valid skuId values from the tenant's subscribedSkus (Graph) / get-subscribed-skus (Partner Center).\nMicrosoft Graph, runs against the customer tenant (via a GDAP token); does not support nested groups. removeLicenses is required even if empty.\n\nDocs: https://learn.microsoft.com/graph/api/group-assignlicense?view=graph-rest-1.0"
           }
         }
       ]
@@ -2441,6 +2701,205 @@
             },
             "description": "All query params optional. Base model: EventStatus, SubscriptionId.\nWith X-NewEventsModel: true you also get EventType, PageSize, PageNumber (both must be nonzero to page).\nMicrosoft is steering partners to the Graph partner security alerts API; this remains usable during transition.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-fraud-events"
           }
+        },
+        {
+          "name": "Create a GDAP access assignment (Microsoft Graph)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://graph.microsoft.com; scope DelegatedAdminRelationship.ReadWrite.All"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships/{relationship-id}/accessAssignments",
+              "protocol": "https",
+              "host": [
+                "graph",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1.0",
+                "tenantRelationships",
+                "delegatedAdminRelationships",
+                "%7Brelationship-id%7D",
+                "accessAssignments"
+              ],
+              "query": []
+            },
+            "description": "This is what actually grants admin-on-behalf-of (AOBO): it binds a partner security group to a set of Entra roles in the customer tenant. Do it only after the relationship is active (customer approved).\nReturns 201 with a Location header; the new assignment starts status 'pending' and transitions to 'active'. unifiedRoles must be a subset of the relationship's roles.\nApp-only calls require provisioning the service principal appId 2832473f-ec63-45fb-976f-5d45a7d4bb91 (Partner Customer Delegated Administration) in the partner tenant. Not available in China (21Vianet).\n\nDocs: https://learn.microsoft.com/graph/api/delegatedadminrelationship-post-accessassignments?view=graph-rest-1.0"
+          }
+        },
+        {
+          "name": "List GDAP access assignments (Microsoft Graph)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://graph.microsoft.com; scope DelegatedAdminRelationship.Read.All"
+              }
+            ],
+            "url": {
+              "raw": "https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships/{relationship-id}/accessAssignments",
+              "protocol": "https",
+              "host": [
+                "graph",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1.0",
+                "tenantRelationships",
+                "delegatedAdminRelationships",
+                "%7Brelationship-id%7D",
+                "accessAssignments"
+              ],
+              "query": []
+            },
+            "description": "Each item carries an @odata.etag; capture it to send as If-Match when updating that assignment.\nGraph API, not Partner Center. Not available in China (21Vianet).\n\nDocs: https://learn.microsoft.com/graph/api/delegatedadminrelationship-list-accessassignments?view=graph-rest-1.0"
+          }
+        },
+        {
+          "name": "Update a GDAP access assignment's roles (Microsoft Graph)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://graph.microsoft.com; scope DelegatedAdminRelationship.ReadWrite.All"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships/{relationship-id}/accessAssignments/{access-assignment-id}",
+              "protocol": "https",
+              "host": [
+                "graph",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1.0",
+                "tenantRelationships",
+                "delegatedAdminRelationships",
+                "%7Brelationship-id%7D",
+                "accessAssignments",
+                "%7Baccess-assignment-id%7D"
+              ],
+              "query": []
+            },
+            "description": "Send the complete desired unifiedRoles set, not a delta - it replaces the assignment's roles. Roles must remain a subset of the relationship's roles.\nReturns 200; only roles can be changed (not the security group). Use list-gdap-access-assignments to get the assignment id and etag first. Not available in China (21Vianet).\n\nDocs: https://learn.microsoft.com/graph/api/delegatedadminaccessassignment-update?view=graph-rest-1.0"
+          }
+        },
+        {
+          "name": "Lock/terminate a GDAP relationship via a request (Microsoft Graph)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://graph.microsoft.com; scope DelegatedAdminRelationship.ReadWrite.All"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships/{relationship-id}/requests",
+              "protocol": "https",
+              "host": [
+                "graph",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1.0",
+                "tenantRelationships",
+                "delegatedAdminRelationships",
+                "%7Brelationship-id%7D",
+                "requests"
+              ],
+              "query": []
+            },
+            "description": "action lockForApproval is GDAP step 3: after it, send the customer the approval link https://admin.microsoft.com/AdminPortal/Home#/partners/invitation/granularAdminRelationships/{request-id} (the id from this response). On approval the relationship becomes active.\naction terminate ends an active relationship; access assignments stop working. The action enum is evolvable - send Prefer: include-unknown-enum-members to receive 'reject'.\nReturns 201 with a Location header to the created request. Not available in China (21Vianet).\n\nDocs: https://learn.microsoft.com/graph/api/delegatedadminrelationship-post-requests?view=graph-rest-1.0"
+          }
+        },
+        {
+          "name": "List delegated admin customers (Microsoft Graph)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://graph.microsoft.com; scope DelegatedAdminRelationship.Read.All"
+              }
+            ],
+            "url": {
+              "raw": "https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminCustomers",
+              "protocol": "https",
+              "host": [
+                "graph",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1.0",
+                "tenantRelationships",
+                "delegatedAdminCustomers"
+              ],
+              "query": []
+            },
+            "description": "Returns the customers the partner has any GDAP relationship with - a tenant-wide view independent of a single relationship id.\nEach delegatedAdminCustomer exposes a displayName and tenantId; drill into serviceManagementDetails for the admin URLs. Not available in China (21Vianet).\n\nDocs: https://learn.microsoft.com/graph/api/tenantrelationship-list-delegatedadmincustomers?view=graph-rest-1.0"
+          }
+        },
+        {
+          "name": "Delete a GDAP relationship (Microsoft Graph)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://graph.microsoft.com; scope DelegatedAdminRelationship.ReadWrite.All"
+              }
+            ],
+            "url": {
+              "raw": "https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships/{relationship-id}",
+              "protocol": "https",
+              "host": [
+                "graph",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1.0",
+                "tenantRelationships",
+                "delegatedAdminRelationships",
+                "%7Brelationship-id%7D"
+              ],
+              "query": []
+            },
+            "description": "Only a relationship still in the 'created' state can be deleted; an 'active' relationship must be ended with create-gdap-relationship-request (action terminate) instead.\nReturns 204 No Content. Not available in China (21Vianet).\n\nDocs: https://learn.microsoft.com/graph/api/delegatedadminrelationship-delete?view=graph-rest-1.0"
+          }
         }
       ]
     },
@@ -2821,6 +3280,125 @@
               "query": []
             },
             "description": "Global /v1/productupgrades collection (not subscription-scoped); the customer is identified in the body.\nReturns 202 Accepted with an empty body and a Location header (productUpgrades/{id}) to poll; app+user only.\nCheck eligibility first via POST /v1/productUpgrades/eligibility. After upgrade, Get Subscriptions returns only the Azure plan.\n\nDocs: https://learn.microsoft.com/partner-center/developer/create-product-upgrade-entity"
+          }
+        },
+        {
+          "name": "Get a list of Azure entitlements for a subscription",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "MS-CorrelationId",
+                "value": "GUID to trace the request",
+                "description": "GUID to trace the request"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}/azureentitlements",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "subscriptions",
+                "%7Bsubscription-id%7D",
+                "azureentitlements"
+              ],
+              "query": []
+            },
+            "description": "For an Azure plan, pass the Azure plan's subscription (plan) id as {subscription-id}; the response lists the underlying Azure usage subscriptions (azureEntitlementId values) created under it.\nEach azureEntitlementId is what you use to cancel a single Azure subscription (POST .../azureEntitlements/{entitlement-id}) without cancelling the whole plan.\nAlso supports standalone App (app-only) credentials.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-a-list-of-azure-entitlements-for-subscription"
+          }
+        },
+        {
+          "name": "Register a subscription for Azure reservations",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "MS-RequestId",
+                "value": "GUID for idempotency; reuse on retries so the registration runs once",
+                "description": "GUID for idempotency; reuse on retries so the registration runs once"
+              },
+              {
+                "key": "MS-CorrelationId",
+                "value": "GUID to trace the request",
+                "description": "GUID to trace the request"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}/registrations",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "subscriptions",
+                "%7Bsubscription-id%7D",
+                "registrations"
+              ],
+              "query": []
+            },
+            "description": "Registration is a prerequisite before purchasing Azure reservations (Reserved VM Instances) on a subscription.\nNo request body. Returns 202 Accepted with a Location header (.../registrationstatus) - poll it with get-subscription-registration-status until status is 'registered'.\nFor new commerce, register the Azure plan first: pass the Azure plan id as {subscription-id}.\n\nDocs: https://learn.microsoft.com/partner-center/developer/register-a-subscription"
+          }
+        },
+        {
+          "name": "Get subscription registration status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "MS-CorrelationId",
+                "value": "GUID to trace the request",
+                "description": "GUID to trace the request"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}/registrationstatus",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "subscriptions",
+                "%7Bsubscription-id%7D",
+                "registrationstatus"
+              ],
+              "query": []
+            },
+            "description": "status is one of 'registered', 'registering', or 'notregistered'; poll after register-subscription until it reads 'registered'.\nThis is the URL returned in the Location header of register-subscription; you can call it directly with the same {subscription-id}.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-subscription-registration-status"
           }
         }
       ]

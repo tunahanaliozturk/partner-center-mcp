@@ -53,6 +53,8 @@ npx partner-center-mcp
 
 No configuration, API keys, or network access to Partner Center required.
 
+Requires Node.js 20 or newer. (0.9.0 dropped Node 18, which reached end of life in April 2025.)
+
 ## Add to your MCP host
 
 The server speaks MCP over **stdio**, so any MCP-capable host works — there's nothing

@@ -1,0 +1,28 @@
+version: 2
+
+# Minor and patch updates arrive grouped to keep PR volume low. Majors stay
+# separate and ungrouped: they are deliberate decisions, not routine bumps.
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+    groups:
+      npm-minor-patch:
+        update-types: ["minor", "patch"]
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        update-types: ["minor", "patch"]
+
+  - package-ecosystem: nuget
+    directory: "/dotnet"
+    schedule:
+      interval: weekly
+    groups:
+      nuget-minor-patch:
+        update-types: ["minor", "patch"]

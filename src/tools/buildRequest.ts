@@ -29,7 +29,9 @@ function setField(root: Record<string, unknown>, name: string, value: unknown): 
       if (!Array.isArray(cur[key]) || (cur[key] as unknown[]).length === 0) cur[key] = [{}];
       const arr = cur[key] as Record<string, unknown>[];
       if (isLast) return; // array of bare values; leave as [{}]
-      cur = arr[0];
+      const first = arr[0];
+      if (!first) return; // unreachable: the guard above guarantees a first element
+      cur = first;
     } else if (isLast) {
       cur[key] = value;
     } else {

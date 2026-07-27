@@ -15,7 +15,9 @@ function read<T>(dir: string, file: string, schema: z.ZodType<T>): T {
   }
   const result = schema.safeParse(raw);
   if (!result.success) {
-    throw new Error(`${file}: invalid (${result.error.issues[0].path.join(".")}: ${result.error.issues[0].message})`);
+    const issue = result.error.issues[0];
+    const detail = issue ? `${issue.path.join(".")}: ${issue.message}` : result.error.message;
+    throw new Error(`${file}: invalid (${detail})`);
   }
   return result.data;
 }
