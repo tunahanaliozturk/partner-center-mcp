@@ -30,3 +30,8 @@ jobs:
       - run: npm run build
       - run: npm run eval
       - run: npm run export
+      # generated/ embeds package.json's version, so a release bump leaves it
+      # stale unless someone re-runs export. That drifted unnoticed through
+      # 0.9.0; running export above and then diffing makes it impossible to miss.
+      - name: Fail if generated/ is out of date with the source
+        run: git diff --exit-code -- generated/
