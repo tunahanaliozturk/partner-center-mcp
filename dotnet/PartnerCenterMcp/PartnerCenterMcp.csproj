@@ -15,7 +15,7 @@
     <ToolCommandName>partner-center-mcp</ToolCommandName>
     <!-- Local/dev default only. publish.yml passes -p:Version from the git tag,
          which is what actually ships; this had drifted to 0.8.0 unnoticed. -->
-    <Version>0.10.0</Version>
+    <Version>0.11.0</Version>
     <Authors>Tunahan Ali Ozturk</Authors>
     <Description>Unofficial MCP server: knowledge and codegen assistant for the Microsoft Partner Center REST API (not affiliated with Microsoft).</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
