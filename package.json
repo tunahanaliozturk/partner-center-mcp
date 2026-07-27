@@ -41,6 +41,7 @@
   "scripts": {
     "build": "tsc",
     "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "check-docs": "node scripts/check-docs.mjs",
     "check-docs:update": "node scripts/check-docs.mjs --update",
     "lint": "biome check --error-on-warnings .",
@@ -61,6 +62,7 @@
   "devDependencies": {
     "@biomejs/biome": "^2.5.5",
     "@types/node": "^20.0.0",
+    "@vitest/coverage-v8": "^4.1.10",
     "typescript": "^5.5.0",
     "vitest": "^4.1.10"
   },
