@@ -10,6 +10,14 @@ updates:
     groups:
       npm-minor-patch:
         update-types: ["minor", "patch"]
+    ignore:
+      # @types/node must track the MINIMUM supported runtime, not the newest
+      # release. engines.node is ">=20", so pinning the types at 20.x is what
+      # makes the compiler reject APIs that do not exist on Node 20. Allowing a
+      # major here would let tsc accept Node 22+/26-only APIs and break users on
+      # 20 at runtime. Raise this deliberately, together with engines.node.
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: github-actions
     directory: "/"
