@@ -59,7 +59,7 @@ Every pillar was probed against the real sources before this design was written.
 
 | Claim | Evidence |
 | --- | --- |
-| Learn pages expose their source commit | `create-a-customer` embeds `MicrosoftDocs/partner-center-pr/blob/229a898e…/partner-center/developer/create-a-customer.md`; `user-post-users` embeds `microsoftgraph/microsoft-graph-docs/blob/8b9f0fe0…`. Both doc families carry a 40-hex SHA. |
+| Learn pages expose their source commit | `<meta name="gitcommit">` carries a blob URL pinned to a 40-hex SHA — `MicrosoftDocs/partner-center-pr/blob/229a898e…/partner-center/developer/create-a-customer.md`, `microsoftgraph/microsoft-graph-docs/blob/8b9f0fe0…/api-reference/v1.0/api/user-post-users.md`. Exactly one occurrence per page on both doc families. (`original_content_git_url` carries the same path pinned to `live`, so it has no SHA — the commit signal comes from `gitcommit`.) |
 | Pages carry stable identity and timestamps | `<meta name="document_id">`, `<meta name="updated_at">`, `<meta name="ms.date">` present on both families. |
 | Request facts are extractable | Under the `Request syntax` heading, a table yields `["Method","Request URI"]` / `["POST","{baseURL} /v1/customers HTTP/1.1"]`. Body fields appear as `Name \| Type \| Description` tables. |
 | A machine-readable TOC exists | `https://learn.microsoft.com/en-us/partner-center/toc.json` → 200, 120 KB, 1151 hrefs, 328 under `developer/`. (`developer/toc.json` alone 404s — the whole-set TOC is the entry point.) |
@@ -267,7 +267,7 @@ so field comparison must exist and be trusted first.
 
 ## Risks
 
-- **Learn changes its page template.** The whole design rests on `original_content_git_url`,
+- **Learn changes its page template.** The whole design rests on the `gitcommit` meta tag,
   `document_id`, and the `Request syntax` table. Mitigated by the `extractionError` tripwire, which
   turns silent degradation into a high-severity finding. Not eliminated: a template change still
   costs a parser update.
