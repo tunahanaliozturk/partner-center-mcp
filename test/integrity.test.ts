@@ -1,5 +1,6 @@
 import { test, expect } from "vitest";
 import { loadKnowledge } from "../src/knowledge/load.js";
+import { baseUrlFor } from "../src/knowledge/apis.js";
 
 const k = loadKnowledge("data");
 
@@ -11,13 +12,13 @@ test("scenario ids are unique", () => {
   expect(new Set(ids).size).toBe(ids.length);
 });
 
-test("every scenario path is under /v1, /v3, or an explicit https URL (e.g. Graph)", () => {
-  for (const s of k.scenarios) expect(s.path, s.id).toMatch(/^(\/v[13]\/|https:\/\/)/);
+test("every scenario path is relative, never an absolute URL", () => {
+  for (const s of k.scenarios) expect(s.path, s.id).toMatch(/^\//);
 });
 
-test("every scenario's curl example targets its API host and its own path", () => {
+test("every scenario's curl example targets its api's host and its own path", () => {
   for (const s of k.scenarios) {
-    const host = s.path.startsWith("http") ? new URL(s.path).host : "api.partnercenter.microsoft.com";
+    const host = new URL(baseUrlFor(s.api)).host;
     expect(s.examples.curl, s.id).toContain(host);
     expect(s.examples.curl, s.id).toContain(pathPrefix(s.path));
   }
