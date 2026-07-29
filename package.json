@@ -44,6 +44,7 @@
     "test:coverage": "vitest run --coverage",
     "check-docs": "node scripts/check-docs.mjs",
     "check-docs:update": "node scripts/check-docs.mjs --update",
+    "docfacts:refresh": "node scripts/docfacts-refresh.mjs",
     "lint": "biome check --error-on-warnings .",
     "lint:fix": "biome check --error-on-warnings --write .",
     "eval": "node scripts/eval.mjs",
