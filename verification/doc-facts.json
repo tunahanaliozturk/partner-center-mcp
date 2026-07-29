@@ -1,6 +1,6 @@
 {
   "version": "2026-07",
-  "extractorVersion": 3,
+  "extractorVersion": 4,
   "tocHrefs": [],
   "pages": {
     "https://learn.microsoft.com/entra/identity-platform/reference-error-codes": {
@@ -20,7 +20,7 @@
       "bodyFields": [],
       "isEndpointPage": false,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/graph/api/delegatedadminaccessassignment-update?view=graph-rest-1.0": {
       "url": "https://learn.microsoft.com/graph/api/delegatedadminaccessassignment-update?view=graph-rest-1.0",
@@ -51,7 +51,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/graph/api/delegatedadminrelationship-delete?view=graph-rest-1.0": {
       "url": "https://learn.microsoft.com/graph/api/delegatedadminrelationship-delete?view=graph-rest-1.0",
@@ -81,7 +81,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/graph/api/delegatedadminrelationship-get?view=graph-rest-1.0": {
       "url": "https://learn.microsoft.com/graph/api/delegatedadminrelationship-get?view=graph-rest-1.0",
@@ -110,7 +110,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/graph/api/delegatedadminrelationship-list-accessassignments?view=graph-rest-1.0": {
       "url": "https://learn.microsoft.com/graph/api/delegatedadminrelationship-list-accessassignments?view=graph-rest-1.0",
@@ -139,7 +139,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/graph/api/delegatedadminrelationship-post-accessassignments?view=graph-rest-1.0": {
       "url": "https://learn.microsoft.com/graph/api/delegatedadminrelationship-post-accessassignments?view=graph-rest-1.0",
@@ -169,7 +169,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/graph/api/delegatedadminrelationship-post-requests?view=graph-rest-1.0": {
       "url": "https://learn.microsoft.com/graph/api/delegatedadminrelationship-post-requests?view=graph-rest-1.0",
@@ -199,7 +199,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/graph/api/group-assignlicense?view=graph-rest-1.0": {
       "url": "https://learn.microsoft.com/graph/api/group-assignlicense?view=graph-rest-1.0",
@@ -229,7 +229,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/graph/api/partners-billing-billedreconciliation-export?view=graph-rest-1.0": {
       "url": "https://learn.microsoft.com/graph/api/partners-billing-billedreconciliation-export?view=graph-rest-1.0",
@@ -259,7 +259,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/graph/api/partners-billing-unbilledreconciliation-export?view=graph-rest-1.0": {
       "url": "https://learn.microsoft.com/graph/api/partners-billing-unbilledreconciliation-export?view=graph-rest-1.0",
@@ -289,7 +289,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/graph/api/serviceannouncement-list-healthoverviews?view=graph-rest-1.0": {
       "url": "https://learn.microsoft.com/graph/api/serviceannouncement-list-healthoverviews?view=graph-rest-1.0",
@@ -318,7 +318,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/graph/api/serviceannouncement-list-issues?view=graph-rest-1.0": {
       "url": "https://learn.microsoft.com/graph/api/serviceannouncement-list-issues?view=graph-rest-1.0",
@@ -348,7 +348,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/graph/api/serviceannouncement-list-messages?view=graph-rest-1.0": {
       "url": "https://learn.microsoft.com/graph/api/serviceannouncement-list-messages?view=graph-rest-1.0",
@@ -378,7 +378,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/graph/api/tenantrelationship-list-delegatedadmincustomers?view=graph-rest-1.0": {
       "url": "https://learn.microsoft.com/graph/api/tenantrelationship-list-delegatedadmincustomers?view=graph-rest-1.0",
@@ -407,7 +407,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/graph/api/tenantrelationship-list-delegatedadminrelationships?view=graph-rest-1.0": {
       "url": "https://learn.microsoft.com/graph/api/tenantrelationship-list-delegatedadminrelationships?view=graph-rest-1.0",
@@ -436,7 +436,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/graph/api/tenantrelationship-post-delegatedadminrelationships?view=graph-rest-1.0": {
       "url": "https://learn.microsoft.com/graph/api/tenantrelationship-post-delegatedadminrelationships?view=graph-rest-1.0",
@@ -466,7 +466,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/assign-licenses-to-a-user": {
       "url": "https://learn.microsoft.com/partner-center/developer/assign-licenses-to-a-user",
@@ -493,7 +493,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/change-the-billing-cycle": {
       "url": "https://learn.microsoft.com/partner-center/developer/change-the-billing-cycle",
@@ -520,7 +520,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/check-inventory": {
       "url": "https://learn.microsoft.com/partner-center/developer/check-inventory",
@@ -547,7 +547,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/check-inventory-by-resource-type": {
       "url": "https://learn.microsoft.com/partner-center/developer/check-inventory-by-resource-type",
@@ -574,7 +574,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/check-which-licenses-are-assigned-to-a-user": {
       "url": "https://learn.microsoft.com/partner-center/developer/check-which-licenses-are-assigned-to-a-user",
@@ -601,7 +601,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/checkout-a-cart": {
       "url": "https://learn.microsoft.com/partner-center/developer/checkout-a-cart",
@@ -628,7 +628,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/confirm-customer-consent-customer-agreement": {
       "url": "https://learn.microsoft.com/partner-center/developer/confirm-customer-consent-customer-agreement",
@@ -660,7 +660,7 @@
       ],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/create-a-cart": {
       "url": "https://learn.microsoft.com/partner-center/developer/create-a-cart",
@@ -687,7 +687,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/create-a-customer": {
       "url": "https://learn.microsoft.com/partner-center/developer/create-a-customer",
@@ -723,7 +723,7 @@
       ],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/create-a-referral": {
       "url": "https://learn.microsoft.com/partner-center/developer/create-a-referral",
@@ -736,13 +736,21 @@
       "msDate": "2024-08-11T00:00:00Z",
       "updatedAt": "2026-07-23T16:03:00Z",
       "title": "Create a referral",
-      "requestSyntax": null,
-      "requestSyntaxes": [],
+      "requestSyntax": {
+        "method": "POST",
+        "uri": "https://api.partner.microsoft.com/v1.0/engagements/referrals"
+      },
+      "requestSyntaxes": [
+        {
+          "method": "POST",
+          "uri": "https://api.partner.microsoft.com/v1.0/engagements/referrals"
+        }
+      ],
       "headerNames": [],
       "bodyFields": [],
-      "isEndpointPage": false,
+      "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/create-a-transfer": {
       "url": "https://learn.microsoft.com/partner-center/developer/create-a-transfer",
@@ -769,7 +777,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/create-migration": {
       "url": "https://learn.microsoft.com/partner-center/developer/create-migration",
@@ -796,7 +804,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/create-product-upgrade-entity": {
       "url": "https://learn.microsoft.com/partner-center/developer/create-product-upgrade-entity",
@@ -823,7 +831,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/create-user-accounts-for-a-customer": {
       "url": "https://learn.microsoft.com/partner-center/developer/create-user-accounts-for-a-customer",
@@ -850,7 +858,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/delete-a-customer-account-from-the-integration-sandbox": {
       "url": "https://learn.microsoft.com/partner-center/developer/delete-a-customer-account-from-the-integration-sandbox",
@@ -877,7 +885,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/delete-user-accounts-for-a-customer": {
       "url": "https://learn.microsoft.com/partner-center/developer/delete-user-accounts-for-a-customer",
@@ -904,7 +912,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/deprecate-azure-active-directory-graph-token": {
       "url": "https://learn.microsoft.com/partner-center/developer/deprecate-azure-active-directory-graph-token",
@@ -923,7 +931,7 @@
       "bodyFields": [],
       "isEndpointPage": false,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/download-customer-agreement-template": {
       "url": "https://learn.microsoft.com/partner-center/developer/download-customer-agreement-template",
@@ -950,7 +958,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/error-codes": {
       "url": "https://learn.microsoft.com/partner-center/developer/error-codes",
@@ -969,7 +977,7 @@
       "bodyFields": [],
       "isEndpointPage": false,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-a-collection-of-entitlements": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-a-collection-of-entitlements",
@@ -996,7 +1004,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-a-collection-of-invoices": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-a-collection-of-invoices",
@@ -1023,7 +1031,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-a-customer-by-id": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-a-customer-by-id",
@@ -1050,7 +1058,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-a-customer-s-utilization-record-for-azure": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-a-customer-s-utilization-record-for-azure",
@@ -1077,7 +1085,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-a-list-of-a-customer-s-policies": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-a-customer-s-policies",
@@ -1104,7 +1112,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-a-list-of-all-user-accounts-for-a-customer": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-all-user-accounts-for-a-customer",
@@ -1131,7 +1139,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-a-list-of-availabilities-for-a-sku": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-availabilities-for-a-sku",
@@ -1158,7 +1166,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-a-list-of-available-licenses": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-available-licenses",
@@ -1185,7 +1193,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-a-list-of-azure-entitlements-for-subscription": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-azure-entitlements-for-subscription",
@@ -1212,7 +1220,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-a-list-of-customers": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-customers",
@@ -1239,7 +1247,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-a-list-of-products": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-products",
@@ -1266,7 +1274,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-a-list-of-referrals": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-referrals",
@@ -1279,13 +1287,21 @@
       "msDate": "2024-08-11T00:00:00Z",
       "updatedAt": "2025-09-25T16:02:00Z",
       "title": "Get the list of leads and opportunities",
-      "requestSyntax": null,
-      "requestSyntaxes": [],
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "https://api.partner.microsoft.com/v1.0/engagements/referrals"
+      },
+      "requestSyntaxes": [
+        {
+          "method": "GET",
+          "uri": "https://api.partner.microsoft.com/v1.0/engagements/referrals"
+        }
+      ],
       "headerNames": [],
       "bodyFields": [],
-      "isEndpointPage": false,
+      "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-a-list-of-subscriptions-by-order": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-subscriptions-by-order",
@@ -1312,7 +1328,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-a-product-by-id": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-a-product-by-id",
@@ -1339,7 +1355,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-a-record-of-partner-center-activity-by-user": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-a-record-of-partner-center-activity-by-user",
@@ -1366,7 +1382,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-a-sku-by-id": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-a-sku-by-id",
@@ -1393,7 +1409,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-a-subscription-by-id": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-a-subscription-by-id",
@@ -1420,7 +1436,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-all-azure-usage-analytics": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-all-azure-usage-analytics",
@@ -1447,7 +1463,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-all-of-a-customer-s-orders": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-all-of-a-customer-s-orders",
@@ -1474,7 +1490,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-all-of-a-customer-s-subscriptions": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-all-of-a-customer-s-subscriptions",
@@ -1501,7 +1517,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-all-service-requests-for-a-customer": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-all-service-requests-for-a-customer",
@@ -1528,7 +1544,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-an-order-by-id": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-an-order-by-id",
@@ -1555,7 +1571,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-an-organization-profile": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-an-organization-profile",
@@ -1582,7 +1598,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-api-request-details": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-api-request-details",
@@ -1609,7 +1625,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-confirmation-of-customer-agreement": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-confirmation-of-customer-agreement",
@@ -1636,7 +1652,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-customer-licenses-usage-information": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-customer-licenses-usage-information",
@@ -1663,7 +1679,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-customer-qualification-asynchronous": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-customer-qualification-asynchronous",
@@ -1690,7 +1706,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-fraud-events": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-fraud-events",
@@ -1717,7 +1733,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-indirect-resellers-of-a-customer": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-indirect-resellers-of-a-customer",
@@ -1744,7 +1760,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-invoice-by-id": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-invoice-by-id",
@@ -1771,7 +1787,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-invoice-receipt-statement": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-invoice-receipt-statement",
@@ -1798,7 +1814,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-invoice-statement": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-invoice-statement",
@@ -1825,7 +1841,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-invoice-unbilled-recon-lineitems": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-invoice-unbilled-recon-lineitems",
@@ -1852,7 +1868,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-invoiceline-items": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-invoiceline-items",
@@ -1871,7 +1887,7 @@
       "bodyFields": [],
       "isEndpointPage": false,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-legal-business-profile": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-legal-business-profile",
@@ -1898,7 +1914,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-partner-billing-profile": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-partner-billing-profile",
@@ -1925,7 +1941,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-partner-by-mpn-id": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-partner-by-mpn-id",
@@ -1952,7 +1968,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-prices-for-microsoft-azure": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-prices-for-microsoft-azure",
@@ -1979,7 +1995,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-prices-for-microsoft-azure-partner-shared-services": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-prices-for-microsoft-azure-partner-shared-services",
@@ -2006,7 +2022,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-promotion-by-id": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-promotion-by-id",
@@ -2033,7 +2049,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-promotions": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-promotions",
@@ -2060,7 +2076,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-service-request-details-by-id": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-service-request-details-by-id",
@@ -2089,7 +2105,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-subscription-registration-status": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-subscription-registration-status",
@@ -2116,7 +2132,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-support-profile": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-support-profile",
@@ -2143,7 +2159,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-the-list-of-device-batches-for-the-specified-customer": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-the-list-of-device-batches-for-the-specified-customer",
@@ -2170,7 +2186,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-the-reseller-s-current-account-balance": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-the-reseller-s-current-account-balance",
@@ -2197,7 +2213,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/get-transfer-by-id": {
       "url": "https://learn.microsoft.com/partner-center/developer/get-transfer-by-id",
@@ -2224,7 +2240,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/register-a-subscription": {
       "url": "https://learn.microsoft.com/partner-center/developer/register-a-subscription",
@@ -2251,7 +2267,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/remove-customer-user-from-a-role": {
       "url": "https://learn.microsoft.com/partner-center/developer/remove-customer-user-from-a-role",
@@ -2278,7 +2294,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/request-reseller-relationship": {
       "url": "https://learn.microsoft.com/partner-center/developer/request-reseller-relationship",
@@ -2305,7 +2321,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/reset-user-password-for-a-customer": {
       "url": "https://learn.microsoft.com/partner-center/developer/reset-user-password-for-a-customer",
@@ -2332,7 +2348,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/restore-a-user-for-a-customer": {
       "url": "https://learn.microsoft.com/partner-center/developer/restore-a-user-for-a-customer",
@@ -2368,7 +2384,7 @@
       ],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/retrieve-a-list-of-indirect-resellers": {
       "url": "https://learn.microsoft.com/partner-center/developer/retrieve-a-list-of-indirect-resellers",
@@ -2395,7 +2411,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/set-user-roles-for-a-customer": {
       "url": "https://learn.microsoft.com/partner-center/developer/set-user-roles-for-a-customer",
@@ -2439,7 +2455,7 @@
       ],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/transition-a-new-commerce-subscription": {
       "url": "https://learn.microsoft.com/partner-center/developer/transition-a-new-commerce-subscription",
@@ -2470,7 +2486,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/update-a-service-request": {
       "url": "https://learn.microsoft.com/partner-center/developer/update-a-service-request",
@@ -2497,7 +2513,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/update-a-subscription-by-id": {
       "url": "https://learn.microsoft.com/partner-center/developer/update-a-subscription-by-id",
@@ -2524,7 +2540,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/update-customer-qualification-asynchronous": {
       "url": "https://learn.microsoft.com/partner-center/developer/update-customer-qualification-asynchronous",
@@ -2551,7 +2567,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/update-partner-billing-profile": {
       "url": "https://learn.microsoft.com/partner-center/developer/update-partner-billing-profile",
@@ -2578,7 +2594,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/upload-a-list-of-devices-for-the-specified-customer": {
       "url": "https://learn.microsoft.com/partner-center/developer/upload-a-list-of-devices-for-the-specified-customer",
@@ -2605,7 +2621,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/upload-a-list-of-devices-to-create-a-new-batch-for-the-specified-customer": {
       "url": "https://learn.microsoft.com/partner-center/developer/upload-a-list-of-devices-to-create-a-new-batch-for-the-specified-customer",
@@ -2632,7 +2648,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/validate-an-address": {
       "url": "https://learn.microsoft.com/partner-center/developer/validate-an-address",
@@ -2684,7 +2700,7 @@
       ],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     },
     "https://learn.microsoft.com/partner-center/developer/verify-domain-availability": {
       "url": "https://learn.microsoft.com/partner-center/developer/verify-domain-availability",
@@ -2711,7 +2727,7 @@
       "bodyFields": [],
       "isEndpointPage": true,
       "extractionError": null,
-      "extractorVersion": 3
+      "extractorVersion": 4
     }
   }
 }
