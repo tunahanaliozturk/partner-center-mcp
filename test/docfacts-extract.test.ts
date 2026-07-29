@@ -70,3 +70,30 @@ test("a Graph endpoint page yields its route and tabulated headers", () => {
   expect(facts.headerNames).toContain("Authorization");
   expect(facts.extractionError).toBeNull();
 });
+
+test("a Graph page with multiple routes in one block extracts the first route", () => {
+  const url = "https://learn.microsoft.com/graph/api/example";
+  const html = `
+    <meta name="gitcommit" content="https://github.com/microsoftgraph/microsoft-graph-docs/blob/0000000000000000000000000000000000000000/path.md">
+    <meta name="document_id" content="00000000-0000-0000-0000-000000000000">
+    <h1>Example</h1>
+    <h2 id="http-request">HTTP request</h2>
+    <pre><code class="lang-http">POST /users
+POST /users/{id}/restore</code></pre>
+  `;
+  const facts = extractDocFacts(url, url, html);
+  expect(facts.requestSyntax).toEqual({ method: "POST", uri: "/users" });
+});
+
+test("a Graph page with a non-route code block under http-request yields no request syntax", () => {
+  const url = "https://learn.microsoft.com/graph/api/example";
+  const html = `
+    <meta name="gitcommit" content="https://github.com/microsoftgraph/microsoft-graph-docs/blob/0000000000000000000000000000000000000000/path.md">
+    <meta name="document_id" content="00000000-0000-0000-0000-000000000000">
+    <h1>Example</h1>
+    <h2 id="http-request">HTTP request</h2>
+    <pre><code class="lang-json">{ "displayName": "example" }</code></pre>
+  `;
+  const facts = extractDocFacts(url, url, html);
+  expect(facts.requestSyntax).toBeNull();
+});
