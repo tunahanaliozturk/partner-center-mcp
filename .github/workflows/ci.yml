@@ -28,6 +28,9 @@ jobs:
       # only gate anything if they actually run here.
       - run: npm run test:coverage
       - run: npm run build
+      # Offline: verifies data/scenarios.json against the committed doc snapshot.
+      # The networked counterpart (check-docs.yml) refreshes that snapshot weekly.
+      - run: npm run check-pack
       - run: npm run eval
       - run: npm run export
       # generated/ embeds package.json's version, so a release bump leaves it

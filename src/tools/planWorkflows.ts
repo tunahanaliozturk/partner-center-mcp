@@ -2,6 +2,7 @@ import { z } from "zod";
 import type { Tool } from "../types.js";
 import type { Knowledge } from "../knowledge/schema.js";
 import { ok, toolError } from "../util/result.js";
+import { baseUrlFor } from "../knowledge/apis.js";
 
 interface Step { scenarioId: string; why: string }
 
@@ -10,12 +11,17 @@ function buildPlan(k: Knowledge, customerId: string | undefined, chain: Step[]) 
   return chain.map((step, i) => {
     const s = k.scenarios.find((x) => x.id === step.scenarioId);
     if (!s) return null;
+    // Resolve the FILLED path so `url` and `path` never disagree. The GDAP
+    // and reconciliation-v2 chains are Graph, so a host-less path here would
+    // be actively misleading.
+    const path = fill(s.path);
     return {
       order: i + 1,
       scenarioId: s.id,
       title: s.title,
       method: s.method,
-      path: fill(s.path),
+      path,
+      url: baseUrlFor(s.api) + path,
       authType: s.authType,
       why: step.why,
       keyGotchas: s.gotchas.slice(0, 2),

@@ -33,12 +33,12 @@ flowchart LR
   end
   LLM -->|"MCP protocol"| T{"Transport<br/>stdio · HTTP"}
   T --> S["partner-center-mcp"]
-  S --> Tools["12 tools<br/>list/get scenario · generate_call<br/>validate_request · plan_purchase<br/>check_auth · lookup_error · diagnose · …"]
+  S --> Tools["23 tools<br/>list/get scenario · generate_call<br/>validate_request · plan_purchase<br/>check_auth · lookup_error · diagnose · …"]
   S --> RP["Resources & Prompts<br/>pc://… · migrate / diagnose / plan"]
   Tools --> KP[("Knowledge pack<br/>data/*.json")]
   KP -. "zod-validated at load" .-> Tools
   Tools -->|"fallback (cached)"| ML[("Microsoft Learn<br/>live doc search")]
-  KP -. "docUrl + lastVerified" .-> CI[["Weekly doc-freshness CI<br/>opens an issue on drift"]]
+  KP -. "docUrl + lastVerified" .-> CI[["Weekly doc-freshness CI<br/>opens an issue on high-severity drift"]]
 ```
 
 A typical call: the agent picks a tool (e.g. `pc_generate_call`), the server looks the scenario
@@ -193,11 +193,23 @@ npm run build
 
 The knowledge pack lives in `data/` (date-versioned; each record carries a `docUrl` and
 `lastVerified`). Schemas in [`src/knowledge/schema.ts`](src/knowledge/schema.ts) validate every
-file at load time, so malformed or drifted data fails fast. `npm run check-docs` verifies every
-`docUrl` still resolves, flags stale entries, and detects content drift (page-hash baseline); a
-weekly GitHub Action runs it and opens an issue on drift. `npm run eval` runs a deterministic
-golden-case suite; `npm run eval:llm` (needs `ANTHROPIC_API_KEY`) checks that a real model picks
-the right tool for a question; `npm run export` emits an OpenAPI spec + Postman collection.
+file at load time, so malformed or drifted data fails fast.
+
+Verification runs in two halves. `npm run check-pack` is offline and runs on every PR: it verifies
+each scenario's `method`, `path`, and headers against `verification/doc-facts.json` — a committed
+snapshot of what the Microsoft Learn pages actually say — and reports documented endpoints that have
+no scenario yet. `npm run check-docs` is the weekly networked half: it re-fetches every referenced
+page and compares it to the snapshot, keying drift off the source commit each Learn page embeds. It
+exits non-zero on a dead, moved, or replaced page, on a page that became unreadable, or when a field
+the pack depends on changed — the weekly GitHub Action then opens an issue; an upstream edit that
+touched only prose is reported without failing. `npm run check-docs:update` does the same fetch and
+then rewrites the snapshot. `npm run docfacts:refresh`
+rebuilds the snapshot from scratch, including the whole `developer/` section of the Learn table of
+contents.
+
+`npm run eval` runs a deterministic golden-case suite; `npm run eval:llm` (needs
+`ANTHROPIC_API_KEY`) checks that a real model picks the right tool for a question; `npm run export`
+emits an OpenAPI spec + Postman collection.
 
 To regenerate the demo GIF (after `npm run build`): install [vhs](https://github.com/charmbracelet/vhs)
 and run `vhs demo.tape` (writes `assets/demo.gif`).

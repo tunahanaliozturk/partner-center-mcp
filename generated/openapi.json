@@ -2220,6 +2220,22 @@
         }
       }
     },
+    "/partner/v1/analytics/usage/azure": {
+      "get": {
+        "operationId": "get-partner-usage-analytics",
+        "summary": "Get partner-level Azure usage analytics",
+        "description": "Note the /partner/v1/ path prefix (not /v1/). App+User only; CSP partners only.\nOData params: top (max 10000), skip, filter, orderby, groupby, aggregationLevel (day|week|month).\nResponse includes a next link when more rows exist than 'top'.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-all-azure-usage-analytics"
+        }
+      }
+    },
     "/v1/customers/{customer-id}/directoryroles/{role-id}/usermembers": {
       "post": {
         "operationId": "assign-user-role",

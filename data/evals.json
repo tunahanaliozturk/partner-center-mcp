@@ -3,12 +3,14 @@
   "cases": [
     { "name": "decode the retired-audience error", "tool": "pc_lookup_error", "input": { "code": "900420" }, "contains": ["api.partnercenter.microsoft.com", "900420"] },
     { "name": "list includes a core scenario", "tool": "pc_list_scenarios", "input": {}, "contains": ["create-customer"] },
-    { "name": "scenario detail has the REST path", "tool": "pc_get_scenario", "input": { "id": "create-customer" }, "contains": ["/v1/customers"] },
+    { "name": "scenario detail has the REST path", "tool": "pc_get_scenario", "input": { "id": "create-customer" },
+      "assert": [{ "path": "path", "equals": "/v1/customers" }, { "path": "method", "equals": "POST" }] },
     { "name": "codegen emits helpers, never the SDK", "tool": "pc_generate_call", "input": { "id": "verify-mpn", "language": "typescript" }, "contains": ["getAccessToken"], "notContains": ["graph.windows.net"] },
     { "name": "SDK call maps to REST scenario", "tool": "pc_migrate_from_sdk", "input": { "code": "partner.Customers.ById(id).Subscriptions.Get()" }, "contains": ["list-customer-subscriptions"] },
     { "name": "validate flags the wrong method", "tool": "pc_validate_request", "input": { "method": "POST", "url": "/v1/customers/abc/subscriptions", "headers": { "Authorization": "Bearer x" } }, "contains": ["method"] },
     { "name": "purchase plan starts at products", "tool": "pc_plan_purchase", "input": {}, "contains": ["get-products", "checkout-cart"] },
-    { "name": "enum lookup returns values", "tool": "pc_get_enums", "input": { "name": "billingCycle" }, "contains": ["monthly", "one_time"] },
+    { "name": "enum lookup returns values", "tool": "pc_get_enums", "input": { "name": "billingCycle" },
+      "contains": ["monthly", "one_time"], "assert": [{ "path": "name", "equals": "billingCycle" }] },
     { "name": "whats-new surfaces MFA enforcement", "tool": "pc_whats_new", "input": {}, "contains": ["MFA", "2026-04-01"] },
     { "name": "resource dictionary has fields", "tool": "pc_get_resource", "input": { "name": "Subscription" }, "contains": ["status", "autoRenewEnabled"] },
     { "name": "build-request fills path + body", "tool": "pc_build_request", "input": { "id": "create-cart", "params": { "customer-id": "abc" } }, "contains": ["/v1/customers/abc/carts", "lineItems"] },
@@ -18,6 +20,12 @@
     { "name": "reference lists the pricing host", "tool": "pc_get_reference", "input": { "topic": "base-urls" }, "contains": ["api.partner.microsoft.com"] },
     { "name": "transfer plan starts at create-transfer", "tool": "pc_plan_transfer", "input": {}, "contains": ["create-transfer"] },
     { "name": "gdap plan uses Graph", "tool": "pc_plan_gdap_onboarding", "input": {}, "contains": ["graph.microsoft.com", "create-gdap-relationship"] },
-    { "name": "reconciliation plan ends at the statement", "tool": "pc_plan_reconciliation", "input": {}, "contains": ["get-invoice-statement"] }
+    { "name": "reconciliation plan ends at the statement", "tool": "pc_plan_reconciliation", "input": {}, "contains": ["get-invoice-statement"] },
+    { "name": "diagnose maps a 401 to the retired-audience error", "tool": "pc_diagnose", "input": { "symptom": "401 unauthorized when calling the API" }, "contains": ["900420", "api.partnercenter.microsoft.com"] },
+    { "name": "search passes live excerpts through", "tool": "pc_search_docs", "input": { "query": "create a customer" }, "contains": ["create-a-customer"] },
+    { "name": "search honours topK", "tool": "pc_search_docs", "input": { "query": "customers", "topK": 1 }, "assert": [{ "path": "excerpts.length", "equals": 1 }] },
+    { "name": "csp onboarding starts at the relationship request", "tool": "pc_plan_csp_onboarding", "input": {}, "contains": ["get-reseller-relationship-url", "create-agreement"], "assert": [{ "path": "steps.0.order", "equals": 1 }] },
+    { "name": "user onboarding creates before it licenses", "tool": "pc_plan_user_onboarding", "input": {}, "contains": ["create-user", "assign-licenses"], "assert": [{ "path": "steps.0.scenarioId", "equals": "get-subscribed-skus" }] },
+    { "name": "user offboarding reads licenses before deleting", "tool": "pc_plan_user_offboarding", "input": {}, "contains": ["get-user-licenses", "delete-user"], "assert": [{ "path": "steps.0.scenarioId", "equals": "get-user-licenses" }] }
   ]
 }

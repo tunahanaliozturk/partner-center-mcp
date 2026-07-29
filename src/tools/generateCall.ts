@@ -2,6 +2,7 @@ import { z } from "zod";
 import type { Tool } from "../types.js";
 import type { Knowledge, Scenario } from "../knowledge/schema.js";
 import { ok, notFound } from "../util/result.js";
+import { baseUrlFor } from "../knowledge/apis.js";
 
 type Lang = "curl" | "csharp" | "typescript" | "powershell";
 
@@ -116,7 +117,7 @@ export const generateCall: Tool = {
     const scenario = k.scenarios.find((s) => s.id === args.id);
     if (!scenario) return notFound(`No scenario with id "${args.id}".`, k.scenarios.map((s) => s.id));
     const lang = args.language as Lang;
-    const fullUrl = scenario.path.startsWith("http") ? scenario.path : `https://api.partnercenter.microsoft.com${scenario.path}`;
+    const fullUrl = baseUrlFor(scenario.api) + scenario.path;
     // powershell is derived from the path when no curated example exists.
     const code = lang === "powershell"
       ? `# PowerShell (Invoke-RestMethod)\nInvoke-RestMethod -Method ${scenario.method} -Uri "${fullUrl}" -Headers @{ Authorization = "Bearer $token" }`

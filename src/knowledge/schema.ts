@@ -13,6 +13,9 @@ export const ScenarioSchema = z.object({
   area: z.enum(AREAS),
   title: z.string(),
   method: z.enum(["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD"]),
+  // Absent means "partner-center": the default host a relative path resolves
+  // against. See src/knowledge/apis.ts for the base each api id maps to.
+  api: z.enum(["partner-center", "graph", "pricing-and-referrals"]).optional(),
   path: z.string(),
   authType: z.enum(["app-only", "app+user"]),
   headers: z.array(z.object({ name: z.string(), required: z.boolean(), note: z.string().optional() })),

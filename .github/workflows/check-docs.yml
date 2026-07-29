@@ -1,7 +1,11 @@
 name: Doc freshness
 
-# Weekly check that every scenario/error docUrl still resolves and that no
-# scenario's lastVerified has gone stale. On drift it opens (or updates) an issue.
+# Weekly check that fetches every scenario/error docUrl and compares it against
+# the committed doc-facts snapshot: dead/moved/replaced pages, a source-commit
+# change to a field the pack depends on, and stale scenarios. On HIGH severity
+# (dead link, moved/replaced page, unreadable page, or a depended-on field that
+# actually changed) it opens (or updates) an issue. Staleness and a source edit
+# that left every depended-on field unchanged are reported but do not open one.
 on:
   schedule:
     - cron: "0 6 * * 1" # Mondays 06:00 UTC
@@ -19,6 +23,8 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: "24"
+      - run: npm ci
+      - run: npm run build
 
       - id: check
         run: node scripts/check-docs.mjs
@@ -29,7 +35,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh label create doc-drift --color FBCA04 --description "Knowledge pack doc link/staleness drift" 2>/dev/null || true
+          gh label create doc-drift --color FBCA04 --description "Knowledge pack doc drift (high severity only)" 2>/dev/null || true
           existing=$(gh issue list --state open --label doc-drift --json number -q '.[0].number')
           if [ -n "$existing" ]; then
             gh issue comment "$existing" --body-file doc-report.md
@@ -37,6 +43,6 @@ jobs:
             gh issue create --title "📚 Documentation drift detected" --label doc-drift --body-file doc-report.md
           fi
 
-      - name: Fail the run if drift was found
+      - name: Fail the run if high-severity drift was found
         if: steps.check.outcome == 'failure'
         run: exit 1

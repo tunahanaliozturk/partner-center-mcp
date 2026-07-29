@@ -969,7 +969,8 @@
       "area": "security",
       "title": "List GDAP delegated admin relationships (Microsoft Graph)",
       "method": "GET",
-      "path": "https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships",
+      "api": "graph",
+      "path": "/tenantRelationships/delegatedAdminRelationships",
       "authType": "app+user",
       "headers": [
         { "name": "Authorization", "required": true, "note": "Bearer token, audience https://graph.microsoft.com (NOT partnercenter); scope DelegatedAdminRelationship.Read.All" }
@@ -1646,7 +1647,8 @@
       "area": "security",
       "title": "Create a GDAP relationship (Microsoft Graph)",
       "method": "POST",
-      "path": "https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships",
+      "api": "graph",
+      "path": "/tenantRelationships/delegatedAdminRelationships",
       "authType": "app+user",
       "headers": [
         { "name": "Authorization", "required": true, "note": "Bearer token, audience https://graph.microsoft.com; scope DelegatedAdminRelationship.ReadWrite.All" },
@@ -1678,7 +1680,8 @@
       "area": "security",
       "title": "Get a GDAP relationship by ID (Microsoft Graph)",
       "method": "GET",
-      "path": "https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships/{relationship-id}",
+      "api": "graph",
+      "path": "/tenantRelationships/delegatedAdminRelationships/{relationship-id}",
       "authType": "app+user",
       "headers": [
         { "name": "Authorization", "required": true, "note": "Bearer token, audience https://graph.microsoft.com; scope DelegatedAdminRelationship.Read.All" }
@@ -1754,7 +1757,8 @@
       "area": "referrals",
       "title": "Get co-sell referrals / leads (Partner API)",
       "method": "GET",
-      "path": "https://api.partner.microsoft.com/v1.0/engagements/referrals",
+      "api": "pricing-and-referrals",
+      "path": "/v1.0/engagements/referrals",
       "authType": "app+user",
       "headers": [
         { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partner.microsoft.com; user needs Referral Admin/User role" }
@@ -1779,7 +1783,8 @@
       "area": "referrals",
       "title": "Create a referral / co-sell deal (Partner API)",
       "method": "POST",
-      "path": "https://api.partner.microsoft.com/v1.0/engagements/referrals",
+      "api": "pricing-and-referrals",
+      "path": "/v1.0/engagements/referrals",
       "authType": "app+user",
       "headers": [
         { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partner.microsoft.com" },
@@ -1836,7 +1841,7 @@
       "area": "analytics",
       "title": "Get partner-level Azure usage analytics",
       "method": "GET",
-      "path": "https://api.partnercenter.microsoft.com/partner/v1/analytics/usage/azure",
+      "path": "/partner/v1/analytics/usage/azure",
       "authType": "app+user",
       "headers": [
         { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
@@ -2086,7 +2091,8 @@
       "area": "support",
       "title": "Get Microsoft 365 service health overviews (Microsoft Graph)",
       "method": "GET",
-      "path": "https://graph.microsoft.com/v1.0/admin/serviceAnnouncement/healthOverviews",
+      "api": "graph",
+      "path": "/admin/serviceAnnouncement/healthOverviews",
       "authType": "app+user",
       "headers": [
         { "name": "Authorization", "required": true, "note": "Bearer token, audience https://graph.microsoft.com; scope ServiceHealth.Read.All" }
@@ -2110,7 +2116,8 @@
       "area": "support",
       "title": "List Microsoft 365 service health issues (Microsoft Graph)",
       "method": "GET",
-      "path": "https://graph.microsoft.com/v1.0/admin/serviceAnnouncement/issues",
+      "api": "graph",
+      "path": "/admin/serviceAnnouncement/issues",
       "authType": "app+user",
       "headers": [
         { "name": "Authorization", "required": true, "note": "Bearer token, audience https://graph.microsoft.com; scope ServiceHealth.Read.All" },
@@ -2135,7 +2142,8 @@
       "area": "support",
       "title": "List Message center posts (Microsoft Graph)",
       "method": "GET",
-      "path": "https://graph.microsoft.com/v1.0/admin/serviceAnnouncement/messages",
+      "api": "graph",
+      "path": "/admin/serviceAnnouncement/messages",
       "authType": "app+user",
       "headers": [
         { "name": "Authorization", "required": true, "note": "Bearer token, audience https://graph.microsoft.com; scope ServiceMessage.Read.All" },
@@ -2185,7 +2193,8 @@
       "area": "invoicing",
       "title": "Export billed reconciliation line items (Microsoft Graph, async v2)",
       "method": "POST",
-      "path": "https://graph.microsoft.com/v1.0/reports/partners/billing/reconciliation/billed/export",
+      "api": "graph",
+      "path": "/reports/partners/billing/reconciliation/billed/export",
       "authType": "app-only",
       "headers": [
         { "name": "Authorization", "required": true, "note": "Bearer token, audience https://graph.microsoft.com; scope PartnerBilling.Read.All" },
@@ -2214,7 +2223,8 @@
       "area": "invoicing",
       "title": "Export unbilled reconciliation line items (Microsoft Graph, async v2)",
       "method": "POST",
-      "path": "https://graph.microsoft.com/v1.0/reports/partners/billing/reconciliation/unbilled/export",
+      "api": "graph",
+      "path": "/reports/partners/billing/reconciliation/unbilled/export",
       "authType": "app-only",
       "headers": [
         { "name": "Authorization", "required": true, "note": "Bearer token, audience https://graph.microsoft.com; scope PartnerBilling.Read.All" },
@@ -2244,7 +2254,8 @@
       "area": "security",
       "title": "Create a GDAP access assignment (Microsoft Graph)",
       "method": "POST",
-      "path": "https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships/{relationship-id}/accessAssignments",
+      "api": "graph",
+      "path": "/tenantRelationships/delegatedAdminRelationships/{relationship-id}/accessAssignments",
       "authType": "app+user",
       "headers": [
         {
@@ -2298,7 +2309,8 @@
       "area": "security",
       "title": "List GDAP access assignments (Microsoft Graph)",
       "method": "GET",
-      "path": "https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships/{relationship-id}/accessAssignments",
+      "api": "graph",
+      "path": "/tenantRelationships/delegatedAdminRelationships/{relationship-id}/accessAssignments",
       "authType": "app+user",
       "headers": [
         {
@@ -2326,7 +2338,8 @@
       "area": "security",
       "title": "Update a GDAP access assignment's roles (Microsoft Graph)",
       "method": "PATCH",
-      "path": "https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships/{relationship-id}/accessAssignments/{access-assignment-id}",
+      "api": "graph",
+      "path": "/tenantRelationships/delegatedAdminRelationships/{relationship-id}/accessAssignments/{access-assignment-id}",
       "authType": "app+user",
       "headers": [
         {
@@ -2367,7 +2380,8 @@
       "area": "security",
       "title": "Lock/terminate a GDAP relationship via a request (Microsoft Graph)",
       "method": "POST",
-      "path": "https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships/{relationship-id}/requests",
+      "api": "graph",
+      "path": "/tenantRelationships/delegatedAdminRelationships/{relationship-id}/requests",
       "authType": "app+user",
       "headers": [
         {
@@ -2409,7 +2423,8 @@
       "area": "security",
       "title": "List delegated admin customers (Microsoft Graph)",
       "method": "GET",
-      "path": "https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminCustomers",
+      "api": "graph",
+      "path": "/tenantRelationships/delegatedAdminCustomers",
       "authType": "app+user",
       "headers": [
         {
@@ -2437,7 +2452,8 @@
       "area": "security",
       "title": "Delete a GDAP relationship (Microsoft Graph)",
       "method": "DELETE",
-      "path": "https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships/{relationship-id}",
+      "api": "graph",
+      "path": "/tenantRelationships/delegatedAdminRelationships/{relationship-id}",
       "authType": "app+user",
       "headers": [
         {
@@ -2775,7 +2791,8 @@
       "area": "licenses",
       "title": "Assign/remove licenses on a group (group-based licensing, Microsoft Graph)",
       "method": "POST",
-      "path": "https://graph.microsoft.com/v1.0/groups/{group-id}/assignLicense",
+      "api": "graph",
+      "path": "/groups/{group-id}/assignLicense",
       "authType": "app+user",
       "headers": [
         {

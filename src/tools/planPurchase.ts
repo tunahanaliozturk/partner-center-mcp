@@ -2,6 +2,7 @@ import { z } from "zod";
 import type { Tool } from "../types.js";
 import type { Knowledge } from "../knowledge/schema.js";
 import { ok, toolError } from "../util/result.js";
+import { baseUrlFor } from "../knowledge/apis.js";
 
 // The ordered scenarios that make up an end-to-end New Commerce purchase, with
 // the reason each step exists. Scenario detail (method/path/docUrl) is pulled
@@ -33,12 +34,16 @@ export const planPurchase: Tool = {
     const steps = CHAIN.map((step, i) => {
       const s = k.scenarios.find((x) => x.id === step.scenarioId);
       if (!s) return null;
+      // `url` resolves the api-relative `path` against its base so a step
+      // targeting Graph is not mistaken for a Partner Center route.
+      const path = fill(s.path);
       return {
         order: i + 1,
         scenarioId: s.id,
         title: s.title,
         method: s.method,
-        path: fill(s.path),
+        path,
+        url: baseUrlFor(s.api) + path,
         authType: s.authType,
         why: step.why,
         keyGotchas: s.gotchas.slice(0, 2),

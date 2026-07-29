@@ -18,6 +18,13 @@ test("pc_generate_call notFounds an unknown scenario", async () => {
   expect(r.ok).toBe(false);
 });
 
+test("pc_generate_call emits the Graph host for a Graph scenario's derived powershell call", async () => {
+  const r = await generateCall.run({ id: "get-gdap-relationships", language: "powershell" }, ctx);
+  const data = r.data as any;
+  expect(data.code).toContain("https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships");
+  expect(data.code).not.toContain("api.partnercenter.microsoft.com");
+});
+
 test("pc_migrate_from_sdk maps a known SDK pattern to a REST scenario", async () => {
   const r = await migrateFromSdk.run({ code: "partner.Customers.ById(id).Subscriptions.Get()" }, ctx);
   const data = r.data as any;

@@ -43,6 +43,17 @@ test("pc_build_request reports missing params", async () => {
   expect(r.missingParams).toContain("customer-id");
 });
 
+test("pc_build_request routes a Graph scenario to the Graph host with a Graph token", async () => {
+  const r = (await buildRequest.run({ id: "get-gdap-relationships" }, ctx)).data as any;
+  expect(r.url).toBe("https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships");
+  expect(r.headers.Authorization).toBe("Bearer <graph-access-token>");
+});
+
+test("pc_build_request for an ordinary Partner Center scenario is unchanged", async () => {
+  const r = (await buildRequest.run({ id: "create-cart", params: { "customer-id": "abc" } }, ctx)).data as any;
+  expect(r.url).toBe("https://api.partnercenter.microsoft.com/v1/customers/abc/carts");
+});
+
 test("pc_decode_error decodes a pasted error JSON and finds the correlation id", async () => {
   const r = (await decodeError.run({ error: '{"code":"900420","description":"bad audience","correlationId":"aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"}' }, ctx)).data as any;
   expect(r.parsed.code).toBe("900420");
@@ -56,6 +67,27 @@ test("guided workflows return ordered, resolvable steps", async () => {
     expect(d.steps.length).toBeGreaterThan(1);
     expect(d.steps.every((s: any) => s.method && s.path && s.docUrl)).toBe(true);
   }
+});
+
+test("guided workflow steps carry a resolved absolute url, per step api", async () => {
+  // pc_plan_gdap_onboarding is entirely Graph; pc_plan_transfer is entirely
+  // Partner Center. A host-less path in either would send an agent to the
+  // wrong host.
+  const gdap = (await planGdapOnboarding.run({}, ctx)).data as any;
+  const byId = gdap.steps.find((s: any) => s.scenarioId === "get-gdap-relationship-by-id");
+  expect(byId.url).toBe("https://graph.microsoft.com/v1.0" + byId.path);
+  expect(gdap.steps.every((s: any) => s.url.startsWith("https://graph.microsoft.com/v1.0/"))).toBe(true);
+
+  const transfer = (await planTransfer.run({ customerId: "abc" }, ctx)).data as any;
+  expect(transfer.steps.every((s: any) => s.url === "https://api.partnercenter.microsoft.com" + s.path)).toBe(true);
+});
+
+test("a filled placeholder is reflected in url, not just path", async () => {
+  const d = (await planTransfer.run({ customerId: "abc" }, ctx)).data as any;
+  const step = d.steps.find((s: any) => s.path.includes("/abc"));
+  expect(step).toBeTruthy();
+  expect(step.url).toBe("https://api.partnercenter.microsoft.com" + step.path);
+  expect(step.url).not.toContain("{customer-id}");
 });
 
 test("pc_lookup_error resolves related scenarios", async () => {

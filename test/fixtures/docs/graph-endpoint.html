@@ -1,0 +1,2734 @@
+ <!DOCTYPE html>
+		<html
+			class="layout layout-holy-grail   show-table-of-contents conceptual show-breadcrumb default-focus"
+			lang="en-us"
+			dir="ltr"
+			data-authenticated="false"
+			data-auth-status-determined="false"
+			data-target="docs"
+			x-ms-format-detection="none"
+		>
+			
+		<head>
+			<title>Create User - Microsoft Graph v1.0 | Microsoft Learn</title>
+			<meta charset="utf-8" />
+			<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+			<meta name="color-scheme" content="light dark" />
+
+			<meta name="description" content="Use this API to create a new User." />
+			<link rel="canonical" href="https://learn.microsoft.com/en-us/graph/api/user-post-users?view=graph-rest-1.0" /> 
+
+			<!-- Non-customizable open graph and sharing-related metadata -->
+			<meta name="twitter:card" content="summary_large_image" />
+			<meta name="twitter:site" content="@MicrosoftLearn" />
+			<meta property="og:type" content="website" />
+			<meta property="og:image:alt" content="Microsoft Learn" />
+			<meta property="og:image" content="https://learn.microsoft.com/en-us/media/open-graph-image.png" />
+			<!-- Page specific open graph and sharing-related metadata -->
+			<meta property="og:title" content="Create User - Microsoft Graph v1.0" />
+			<meta property="og:url" content="https://learn.microsoft.com/en-us/graph/api/user-post-users?view=graph-rest-1.0" />
+			<meta property="og:description" content="Use this API to create a new User." />
+			<meta name="platform_id" content="22cf285e-2d4c-eecf-520b-57b0379b0807" /> <meta name="scope" content="graph" />
+			<meta name="locale" content="en-us" />
+			 
+			<meta name="uhfHeaderId" content="MSDocsHeader-MSGraph" />
+
+			<meta name="page_type" content="conceptual" />
+
+			<!--page specific meta tags-->
+			
+
+			<!-- custom meta tags -->
+			
+		<meta name="feedback_system" content="Standard" />
+	
+		<meta name="feedback_product_url" content="https://developer.microsoft.com/graph/support" />
+	
+		<meta name="author" content="yyuank" />
+	
+		<meta name="ms.author" content="MSGraphDocsVteam" />
+	
+		<meta name="ms.suite" content="microsoft-graph" />
+	
+		<meta name="ms.subservice" content="entra-users" />
+	
+		<meta name="toc_preview" content="true" />
+	
+		<meta name="recommendations" content="false" />
+	
+		<meta name="breadcrumb_path" content="/graph/ref-breadcrumb/toc.json" />
+	
+		<meta name="monikerRange" content="graph-rest-1.0" />
+	
+		<meta name="ms.service" content="microsoft-graph" />
+	
+		<meta name="ms.topic" content="reference" />
+	
+		<meta name="ms.reviewer" content="iamut" />
+	
+		<meta name="ms.localizationpriority" content="high" />
+	
+		<meta name="doc_type" content="apiPageType" />
+	
+		<meta name="ms.date" content="2024-10-22T00:00:00Z" />
+	
+		<meta name="document_id" content="17cbd4b2-1fdf-6a5d-58f9-63b2d831d9d6" />
+	
+		<meta name="document_version_independent_id" content="a5700fd6-347e-7124-7b90-0a82b6f1a70a" />
+	
+		<meta name="updated_at" content="2026-07-04T00:35:00Z" />
+	
+		<meta name="original_content_git_url" content="https://github.com/microsoftgraph/microsoft-graph-docs/blob/live/api-reference/v1.0/api/user-post-users.md" />
+	
+		<meta name="gitcommit" content="https://github.com/microsoftgraph/microsoft-graph-docs/blob/8b9f0fe0f5fddb18f82c72b6333937a8d56601ca/api-reference/v1.0/api/user-post-users.md" />
+	
+		<meta name="git_commit_id" content="8b9f0fe0f5fddb18f82c72b6333937a8d56601ca" />
+	
+		<meta name="monikers" content="graph-rest-1.0" />
+	
+		<meta name="default_moniker" content="graph-rest-1.0" />
+	
+		<meta name="site_name" content="Docs" />
+	
+		<meta name="depot_name" content="MSDN.microsoft-graph-ref" />
+	
+		<meta name="schema" content="Conceptual" />
+	
+		<meta name="toc_rel" content="toc.json" />
+	
+		<meta name="feedback_help_link_type" content="" />
+	
+		<meta name="feedback_help_link_url" content="" />
+	
+		<meta name="word_count" content="2656" />
+	
+		<meta name="config_moniker_range" content="&gt;= graph-rest-1.0" />
+	
+		<meta name="asset_id" content="api/user-post-users" />
+	
+		<meta name="moniker_range_name" content="107bf06837724705de50667b407c0197" />
+	
+		<meta name="item_type" content="Content" />
+	
+		<meta name="source_path" content="api-reference/v1.0/api/user-post-users.md" />
+	
+		<meta name="previous_tlsh_hash" content="B0C1FFE1212E5104A7C37A1B981A1F1181F182D96DF4A4DC15BA67F1DEC33A62A3673C938E3F9B044331A54B4172793CEFD2F937A21C22C564E29DADC22E3197729C5776AC" />
+	
+		<meta name="github_feedback_content_git_url" content="https://github.com/microsoftgraph/microsoft-graph-docs-contrib/blob/main/api-reference/v1.0/api/user-post-users.md" />
+	
+		<meta name="markdown_url" content="https://learn.microsoft.com/en-us/graph/api/user-post-users?view=graph-rest-1.0&amp;accept=text/markdown" />
+	 
+		<meta name="cmProducts" content="https://microsoft-devrel.poolparty.biz/DevRelOfferingOntology/c77bc83e-f0b0-4b63-836e-6630e606bf7c" data-source="generated" />
+	
+		<meta name="cmProducts" content="https://authoring-docs-microsoft.poolparty.biz/devrel/5fc61396-d075-4560-aece-fdbda73d243f" data-source="generated" />
+	
+		<meta name="cmProducts" content="https://microsoft-devrel.poolparty.biz/DevRelOfferingOntology/1433a524-c01f-4b87-beab-670c040dea4f" data-source="generated" />
+	
+		<meta name="spProducts" content="https://microsoft-devrel.poolparty.biz/DevRelOfferingOntology/b98eda1f-6af8-444f-bbfb-7f2366948cbc" data-source="generated" />
+	
+		<meta name="spProducts" content="https://authoring-docs-microsoft.poolparty.biz/devrel/ad9437c1-8cda-4537-ad69-b4b263652e13" data-source="generated" />
+	
+		<meta name="spProducts" content="https://microsoft-devrel.poolparty.biz/DevRelOfferingOntology/312f1f05-a431-4193-8a4d-e6245d5966de" data-source="generated" />
+	
+
+			<!-- Apply persisted/system theme before first paint to prevent wrong-theme flash when scripts are deferred. -->
+			<script id="theme-preference">
+				(function () {
+			try {
+				var stored = localStorage.getItem('theme');
+				var theme = /^(light|dark|high-contrast)$/.test(stored)
+					? stored
+					: matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+				document.documentElement.classList.add('theme-' + theme);
+			} catch (e) {}
+		})();;
+			</script>
+
+			<script id="atlas-layout-preferences">
+				(function () {
+			try {
+				var state = JSON.parse(localStorage.getItem('atlas-layout-preferences') || '{}');
+				var view = state["docs-layout-persistence"] || {};
+				var excludesKey = "";
+				var blocked = {};
+				if (excludesKey) {
+					var exclusions = JSON.parse(localStorage.getItem('atlas-layout-exclusions') || '{}');
+					if (Object.prototype.hasOwnProperty.call(exclusions, excludesKey)) {
+						var scoped = exclusions[excludesKey];
+						if (scoped) {
+							if (typeof scoped === 'object') blocked = scoped;
+						}
+					}
+				}
+				var html = document.documentElement;
+				for (var c in view) {
+					if (Object.prototype.hasOwnProperty.call(blocked, c)) continue;
+					if (view[c]) html.classList.add(c);
+					else html.classList.remove(c);
+				}
+			} catch (e) {}
+		})();;
+			</script>
+
+			<!-- assets and js globals -->
+			
+			<link rel="stylesheet" href="/static/assets/0.4.03489.8058-a30a5f1d/styles/site.css" />
+			
+			<script src="https://wcpstatic.microsoft.com/mscc/lib/v2/wcp-consent.js"></script>
+			<script async src="https://js.monitor.azure.com/scripts/c/ms.jsll-4.min.js"></script>
+			
+
+			<!-- msdocs global object -->
+			<script id="msdocs-script">
+		var msDocs = {
+  "environment": {
+    "accessLevel": "online",
+    "azurePortalHostname": "portal.azure.com",
+    "reviewFeatures": false,
+    "supportLevel": "production",
+    "systemContent": true,
+    "siteName": "learn",
+    "legacyHosting": false
+  },
+  "data": {
+    "contentLocale": "en-us",
+    "contentDir": "ltr",
+    "userLocale": "en-us",
+    "userDir": "ltr",
+    "pageTemplate": "Conceptual",
+    "layoutStateStorageKey": "docs-layout-persistence",
+    "brand": "",
+    "context": {},
+    "standardFeedback": true,
+    "showFeedbackReport": false,
+    "feedbackHelpLinkType": "",
+    "feedbackHelpLinkUrl": "",
+    "feedbackSystem": "Standard",
+    "feedbackGitHubRepo": "microsoftgraph/microsoft-graph-docs-contrib",
+    "feedbackProductUrl": "https://developer.microsoft.com/graph/support",
+    "extendBreadcrumb": false,
+    "isEditDisplayable": true,
+    "isPrivateUnauthorized": false,
+    "hideViewSource": false,
+    "isPermissioned": false,
+    "hasRecommendations": false,
+    "contributors": [
+      {
+        "name": "yyuank",
+        "url": "https://github.com/yyuank"
+      },
+      {
+        "name": "FaithOmbongi",
+        "url": "https://github.com/FaithOmbongi"
+      },
+      {
+        "name": "Copilot",
+        "url": "https://github.com/Copilot"
+      },
+      {
+        "name": "SiverShiSSS",
+        "url": "https://github.com/SiverShiSSS"
+      },
+      {
+        "name": "Saisang",
+        "url": "https://github.com/Saisang"
+      },
+      {
+        "name": "jasonjoh",
+        "url": "https://github.com/jasonjoh"
+      },
+      {
+        "name": "MichaelNorman",
+        "url": "https://github.com/MichaelNorman"
+      },
+      {
+        "name": "Lauragra",
+        "url": "https://github.com/Lauragra"
+      },
+      {
+        "name": "wandeg",
+        "url": "https://github.com/wandeg"
+      },
+      {
+        "name": "millicentachieng",
+        "url": "https://github.com/millicentachieng"
+      },
+      {
+        "name": "jpettere",
+        "url": "https://github.com/jpettere"
+      },
+      {
+        "name": "DCtheGeek",
+        "url": "https://github.com/DCtheGeek"
+      },
+      {
+        "name": "davidmu1",
+        "url": "https://github.com/davidmu1"
+      },
+      {
+        "name": "jthake",
+        "url": "https://github.com/jthake"
+      },
+      {
+        "name": "darrelmiller",
+        "url": "https://github.com/darrelmiller"
+      },
+      {
+        "name": "andrueastman",
+        "url": "https://github.com/andrueastman"
+      },
+      {
+        "name": "dkershaw10",
+        "url": "https://github.com/dkershaw10"
+      },
+      {
+        "name": "tony-xia",
+        "url": "https://github.com/tony-xia"
+      },
+      {
+        "name": "OfficeGSX",
+        "url": "https://github.com/OfficeGSX"
+      }
+    ]
+  },
+  "functions": {}
+};;
+	</script>
+
+			<!-- base scripts, msdocs global should be before this -->
+			<script
+				src="/static/assets/0.4.03489.8058-a30a5f1d/scripts/en-us/index-docs.js"
+				async
+			></script>
+			
+
+			<!-- json-ld -->
+			
+		</head>
+	
+			<body
+				id="body"
+				data-bi-name="body"
+				class="layout-body "
+				lang="en-us"
+				dir="ltr"
+			>
+				<header class="layout-body-header background-color-body-medium">
+		<div class="header-holder has-default-focus">
+			
+		<a
+			href="#main"
+			
+			style="z-index: 1070"
+			class="outline-color-text visually-hidden-until-focused position-fixed inner-focus focus-visible top-0 left-0 right-0 padding-xs text-align-center background-color-body"
+			
+		>
+			Skip to main content
+		</a>
+	
+		<a
+			href="#"
+			data-skip-to-ask-learn
+			style="z-index: 1070"
+			class="outline-color-text visually-hidden-until-focused position-fixed inner-focus focus-visible top-0 left-0 right-0 padding-xs text-align-center background-color-body"
+			hidden
+		>
+			Skip to Ask Learn chat experience
+		</a>
+	
+
+			<div hidden id="cookie-consent-holder" data-test-id="cookie-consent-container"></div>
+			<!-- Unsupported browser warning -->
+			<div
+				id="unsupported-browser"
+				style="background-color: white; color: black; padding: 16px; border-bottom: 1px solid grey;"
+				hidden
+			>
+				<div style="max-width: 800px; margin: 0 auto;">
+					<p style="font-size: 24px">This browser is no longer supported.</p>
+					<p style="font-size: 16px; margin-top: 16px;">
+						Upgrade to Microsoft Edge to take advantage of the latest features, security updates, and technical support.
+					</p>
+					<div style="margin-top: 12px;">
+						<a
+							href="https://go.microsoft.com/fwlink/p/?LinkID=2092881 "
+							style="background-color: #0078d4; border: 1px solid #0078d4; color: white; padding: 6px 12px; border-radius: 2px; display: inline-block;"
+						>
+							Download Microsoft Edge
+						</a>
+						<a
+							href="https://learn.microsoft.com/en-us/lifecycle/faq/internet-explorer-microsoft-edge"
+							style="background-color: white; padding: 6px 12px; border: 1px solid #505050; color: #171717; border-radius: 2px; display: inline-block;"
+						>
+							More info about Internet Explorer and Microsoft Edge
+						</a>
+					</div>
+				</div>
+			</div>
+			<!-- site header -->
+			<div
+				id="ms--site-header"
+				data-test-id="site-header-wrapper"
+				itemscope="itemscope"
+				itemtype="http://schema.org/Organization"
+			>
+				<div
+					id="ms--mobile-nav"
+					class="site-header display-none-tablet padding-inline-none gap-none"
+					data-bi-name="mobile-header"
+					data-test-id="mobile-header"
+				></div>
+				<div
+					id="ms--primary-nav"
+					class="site-header display-none display-flex-tablet"
+					data-bi-name="L1-header"
+					data-test-id="primary-header"
+				></div>
+				<div
+					id="ms--secondary-nav"
+					class="site-header display-none display-flex-tablet"
+					data-bi-name="L2-header"
+					data-test-id="secondary-header"
+					
+				></div>
+			</div>
+			
+		<!-- banner -->
+		<div data-banner>
+			<div id="disclaimer-holder"></div>
+			
+		</div>
+		<!-- banner end -->
+	
+		</div>
+	</header>
+				 <section
+					id="layout-body-menu"
+					class="layout-body-menu border-right display-flex background-color-body-medium"
+					data-bi-name="menu"
+			  >
+					
+		<div
+			id="left-container"
+			class="left-container display-none padding-none display-block-tablet width-full display-none-until-layout-restored"
+			data-toc-container="true"
+		>
+			<div
+				id="ms--toc-content"
+				class="padding-left-sm padding-right-none padding-bottom-sm height-full"
+			>
+				<nav
+					id="affixed-left-container"
+					class="margin-top-xxs-tablet position-sticky display-flex flex-direction-column width-full"
+					aria-label="Primary"
+					data-bi-name="left-toc"
+					role="navigation"
+				>
+					<div
+						id="ms--collapsible-toc-header"
+						class="display-flex flex-direction-row-reverse justify-content-center align-items-center margin-bottom-xxs margin-right-xxs"
+					>
+						<button
+							type="button"
+							class="button button-clear inner-focus"
+							data-collapsible-toc-toggle
+							aria-expanded="true"
+							hidden
+							aria-controls="ms--toc-content"
+							aria-label="Table of contents"
+						>
+							<span class="icon icon-mirrored-rtl font-size-md" aria-hidden="true">
+								<span
+									class="docon docon-panel-left-contract display-none-layout-menu-collapsed"
+								></span>
+								<span
+									class="docon docon-panel-left-expand display-none display-inline-layout-menu-collapsed"
+								></span>
+							</span>
+						</button>
+						<div
+							id="ms--collapsible-toc-moniker-slot"
+							class="flex-grow-1 display-none-layout-menu-collapsed"
+						></div>
+					</div>
+				</nav>
+			</div>
+		</div>
+	
+			  </section>
+
+				<main
+					id="main"
+					role="main"
+					class="layout-body-main "
+					data-bi-name="content"
+					lang="en-us"
+					dir="ltr"
+				>
+					
+			<div
+		id="ms--content-header"
+		class="content-header default-focus border-bottom-none"
+		data-bi-name="content-header"
+	>
+		<div class="content-header-controls margin-xxs margin-inline-sm-tablet">
+			<button
+				type="button"
+				class="contents-button button button-sm margin-right-xxs"
+				data-bi-name="contents-expand"
+				aria-haspopup="true"
+				data-contents-button
+			>
+				<span class="icon" aria-hidden="true"><span class="docon docon-menu"></span></span>
+				<span class="contents-expand-title"> Table of contents </span>
+			</button>
+			<button
+				type="button"
+				class="ap-collapse-behavior ap-expanded button button-sm"
+				data-bi-name="ap-collapse"
+				aria-controls="action-panel"
+			>
+				<span class="icon" aria-hidden="true"><span class="docon docon-exit-mode"></span></span>
+				<span>Exit editor mode</span>
+			</button>
+		</div>
+	</div>
+			<div
+				data-main-column
+				class="reading-width margin-inline-auto layout-padding padding-top-none padding-top-sm-tablet padding-bottom-sm"
+			>
+				<div>
+					
+		<div id="article-header" class="background-color-body margin-bottom-xs display-none-print">
+			<div class="display-flex align-items-center justify-content-space-between">
+				
+		<details
+			id="article-header-breadcrumbs-overflow-popover"
+			class="popover popover-left"
+			data-for="article-header-breadcrumbs"
+		>
+			<summary
+				class="button button-clear button-primary button-sm inner-focus"
+				aria-label="All breadcrumbs"
+			>
+				<span class="icon" aria-hidden="true">
+					<span class="docon docon-more"></span>
+				</span>
+			</summary>
+			<div id="article-header-breadcrumbs-overflow" class="popover-content"></div>
+		</details>
+
+		<bread-crumbs
+			id="article-header-breadcrumbs"
+			role="group"
+			aria-label="Breadcrumbs"
+			data-test-id="article-header-breadcrumbs"
+			class="overflow-hidden flex-grow-1 margin-right-sm margin-right-md-tablet margin-right-lg-desktop margin-left-negative-xxs padding-left-xxs"
+		></bread-crumbs>
+	 
+		<div
+			id="article-header-page-actions"
+			class="opacity-none margin-left-auto display-flex flex-wrap-no-wrap align-items-stretch"
+		>
+			
+		<button
+			class="button button-sm border-none inner-focus display-none-tablet flex-shrink-0 "
+			data-bi-name="ask-learn-assistant-entry"
+			data-test-id="ask-learn-assistant-modal-entry-mobile"
+			data-ask-learn-modal-entry
+			
+			type="button"
+			style="min-width: max-content;"
+			aria-expanded="false"
+			aria-label="Ask Learn"
+			hidden
+		>
+			<span class="icon font-size-lg" aria-hidden="true">
+				<span class="docon docon-chat-sparkle-fill gradient-ask-learn-logo"></span>
+			</span>
+		</button>
+		<button
+			class="button button-sm display-none display-inline-flex-tablet display-none-desktop flex-shrink-0 margin-right-xxs border-color-ask-learn "
+			data-bi-name="ask-learn-assistant-entry"
+			
+			data-test-id="ask-learn-assistant-modal-entry-tablet"
+			data-ask-learn-modal-entry
+			type="button"
+			style="min-width: max-content;"
+			aria-expanded="false"
+			hidden
+		>
+			<span class="icon font-size-lg" aria-hidden="true">
+				<span class="docon docon-chat-sparkle-fill gradient-ask-learn-logo"></span>
+			</span>
+			<span>Ask Learn</span>
+		</button>
+		<button
+			class="button button-sm display-none flex-shrink-0 display-inline-flex-desktop margin-right-xxs border-color-ask-learn "
+			data-bi-name="ask-learn-assistant-entry"
+			
+			data-test-id="ask-learn-assistant-flyout-entry"
+			data-ask-learn-flyout-entry
+			data-flyout-button="toggle"
+			type="button"
+			style="min-width: max-content;"
+			aria-expanded="false"
+			aria-controls="ask-learn-flyout"
+			hidden
+		>
+			<span class="icon font-size-lg" aria-hidden="true">
+				<span class="docon docon-chat-sparkle-fill gradient-ask-learn-logo"></span>
+			</span>
+			<span>Ask Learn</span>
+		</button>
+	 
+
+			<details class="popover popover-right" id="article-header-page-actions-overflow">
+				<summary
+					class="justify-content-flex-start button button-clear button-sm button-primary inner-focus"
+					aria-label="More actions"
+					title="More actions"
+				>
+					<span class="icon" aria-hidden="true">
+						<span class="docon docon-more-vertical"></span>
+					</span>
+				</summary>
+				<div class="popover-content">
+					
+		<button
+			type="button"
+			id="ms--focus-mode-button"
+			data-focus-mode
+			data-bi-name="focus-mode-entry"
+			data-page-action-item="overflow-all"
+			data-popover-close
+			class="button button-clear button-sm button-block justify-content-flex-start text-align-left inner-focus display-none display-inline-flex-tablet"
+		>
+			<span class="icon" aria-hidden="true">
+				<span class="docon docon-glasses"></span>
+			</span>
+			<span>Reading mode</span>
+		</button>
+	 
+		<button
+			data-page-action-item="overflow-mobile"
+			type="button"
+			class="display-block-layout-menu-collapsed button-block button-sm inner-focus button button-clear display-none-tablet justify-content-flex-start text-align-left"
+			data-bi-name="contents-expand"
+			data-contents-button
+			data-popover-close
+		>
+			<span class="icon" aria-hidden="true"
+				><span class="docon docon-editor-list-bullet"></span
+			></span>
+			<span class="contents-expand-title">Table of contents</span>
+		</button>
+	 
+		<a
+			id="lang-link-overflow"
+			class="button-sm inner-focus button button-clear button-block justify-content-flex-start text-align-left"
+			data-bi-name="language-toggle"
+			data-page-action-item="overflow-all"
+			data-check-hidden="true"
+			data-read-in-link
+			href="#"
+			hidden
+		>
+			<span class="icon" aria-hidden="true" data-read-in-link-icon>
+				<span class="docon docon-locale-globe"></span>
+			</span>
+			<span data-read-in-link-text>Read in English</span>
+		</a>
+	
+					
+		<button
+			type="button"
+			class="collection button button-clear button-sm button-block justify-content-flex-start text-align-left inner-focus"
+			data-list-type="collection"
+			data-bi-name="collection"
+			data-page-action-item="overflow-all"
+			data-check-hidden="true"
+			data-popover-close
+		>
+			<span class="icon" aria-hidden="true">
+				<span class="docon docon-circle-addition"></span>
+			</span>
+			<span class="collection-status">Add</span>
+		</button>
+	 
+		<button
+			type="button"
+			class="collection button button-block button-clear button-sm justify-content-flex-start text-align-left inner-focus"
+			data-list-type="plan"
+			data-bi-name="plan"
+			data-page-action-item="overflow-all"
+			data-check-hidden="true"
+			data-popover-close
+			hidden
+		>
+			<span class="icon" aria-hidden="true">
+				<span class="docon docon-circle-addition"></span>
+			</span>
+			<span class="plan-status">Add to Plans</span>
+		</button>
+	 
+					
+		<a
+			data-contenteditbtn
+			class="button button-clear button-block button-sm inner-focus justify-content-flex-start text-align-left text-decoration-none"
+			data-bi-name="edit"
+			data-page-action-item="overflow-all"
+			data-check-hidden="true"
+			
+			href="https://github.com/microsoftgraph/microsoft-graph-docs-contrib/blob/main/api-reference/v1.0/api/user-post-users.md"
+			data-original_content_git_url="https://github.com/microsoftgraph/microsoft-graph-docs/blob/live/api-reference/v1.0/api/user-post-users.md"
+			data-original_content_git_url_template="{repo}/blob/{branch}/api-reference/v1.0/api/user-post-users.md"
+			data-pr_repo=""
+			data-pr_branch=""
+		>
+			<span class="icon" aria-hidden="true">
+				<span class="docon docon-edit-outline"></span>
+			</span>
+			<span>Edit</span>
+		</a>
+	  
+		<hr class="margin-block-xxs" />
+		
+				<button
+					class="button button-block button-clear button-sm justify-content-flex-start text-align-left inner-focus"
+					type="button"
+					data-bi-name="copy-markdown"
+					data-page-action-item="overflow-all"
+					data-copy-markdown
+					data-copy-state="idle"
+					data-check-hidden="true"
+				>
+					<span class="icon color-primary" aria-hidden="true">
+						<span data-show-when="idle" class="docon docon-code-lang"></span>
+						<span data-show-when="loading" class="loader" hidden></span>
+						<span data-show-when="success" class="docon docon-check-mark" hidden></span>
+					</span>
+					<span>Copy Markdown</span>
+				</button>
+		   
+				<button
+					class="button button-block button-clear button-sm justify-content-flex-start text-align-left inner-focus"
+					type="button"
+					data-bi-name="print"
+					data-page-action-item="overflow-all"
+					data-popover-close
+					data-print-page
+					data-check-hidden="true"
+				>
+					<span class="icon color-primary" aria-hidden="true">
+						<span class="docon docon-print"></span>
+					</span>
+					<span>Print</span>
+				</button>
+		  
+	
+				</div>
+			</details>
+		</div>
+	
+			</div>
+		</div>
+	  
+		<!-- privateUnauthorizedTemplate is hidden by default -->
+		<div unauthorized-private-section data-bi-name="permission-content-unauthorized-private" hidden>
+			<hr class="hr margin-top-xs margin-bottom-sm" />
+			<div class="notification notification-info">
+				<div class="notification-content">
+					<p class="margin-top-none notification-title">
+						<span class="icon" aria-hidden="true"
+							><span class="docon docon-exclamation-circle-solid"></span
+						></span>
+						<span>Note</span>
+					</p>
+					<p class="margin-top-none authentication-determined not-authenticated">
+						Access to this page requires authorization. You can try <a class="docs-sign-in" href="#" data-bi-name="permission-content-sign-in">signing in</a> or <a  class="docs-change-directory" data-bi-name="permisson-content-change-directory">changing directories</a>.
+					</p>
+					<p class="margin-top-none authentication-determined authenticated">
+						Access to this page requires authorization. You can try <a class="docs-change-directory" data-bi-name="permisson-content-change-directory">changing directories</a>.
+					</p>
+				</div>
+			</div>
+		</div>
+	
+					<div class="content"><h1 id="create-user">Create User</h1></div>
+					
+		<div
+			id="article-metadata"
+			data-bi-name="article-metadata"
+			data-test-id="article-metadata"
+			class="page-metadata-container display-flex gap-xxs justify-content-space-between align-items-center flex-wrap-wrap"
+		>
+			 
+				<div
+					id="user-feedback"
+					class="margin-block-xxs display-none display-none-print"
+					hidden
+					data-hide-on-archived
+				>
+					
+		<button
+			id="user-feedback-button"
+			data-test-id="conceptual-feedback-button"
+			class="button button-sm button-clear button-primary display-none"
+			type="button"
+			data-bi-name="user-feedback-button"
+			data-user-feedback-button
+			hidden
+		>
+			<span class="icon" aria-hidden="true">
+				<span class="docon docon-like"></span>
+			</span>
+			<span>Feedback</span>
+		</button>
+	
+				</div>
+		  
+		</div>
+	 
+		<div data-id="ai-summary" class="display-none-print">
+			<div id="ms--ai-summary-cta" class="margin-top-xs display-flex align-items-center">
+				<span class="icon" aria-hidden="true">
+					<span class="docon docon-sparkle-fill gradient-text-vivid"></span>
+				</span>
+				<button
+					id="ms--ai-summary"
+					type="button"
+					class="tag tag-sm tag-suggestion margin-left-xxs"
+					data-test-id="ai-summary-cta"
+					data-bi-name="ai-summary-cta"
+					data-an="ai-summary"
+				>
+					<span class="ai-summary-cta-text">
+						Summarize this article for me
+					</span>
+				</button>
+			</div>
+			<!-- Slot where the client will render the summary card after the user clicks the CTA -->
+			<div id="ms--ai-summary-header" class="margin-top-xs"></div>
+		</div>
+	 
+		<nav
+			id="center-doc-outline"
+			class="doc-outline display-none-desktop display-none-print margin-bottom-sm"
+			data-bi-name="intopic toc"
+			aria-label="In this article"
+		>
+			<h2 id="ms--in-this-article" class="title is-6 margin-block-xs">
+				In this article
+			</h2>
+		</nav>
+	
+					<div class="content"><p>Namespace: microsoft.graph</p>
+<p>Create a new <a href="resources/user?view=graph-rest-1.0" data-linktype="relative-path">user</a>.
+The request body contains the user to create. At a minimum, you must specify the required properties for the user. You can optionally specify any other writable properties.</p>
+<div class="NOTE">
+<p>Note</p>
+<p>To create external users as part of B2B collaboration with your organization, use the <a href="invitation-post?view=graph-rest-1.0" data-linktype="relative-path">invitation API</a>. To create a customer, citizen, or business partner in Microsoft Entra External ID in external tenants, see <a href="#example-3-create-a-customer-account-in-external-tenants" data-linktype="self-bookmark">Example 3: Create a customer account</a>.</p>
+</div>
+<!-- markdownlint-disable MD041-->
+<p>This API is available in the following <a href="/en-us/graph/deployments" data-linktype="absolute-path">national cloud deployments</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Global service</th>
+<th>US Government L4</th>
+<th>US Government L5 (DOD)</th>
+<th>China operated by 21Vianet</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+</tbody>
+</table>
+<h2 id="permissions">Permissions</h2>
+<p>Choose the permission or permissions marked as least privileged for this API. Use a higher privileged permission or permissions <a href="/en-us/graph/permissions-overview#best-practices-for-using-microsoft-graph-permissions" data-linktype="absolute-path">only if your app requires it</a>. For details about delegated and application permissions, see <a href="/en-us/graph/permissions-overview#permission-types" data-linktype="absolute-path">Permission types</a>. To learn more about these permissions, see the <a href="/en-us/graph/permissions-reference" data-linktype="absolute-path">permissions reference</a>.</p>
+<!-- { "blockType": "ignored", "name": "user_post_users" } -->
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Permission type</th>
+<th style="text-align: left;">Least privileged permissions</th>
+<th style="text-align: left;">Higher privileged permissions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Delegated (work or school account)</td>
+<td style="text-align: left;">User.Create</td>
+<td style="text-align: left;">User.ReadWrite.All, Directory.ReadWrite.All</td>
+</tr>
+<tr>
+<td style="text-align: left;">Delegated (personal Microsoft account)</td>
+<td style="text-align: left;">Not supported.</td>
+<td style="text-align: left;">Not supported.</td>
+</tr>
+<tr>
+<td style="text-align: left;">Application</td>
+<td style="text-align: left;">User.Create</td>
+<td style="text-align: left;">User.ReadWrite.All, Directory.ReadWrite.All</td>
+</tr>
+</tbody>
+</table>
+<h2 id="http-request">HTTP request</h2>
+<!-- { "blockType": "ignored" } -->
+<pre><code class="lang-http">POST /users
+</code></pre>
+<h2 id="request-headers">Request headers</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Header</th>
+<th style="text-align: left;">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Authorization</td>
+<td style="text-align: left;">Bearer {token}. Required. Learn more about <a href="/en-us/graph/auth/auth-concepts" data-linktype="absolute-path">authentication and authorization</a>.</td>
+</tr>
+<tr>
+<td style="text-align: left;">Content-Type</td>
+<td style="text-align: left;">application/json</td>
+</tr>
+</tbody>
+</table>
+<h2 id="request-body">Request body</h2>
+<p>In the request body, supply a JSON representation of <a href="resources/user?view=graph-rest-1.0" data-linktype="relative-path">user</a> object.</p>
+<p>The following table lists the properties that are required when you create a user. If you're including an <strong>identities</strong> property for the user you're creating, not all the properties listed are required. For a social identity, none of the properties are required.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">accountEnabled</td>
+<td style="text-align: left;">Boolean</td>
+<td style="text-align: left;">true if the account is enabled; otherwise, false.</td>
+</tr>
+<tr>
+<td style="text-align: left;">displayName</td>
+<td style="text-align: left;">String</td>
+<td style="text-align: left;">The name to display in the address book for the user.</td>
+</tr>
+<tr>
+<td style="text-align: left;">onPremisesImmutableId</td>
+<td style="text-align: left;">String</td>
+<td style="text-align: left;">Required only when creating a new user account if you are using a federated domain for the user's <strong>userPrincipalName</strong> (UPN) property.</td>
+</tr>
+<tr>
+<td style="text-align: left;">mailNickname</td>
+<td style="text-align: left;">String</td>
+<td style="text-align: left;">The mail alias for the user.</td>
+</tr>
+<tr>
+<td style="text-align: left;">passwordProfile</td>
+<td style="text-align: left;"><a href="resources/passwordprofile?view=graph-rest-1.0" data-linktype="relative-path">PasswordProfile</a></td>
+<td style="text-align: left;">The password profile for the user.</td>
+</tr>
+<tr>
+<td style="text-align: left;">userPrincipalName</td>
+<td style="text-align: left;">String</td>
+<td style="text-align: left;">The user principal name (someuser@contoso.com). It's an Internet-style login name for the user based on the Internet standard RFC 822. By convention, this should map to the user's email name. The general format is alias@domain, where domain must be present in the tenant's collection of verified domains. The verified domains for the tenant can be accessed from the <strong>verifiedDomains</strong> property of <a href="resources/organization?view=graph-rest-1.0" data-linktype="relative-path">organization</a>. <br>NOTE: This property cannot contain accent characters. Only the following characters are allowed <code>A - Z</code>, <code>a - z</code>, <code>0 - 9</code>, <code> ' . - _ ! # ^ ~</code>. For the complete list of allowed characters, see <a href="/en-us/azure/active-directory/authentication/concept-sspr-policy#userprincipalname-policies-that-apply-to-all-user-accounts" data-linktype="absolute-path">username policies</a>.</td>
+</tr>
+</tbody>
+</table>
+<p>Because the <strong>user</strong> resource supports <a href="/en-us/graph/extensibility-overview" data-linktype="absolute-path">extensions</a>, you can use the <code>POST</code> operation and add custom properties with your own data to the user instance while creating it.</p>
+<div class="NOTE">
+<p>Note</p>
+<p>Federated users created via this API are forced to sign in every 12 hours by default. For information about how to change this, see <a href="/en-us/azure/active-directory/develop/active-directory-configurable-token-lifetimes#exceptions" data-linktype="absolute-path">Exceptions for token lifetimes</a>.</p>
+</div>
+<h2 id="response">Response</h2>
+<p>If successful, this method returns <code>201 Created</code> response code and <a href="resources/user?view=graph-rest-1.0" data-linktype="relative-path">user</a> object in the response body.</p>
+<h2 id="example">Example</h2>
+<h3 id="example-1-create-a-user">Example 1: Create a user</h3>
+<h4 id="request">Request</h4>
+<p>The following example shows a request.</p>
+<div class="tabGroup" id="tabgroup_1">
+<ul role="tablist">
+<li role="presentation">
+<a href="#tabpanel_1_http" role="tab" aria-controls="tabpanel_1_http" data-tab="http" tabindex="0" aria-selected="true" data-linktype="self-bookmark">HTTP</a>
+</li>
+<li role="presentation">
+<a href="#tabpanel_1_csharp" role="tab" aria-controls="tabpanel_1_csharp" data-tab="csharp" tabindex="-1" data-linktype="self-bookmark">C#</a>
+</li>
+<li role="presentation">
+<a href="#tabpanel_1_go" role="tab" aria-controls="tabpanel_1_go" data-tab="go" tabindex="-1" data-linktype="self-bookmark">Go</a>
+</li>
+<li role="presentation">
+<a href="#tabpanel_1_java" role="tab" aria-controls="tabpanel_1_java" data-tab="java" tabindex="-1" data-linktype="self-bookmark">Java</a>
+</li>
+<li role="presentation">
+<a href="#tabpanel_1_javascript" role="tab" aria-controls="tabpanel_1_javascript" data-tab="javascript" tabindex="-1" data-linktype="self-bookmark">JavaScript</a>
+</li>
+<li role="presentation">
+<a href="#tabpanel_1_php" role="tab" aria-controls="tabpanel_1_php" data-tab="php" tabindex="-1" data-linktype="self-bookmark">PHP</a>
+</li>
+<li role="presentation">
+<a href="#tabpanel_1_powershell" role="tab" aria-controls="tabpanel_1_powershell" data-tab="powershell" tabindex="-1" data-linktype="self-bookmark">PowerShell</a>
+</li>
+<li role="presentation">
+<a href="#tabpanel_1_python" role="tab" aria-controls="tabpanel_1_python" data-tab="python" tabindex="-1" data-linktype="self-bookmark">Python</a>
+</li>
+</ul>
+<section id="tabpanel_1_http" role="tabpanel" data-tab="http">
+<!-- {
+  "blockType": "request",
+  "name": "create_user_from_users"
+}-->
+<pre><code class="lang-http">POST https://graph.microsoft.com/v1.0/users
+Content-type: application/json
+
+{
+  "accountEnabled": true,
+  "displayName": "Adele Vance",
+  "mailNickname": "AdeleV",
+  "userPrincipalName": "AdeleV@contoso.com",
+  "passwordProfile" : {
+    "forceChangePasswordNextSignIn": true,
+    "password": "xWwvJ]6NMw+bWH-d"
+  }
+}
+</code></pre>
+</section>
+<section id="tabpanel_1_csharp" role="tabpanel" data-tab="csharp" aria-hidden="true" hidden="hidden">
+
+<pre><code class="lang-csharp">
+// Code snippets are only available for the latest version. Current version is 5.x
+
+// Dependencies
+using Microsoft.Graph.Models;
+
+var requestBody = new User
+{
+	AccountEnabled = true,
+	DisplayName = "Adele Vance",
+	MailNickname = "AdeleV",
+	UserPrincipalName = "AdeleV@contoso.com",
+	PasswordProfile = new PasswordProfile
+	{
+		ForceChangePasswordNextSignIn = true,
+		Password = "xWwvJ]6NMw+bWH-d",
+	},
+};
+
+// To initialize your graphClient, see https://learn.microsoft.com/en-us/graph/sdks/create-client?from=snippets&amp;tabs=csharp
+var result = await graphClient.Users.PostAsync(requestBody);
+
+
+</code></pre>
+<!-- markdownlint-disable MD041-->
+<blockquote>
+<p>For details about how to <a href="/en-us/graph/sdks/sdk-installation" data-linktype="absolute-path">add the SDK</a> to your project and <a href="/en-us/graph/sdks/choose-authentication-providers" data-linktype="absolute-path">create an authProvider</a> instance, see the <a href="/en-us/graph/sdks/sdks-overview" data-linktype="absolute-path">SDK documentation</a>.</p>
+</blockquote>
+</section>
+<section id="tabpanel_1_go" role="tabpanel" data-tab="go" aria-hidden="true" hidden="hidden">
+
+<pre><code class="lang-go">
+
+// Code snippets are only available for the latest major version. Current major version is $v1.*
+
+// Dependencies
+import (
+	  "context"
+	  msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
+	  graphmodels "github.com/microsoftgraph/msgraph-sdk-go/models"
+	  //other-imports
+)
+
+requestBody := graphmodels.NewUser()
+accountEnabled := true
+requestBody.SetAccountEnabled(&amp;accountEnabled) 
+displayName := "Adele Vance"
+requestBody.SetDisplayName(&amp;displayName) 
+mailNickname := "AdeleV"
+requestBody.SetMailNickname(&amp;mailNickname) 
+userPrincipalName := "AdeleV@contoso.com"
+requestBody.SetUserPrincipalName(&amp;userPrincipalName) 
+passwordProfile := graphmodels.NewPasswordProfile()
+forceChangePasswordNextSignIn := true
+passwordProfile.SetForceChangePasswordNextSignIn(&amp;forceChangePasswordNextSignIn) 
+password := "xWwvJ]6NMw+bWH-d"
+passwordProfile.SetPassword(&amp;password) 
+requestBody.SetPasswordProfile(passwordProfile)
+
+// To initialize your graphClient, see https://learn.microsoft.com/en-us/graph/sdks/create-client?from=snippets&amp;tabs=go
+users, err := graphClient.Users().Post(context.Background(), requestBody, nil)
+
+
+</code></pre>
+<!-- markdownlint-disable MD041-->
+<blockquote>
+<p>For details about how to <a href="/en-us/graph/sdks/sdk-installation" data-linktype="absolute-path">add the SDK</a> to your project and <a href="/en-us/graph/sdks/choose-authentication-providers" data-linktype="absolute-path">create an authProvider</a> instance, see the <a href="/en-us/graph/sdks/sdks-overview" data-linktype="absolute-path">SDK documentation</a>.</p>
+</blockquote>
+</section>
+<section id="tabpanel_1_java" role="tabpanel" data-tab="java" aria-hidden="true" hidden="hidden">
+
+<pre><code class="lang-java">
+// Code snippets are only available for the latest version. Current version is 6.x
+
+GraphServiceClient graphClient = new GraphServiceClient(requestAdapter);
+
+User user = new User();
+user.setAccountEnabled(true);
+user.setDisplayName("Adele Vance");
+user.setMailNickname("AdeleV");
+user.setUserPrincipalName("AdeleV@contoso.com");
+PasswordProfile passwordProfile = new PasswordProfile();
+passwordProfile.setForceChangePasswordNextSignIn(true);
+passwordProfile.setPassword("xWwvJ]6NMw+bWH-d");
+user.setPasswordProfile(passwordProfile);
+User result = graphClient.users().post(user);
+
+
+</code></pre>
+<!-- markdownlint-disable MD041-->
+<blockquote>
+<p>For details about how to <a href="/en-us/graph/sdks/sdk-installation" data-linktype="absolute-path">add the SDK</a> to your project and <a href="/en-us/graph/sdks/choose-authentication-providers" data-linktype="absolute-path">create an authProvider</a> instance, see the <a href="/en-us/graph/sdks/sdks-overview" data-linktype="absolute-path">SDK documentation</a>.</p>
+</blockquote>
+</section>
+<section id="tabpanel_1_javascript" role="tabpanel" data-tab="javascript" aria-hidden="true" hidden="hidden">
+
+<pre><code class="lang-javascript">
+const options = {
+	authProvider,
+};
+
+const client = Client.init(options);
+
+const user = {
+  accountEnabled: true,
+  displayName: 'Adele Vance',
+  mailNickname: 'AdeleV',
+  userPrincipalName: 'AdeleV@contoso.com',
+  passwordProfile: {
+    forceChangePasswordNextSignIn: true,
+    password: 'xWwvJ]6NMw+bWH-d'
+  }
+};
+
+await client.api('/users')
+	.post(user);
+
+</code></pre>
+<!-- markdownlint-disable MD041-->
+<blockquote>
+<p>For details about how to <a href="/en-us/graph/sdks/sdk-installation" data-linktype="absolute-path">add the SDK</a> to your project and <a href="/en-us/graph/sdks/choose-authentication-providers" data-linktype="absolute-path">create an authProvider</a> instance, see the <a href="/en-us/graph/sdks/sdks-overview" data-linktype="absolute-path">SDK documentation</a>.</p>
+</blockquote>
+</section>
+<section id="tabpanel_1_php" role="tabpanel" data-tab="php" aria-hidden="true" hidden="hidden">
+
+<pre><code class="lang-php">
+&lt;?php
+use Microsoft\Graph\GraphServiceClient;
+use Microsoft\Graph\Generated\Models\User;
+use Microsoft\Graph\Generated\Models\PasswordProfile;
+
+
+$graphServiceClient = new GraphServiceClient($tokenRequestContext, $scopes);
+
+$requestBody = new User();
+$requestBody-&gt;setAccountEnabled(true);
+$requestBody-&gt;setDisplayName('Adele Vance');
+$requestBody-&gt;setMailNickname('AdeleV');
+$requestBody-&gt;setUserPrincipalName('AdeleV@contoso.com');
+$passwordProfile = new PasswordProfile();
+$passwordProfile-&gt;setForceChangePasswordNextSignIn(true);
+$passwordProfile-&gt;setPassword('xWwvJ]6NMw+bWH-d');
+$requestBody-&gt;setPasswordProfile($passwordProfile);
+
+$result = $graphServiceClient-&gt;users()-&gt;post($requestBody)-&gt;wait();
+
+</code></pre>
+<!-- markdownlint-disable MD041-->
+<blockquote>
+<p>For details about how to <a href="/en-us/graph/sdks/sdk-installation" data-linktype="absolute-path">add the SDK</a> to your project and <a href="/en-us/graph/sdks/choose-authentication-providers" data-linktype="absolute-path">create an authProvider</a> instance, see the <a href="/en-us/graph/sdks/sdks-overview" data-linktype="absolute-path">SDK documentation</a>.</p>
+</blockquote>
+</section>
+<section id="tabpanel_1_powershell" role="tabpanel" data-tab="powershell" aria-hidden="true" hidden="hidden">
+
+<pre><code class="lang-powershell">
+Import-Module Microsoft.Graph.Users
+
+$params = @{
+	accountEnabled = $true
+	displayName = "Adele Vance"
+	mailNickname = "AdeleV"
+	userPrincipalName = "AdeleV@contoso.com"
+	passwordProfile = @{
+		forceChangePasswordNextSignIn = $true
+		password = "xWwvJ]6NMw+bWH-d"
+	}
+}
+
+New-MgUser -BodyParameter $params
+
+</code></pre>
+<!-- markdownlint-disable MD041-->
+<blockquote>
+<p>For details about how to <a href="/en-us/graph/sdks/sdk-installation" data-linktype="absolute-path">add the SDK</a> to your project and <a href="/en-us/graph/sdks/choose-authentication-providers" data-linktype="absolute-path">create an authProvider</a> instance, see the <a href="/en-us/graph/sdks/sdks-overview" data-linktype="absolute-path">SDK documentation</a>.</p>
+</blockquote>
+</section>
+<section id="tabpanel_1_python" role="tabpanel" data-tab="python" aria-hidden="true" hidden="hidden">
+
+<pre><code class="lang-python">
+# Code snippets are only available for the latest version. Current version is 1.x
+from msgraph import GraphServiceClient
+from msgraph.generated.models.user import User
+from msgraph.generated.models.password_profile import PasswordProfile
+# To initialize your graph_client, see https://learn.microsoft.com/en-us/graph/sdks/create-client?from=snippets&amp;tabs=python
+request_body = User(
+	account_enabled = True,
+	display_name = "Adele Vance",
+	mail_nickname = "AdeleV",
+	user_principal_name = "AdeleV@contoso.com",
+	password_profile = PasswordProfile(
+		force_change_password_next_sign_in = True,
+		password = "xWwvJ]6NMw+bWH-d",
+	),
+)
+
+result = await graph_client.users.post(request_body)
+
+
+</code></pre>
+<!-- markdownlint-disable MD041-->
+<blockquote>
+<p>For details about how to <a href="/en-us/graph/sdks/sdk-installation" data-linktype="absolute-path">add the SDK</a> to your project and <a href="/en-us/graph/sdks/choose-authentication-providers" data-linktype="absolute-path">create an authProvider</a> instance, see the <a href="/en-us/graph/sdks/sdks-overview" data-linktype="absolute-path">SDK documentation</a>.</p>
+</blockquote>
+</section>
+</div>
+
+<p>In the request body, supply a JSON representation of <a href="resources/user?view=graph-rest-1.0" data-linktype="relative-path">user</a> object.</p>
+<h4 id="response-1">Response</h4>
+<p>The following example shows the response.</p>
+<blockquote>
+<p><strong>Note:</strong> The response object shown here might be shortened for readability.</p>
+</blockquote>
+<!-- {
+  "blockType": "response",
+  "truncated": true,
+  "@odata.type": "microsoft.graph.user"
+} -->
+<pre><code class="lang-http">HTTP/1.1 201 Created
+Content-type: application/json
+
+{
+    "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/$entity",
+    "id": "87d349ed-44d7-43e1-9a83-5f2406dee5bd",
+    "businessPhones": [],
+    "displayName": "Adele Vance",
+    "givenName": "Adele",
+    "jobTitle": "Product Marketing Manager",
+    "mail": "AdeleV@contoso.com",
+    "mobilePhone": "+1 425 555 0109",
+    "officeLocation": "18/2111",
+    "preferredLanguage": "en-US",
+    "surname": "Vance",
+    "userPrincipalName": "AdeleV@contoso.com"
+}
+</code></pre>
+<h3 id="example-2-create-a-user-with-social-and-local-account-identities-in-azure-ad-b2c">Example 2: Create a user with social and local account identities in Azure AD B2C</h3>
+<p>Create a new user, with a local account identity with a sign-in name, an email address as sign-in, and with a social identity. This example is typically used for migration scenarios in Azure AD B2C tenants.</p>
+<div class="NOTE">
+<p>Note</p>
+<p>For local account identities, password expirations must be disabled, and force change password at next sign-in must also be disabled.</p>
+</div>
+<h4 id="request-1">Request</h4>
+<div class="tabGroup" id="tabgroup_2">
+<ul role="tablist">
+<li role="presentation">
+<a href="#tabpanel_2_http" role="tab" aria-controls="tabpanel_2_http" data-tab="http" tabindex="0" aria-selected="true" data-linktype="self-bookmark">HTTP</a>
+</li>
+<li role="presentation">
+<a href="#tabpanel_2_csharp" role="tab" aria-controls="tabpanel_2_csharp" data-tab="csharp" tabindex="-1" data-linktype="self-bookmark">C#</a>
+</li>
+<li role="presentation">
+<a href="#tabpanel_2_go" role="tab" aria-controls="tabpanel_2_go" data-tab="go" tabindex="-1" data-linktype="self-bookmark">Go</a>
+</li>
+<li role="presentation">
+<a href="#tabpanel_2_java" role="tab" aria-controls="tabpanel_2_java" data-tab="java" tabindex="-1" data-linktype="self-bookmark">Java</a>
+</li>
+<li role="presentation">
+<a href="#tabpanel_2_javascript" role="tab" aria-controls="tabpanel_2_javascript" data-tab="javascript" tabindex="-1" data-linktype="self-bookmark">JavaScript</a>
+</li>
+<li role="presentation">
+<a href="#tabpanel_2_php" role="tab" aria-controls="tabpanel_2_php" data-tab="php" tabindex="-1" data-linktype="self-bookmark">PHP</a>
+</li>
+<li role="presentation">
+<a href="#tabpanel_2_powershell" role="tab" aria-controls="tabpanel_2_powershell" data-tab="powershell" tabindex="-1" data-linktype="self-bookmark">PowerShell</a>
+</li>
+<li role="presentation">
+<a href="#tabpanel_2_python" role="tab" aria-controls="tabpanel_2_python" data-tab="python" tabindex="-1" data-linktype="self-bookmark">Python</a>
+</li>
+</ul>
+<section id="tabpanel_2_http" role="tabpanel" data-tab="http">
+<!-- {
+  "blockType": "request",
+  "name": "create_user_from_users_identities"
+}-->
+<pre><code class="lang-http">POST https://graph.microsoft.com/v1.0/users
+Content-type: application/json
+
+{
+  "displayName": "John Smith",
+  "identities": [
+    {
+      "signInType": "userName",
+      "issuer": "contoso.com",
+      "issuerAssignedId": "johnsmith"
+    },
+    {
+      "signInType": "emailAddress",
+      "issuer": "contoso.com",
+      "issuerAssignedId": "jsmith@yahoo.com"
+    },
+    {
+      "signInType": "federated",
+      "issuer": "facebook.com",
+      "issuerAssignedId": "5eecb0cd"
+    }
+  ],
+  "passwordProfile" : {
+    "password": "password-value",
+    "forceChangePasswordNextSignIn": false
+  },
+  "passwordPolicies": "DisablePasswordExpiration"
+}
+</code></pre>
+</section>
+<section id="tabpanel_2_csharp" role="tabpanel" data-tab="csharp" aria-hidden="true" hidden="hidden">
+
+<pre><code class="lang-csharp">
+// Code snippets are only available for the latest version. Current version is 5.x
+
+// Dependencies
+using Microsoft.Graph.Models;
+
+var requestBody = new User
+{
+	DisplayName = "John Smith",
+	Identities = new List&lt;ObjectIdentity&gt;
+	{
+		new ObjectIdentity
+		{
+			SignInType = "userName",
+			Issuer = "contoso.com",
+			IssuerAssignedId = "johnsmith",
+		},
+		new ObjectIdentity
+		{
+			SignInType = "emailAddress",
+			Issuer = "contoso.com",
+			IssuerAssignedId = "jsmith@yahoo.com",
+		},
+		new ObjectIdentity
+		{
+			SignInType = "federated",
+			Issuer = "facebook.com",
+			IssuerAssignedId = "5eecb0cd",
+		},
+	},
+	PasswordProfile = new PasswordProfile
+	{
+		Password = "password-value",
+		ForceChangePasswordNextSignIn = false,
+	},
+	PasswordPolicies = "DisablePasswordExpiration",
+};
+
+// To initialize your graphClient, see https://learn.microsoft.com/en-us/graph/sdks/create-client?from=snippets&amp;tabs=csharp
+var result = await graphClient.Users.PostAsync(requestBody);
+
+
+</code></pre>
+<!-- markdownlint-disable MD041-->
+<blockquote>
+<p>For details about how to <a href="/en-us/graph/sdks/sdk-installation" data-linktype="absolute-path">add the SDK</a> to your project and <a href="/en-us/graph/sdks/choose-authentication-providers" data-linktype="absolute-path">create an authProvider</a> instance, see the <a href="/en-us/graph/sdks/sdks-overview" data-linktype="absolute-path">SDK documentation</a>.</p>
+</blockquote>
+</section>
+<section id="tabpanel_2_go" role="tabpanel" data-tab="go" aria-hidden="true" hidden="hidden">
+
+<pre><code class="lang-go">
+
+// Code snippets are only available for the latest major version. Current major version is $v1.*
+
+// Dependencies
+import (
+	  "context"
+	  msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
+	  graphmodels "github.com/microsoftgraph/msgraph-sdk-go/models"
+	  //other-imports
+)
+
+requestBody := graphmodels.NewUser()
+displayName := "John Smith"
+requestBody.SetDisplayName(&amp;displayName) 
+
+
+objectIdentity := graphmodels.NewObjectIdentity()
+signInType := "userName"
+objectIdentity.SetSignInType(&amp;signInType) 
+issuer := "contoso.com"
+objectIdentity.SetIssuer(&amp;issuer) 
+issuerAssignedId := "johnsmith"
+objectIdentity.SetIssuerAssignedId(&amp;issuerAssignedId) 
+objectIdentity1 := graphmodels.NewObjectIdentity()
+signInType := "emailAddress"
+objectIdentity1.SetSignInType(&amp;signInType) 
+issuer := "contoso.com"
+objectIdentity1.SetIssuer(&amp;issuer) 
+issuerAssignedId := "jsmith@yahoo.com"
+objectIdentity1.SetIssuerAssignedId(&amp;issuerAssignedId) 
+objectIdentity2 := graphmodels.NewObjectIdentity()
+signInType := "federated"
+objectIdentity2.SetSignInType(&amp;signInType) 
+issuer := "facebook.com"
+objectIdentity2.SetIssuer(&amp;issuer) 
+issuerAssignedId := "5eecb0cd"
+objectIdentity2.SetIssuerAssignedId(&amp;issuerAssignedId) 
+
+identities := []graphmodels.ObjectIdentityable {
+	objectIdentity,
+	objectIdentity1,
+	objectIdentity2,
+}
+requestBody.SetIdentities(identities)
+passwordProfile := graphmodels.NewPasswordProfile()
+password := "password-value"
+passwordProfile.SetPassword(&amp;password) 
+forceChangePasswordNextSignIn := false
+passwordProfile.SetForceChangePasswordNextSignIn(&amp;forceChangePasswordNextSignIn) 
+requestBody.SetPasswordProfile(passwordProfile)
+passwordPolicies := "DisablePasswordExpiration"
+requestBody.SetPasswordPolicies(&amp;passwordPolicies) 
+
+// To initialize your graphClient, see https://learn.microsoft.com/en-us/graph/sdks/create-client?from=snippets&amp;tabs=go
+users, err := graphClient.Users().Post(context.Background(), requestBody, nil)
+
+
+</code></pre>
+<!-- markdownlint-disable MD041-->
+<blockquote>
+<p>For details about how to <a href="/en-us/graph/sdks/sdk-installation" data-linktype="absolute-path">add the SDK</a> to your project and <a href="/en-us/graph/sdks/choose-authentication-providers" data-linktype="absolute-path">create an authProvider</a> instance, see the <a href="/en-us/graph/sdks/sdks-overview" data-linktype="absolute-path">SDK documentation</a>.</p>
+</blockquote>
+</section>
+<section id="tabpanel_2_java" role="tabpanel" data-tab="java" aria-hidden="true" hidden="hidden">
+
+<pre><code class="lang-java">
+// Code snippets are only available for the latest version. Current version is 6.x
+
+GraphServiceClient graphClient = new GraphServiceClient(requestAdapter);
+
+User user = new User();
+user.setDisplayName("John Smith");
+LinkedList&lt;ObjectIdentity&gt; identities = new LinkedList&lt;ObjectIdentity&gt;();
+ObjectIdentity objectIdentity = new ObjectIdentity();
+objectIdentity.setSignInType("userName");
+objectIdentity.setIssuer("contoso.com");
+objectIdentity.setIssuerAssignedId("johnsmith");
+identities.add(objectIdentity);
+ObjectIdentity objectIdentity1 = new ObjectIdentity();
+objectIdentity1.setSignInType("emailAddress");
+objectIdentity1.setIssuer("contoso.com");
+objectIdentity1.setIssuerAssignedId("jsmith@yahoo.com");
+identities.add(objectIdentity1);
+ObjectIdentity objectIdentity2 = new ObjectIdentity();
+objectIdentity2.setSignInType("federated");
+objectIdentity2.setIssuer("facebook.com");
+objectIdentity2.setIssuerAssignedId("5eecb0cd");
+identities.add(objectIdentity2);
+user.setIdentities(identities);
+PasswordProfile passwordProfile = new PasswordProfile();
+passwordProfile.setPassword("password-value");
+passwordProfile.setForceChangePasswordNextSignIn(false);
+user.setPasswordProfile(passwordProfile);
+user.setPasswordPolicies("DisablePasswordExpiration");
+User result = graphClient.users().post(user);
+
+
+</code></pre>
+<!-- markdownlint-disable MD041-->
+<blockquote>
+<p>For details about how to <a href="/en-us/graph/sdks/sdk-installation" data-linktype="absolute-path">add the SDK</a> to your project and <a href="/en-us/graph/sdks/choose-authentication-providers" data-linktype="absolute-path">create an authProvider</a> instance, see the <a href="/en-us/graph/sdks/sdks-overview" data-linktype="absolute-path">SDK documentation</a>.</p>
+</blockquote>
+</section>
+<section id="tabpanel_2_javascript" role="tabpanel" data-tab="javascript" aria-hidden="true" hidden="hidden">
+
+<pre><code class="lang-javascript">
+const options = {
+	authProvider,
+};
+
+const client = Client.init(options);
+
+const user = {
+  displayName: 'John Smith',
+  identities: [
+    {
+      signInType: 'userName',
+      issuer: 'contoso.com',
+      issuerAssignedId: 'johnsmith'
+    },
+    {
+      signInType: 'emailAddress',
+      issuer: 'contoso.com',
+      issuerAssignedId: 'jsmith@yahoo.com'
+    },
+    {
+      signInType: 'federated',
+      issuer: 'facebook.com',
+      issuerAssignedId: '5eecb0cd'
+    }
+  ],
+  passwordProfile: {
+    password: 'password-value',
+    forceChangePasswordNextSignIn: false
+  },
+  passwordPolicies: 'DisablePasswordExpiration'
+};
+
+await client.api('/users')
+	.post(user);
+
+</code></pre>
+<!-- markdownlint-disable MD041-->
+<blockquote>
+<p>For details about how to <a href="/en-us/graph/sdks/sdk-installation" data-linktype="absolute-path">add the SDK</a> to your project and <a href="/en-us/graph/sdks/choose-authentication-providers" data-linktype="absolute-path">create an authProvider</a> instance, see the <a href="/en-us/graph/sdks/sdks-overview" data-linktype="absolute-path">SDK documentation</a>.</p>
+</blockquote>
+</section>
+<section id="tabpanel_2_php" role="tabpanel" data-tab="php" aria-hidden="true" hidden="hidden">
+
+<pre><code class="lang-php">
+&lt;?php
+use Microsoft\Graph\GraphServiceClient;
+use Microsoft\Graph\Generated\Models\User;
+use Microsoft\Graph\Generated\Models\ObjectIdentity;
+use Microsoft\Graph\Generated\Models\PasswordProfile;
+
+
+$graphServiceClient = new GraphServiceClient($tokenRequestContext, $scopes);
+
+$requestBody = new User();
+$requestBody-&gt;setDisplayName('John Smith');
+$identitiesObjectIdentity1 = new ObjectIdentity();
+$identitiesObjectIdentity1-&gt;setSignInType('userName');
+$identitiesObjectIdentity1-&gt;setIssuer('contoso.com');
+$identitiesObjectIdentity1-&gt;setIssuerAssignedId('johnsmith');
+$identitiesArray []= $identitiesObjectIdentity1;
+$identitiesObjectIdentity2 = new ObjectIdentity();
+$identitiesObjectIdentity2-&gt;setSignInType('emailAddress');
+$identitiesObjectIdentity2-&gt;setIssuer('contoso.com');
+$identitiesObjectIdentity2-&gt;setIssuerAssignedId('jsmith@yahoo.com');
+$identitiesArray []= $identitiesObjectIdentity2;
+$identitiesObjectIdentity3 = new ObjectIdentity();
+$identitiesObjectIdentity3-&gt;setSignInType('federated');
+$identitiesObjectIdentity3-&gt;setIssuer('facebook.com');
+$identitiesObjectIdentity3-&gt;setIssuerAssignedId('5eecb0cd');
+$identitiesArray []= $identitiesObjectIdentity3;
+$requestBody-&gt;setIdentities($identitiesArray);
+
+$passwordProfile = new PasswordProfile();
+$passwordProfile-&gt;setPassword('password-value');
+$passwordProfile-&gt;setForceChangePasswordNextSignIn(false);
+$requestBody-&gt;setPasswordProfile($passwordProfile);
+$requestBody-&gt;setPasswordPolicies('DisablePasswordExpiration');
+
+$result = $graphServiceClient-&gt;users()-&gt;post($requestBody)-&gt;wait();
+
+</code></pre>
+<!-- markdownlint-disable MD041-->
+<blockquote>
+<p>For details about how to <a href="/en-us/graph/sdks/sdk-installation" data-linktype="absolute-path">add the SDK</a> to your project and <a href="/en-us/graph/sdks/choose-authentication-providers" data-linktype="absolute-path">create an authProvider</a> instance, see the <a href="/en-us/graph/sdks/sdks-overview" data-linktype="absolute-path">SDK documentation</a>.</p>
+</blockquote>
+</section>
+<section id="tabpanel_2_powershell" role="tabpanel" data-tab="powershell" aria-hidden="true" hidden="hidden">
+
+<pre><code class="lang-powershell">
+Import-Module Microsoft.Graph.Users
+
+$params = @{
+	displayName = "John Smith"
+	identities = @(
+		@{
+			signInType = "userName"
+			issuer = "contoso.com"
+			issuerAssignedId = "johnsmith"
+		}
+		@{
+			signInType = "emailAddress"
+			issuer = "contoso.com"
+			issuerAssignedId = "jsmith@yahoo.com"
+		}
+		@{
+			signInType = "federated"
+			issuer = "facebook.com"
+			issuerAssignedId = "5eecb0cd"
+		}
+	)
+	passwordProfile = @{
+		password = "password-value"
+		forceChangePasswordNextSignIn = $false
+	}
+	passwordPolicies = "DisablePasswordExpiration"
+}
+
+New-MgUser -BodyParameter $params
+
+</code></pre>
+<!-- markdownlint-disable MD041-->
+<blockquote>
+<p>For details about how to <a href="/en-us/graph/sdks/sdk-installation" data-linktype="absolute-path">add the SDK</a> to your project and <a href="/en-us/graph/sdks/choose-authentication-providers" data-linktype="absolute-path">create an authProvider</a> instance, see the <a href="/en-us/graph/sdks/sdks-overview" data-linktype="absolute-path">SDK documentation</a>.</p>
+</blockquote>
+</section>
+<section id="tabpanel_2_python" role="tabpanel" data-tab="python" aria-hidden="true" hidden="hidden">
+
+<pre><code class="lang-python">
+# Code snippets are only available for the latest version. Current version is 1.x
+from msgraph import GraphServiceClient
+from msgraph.generated.models.user import User
+from msgraph.generated.models.object_identity import ObjectIdentity
+from msgraph.generated.models.password_profile import PasswordProfile
+# To initialize your graph_client, see https://learn.microsoft.com/en-us/graph/sdks/create-client?from=snippets&amp;tabs=python
+request_body = User(
+	display_name = "John Smith",
+	identities = [
+		ObjectIdentity(
+			sign_in_type = "userName",
+			issuer = "contoso.com",
+			issuer_assigned_id = "johnsmith",
+		),
+		ObjectIdentity(
+			sign_in_type = "emailAddress",
+			issuer = "contoso.com",
+			issuer_assigned_id = "jsmith@yahoo.com",
+		),
+		ObjectIdentity(
+			sign_in_type = "federated",
+			issuer = "facebook.com",
+			issuer_assigned_id = "5eecb0cd",
+		),
+	],
+	password_profile = PasswordProfile(
+		password = "password-value",
+		force_change_password_next_sign_in = False,
+	),
+	password_policies = "DisablePasswordExpiration",
+)
+
+result = await graph_client.users.post(request_body)
+
+
+</code></pre>
+<!-- markdownlint-disable MD041-->
+<blockquote>
+<p>For details about how to <a href="/en-us/graph/sdks/sdk-installation" data-linktype="absolute-path">add the SDK</a> to your project and <a href="/en-us/graph/sdks/choose-authentication-providers" data-linktype="absolute-path">create an authProvider</a> instance, see the <a href="/en-us/graph/sdks/sdks-overview" data-linktype="absolute-path">SDK documentation</a>.</p>
+</blockquote>
+</section>
+</div>
+<h4 id="response-2">Response</h4>
+<p>The following example shows the response.</p>
+<blockquote>
+<p><strong>Note:</strong> The response object shown here might be shortened for readability.</p>
+</blockquote>
+<!-- {
+  "blockType": "response",
+  "truncated": true,
+  "@odata.type": "microsoft.graph.user",
+} -->
+<pre><code class="lang-http">HTTP/1.1 201 Created
+Content-type: application/json
+
+{
+  "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/$entity",
+  "displayName": "John Smith",
+  "id": "4c7be08b-361f-41a8-b1ef-1712f7a3dfb2",
+  "identities": [
+    {
+      "signInType": "userName",
+      "issuer": "contoso.com",
+      "issuerAssignedId": "johnsmith"
+    },
+    {
+      "signInType": "emailAddress",
+      "issuer": "contoso.com",
+      "issuerAssignedId": "jsmith@yahoo.com"
+    },
+    {
+      "signInType": "federated",
+      "issuer": "facebook.com",
+      "issuerAssignedId": "5eecb0cd"
+    }
+  ],
+  "passwordPolicies": "DisablePasswordExpiration"
+}
+</code></pre>
+<h3 id="example-3-create-a-customer-account-in-external-tenants">Example 3: Create a customer account in external tenants</h3>
+<p>This example shows how to create a customer account in Microsoft Entra External ID in external tenants.</p>
+<div class="NOTE">
+<p>Note</p>
+<p>For local account identities, password expirations must be disabled.</p>
+</div>
+<h4 id="request-2">Request</h4>
+<div class="tabGroup" id="tabgroup_3">
+<ul role="tablist">
+<li role="presentation">
+<a href="#tabpanel_3_http" role="tab" aria-controls="tabpanel_3_http" data-tab="http" tabindex="0" aria-selected="true" data-linktype="self-bookmark">HTTP</a>
+</li>
+<li role="presentation">
+<a href="#tabpanel_3_csharp" role="tab" aria-controls="tabpanel_3_csharp" data-tab="csharp" tabindex="-1" data-linktype="self-bookmark">C#</a>
+</li>
+<li role="presentation">
+<a href="#tabpanel_3_go" role="tab" aria-controls="tabpanel_3_go" data-tab="go" tabindex="-1" data-linktype="self-bookmark">Go</a>
+</li>
+<li role="presentation">
+<a href="#tabpanel_3_java" role="tab" aria-controls="tabpanel_3_java" data-tab="java" tabindex="-1" data-linktype="self-bookmark">Java</a>
+</li>
+<li role="presentation">
+<a href="#tabpanel_3_javascript" role="tab" aria-controls="tabpanel_3_javascript" data-tab="javascript" tabindex="-1" data-linktype="self-bookmark">JavaScript</a>
+</li>
+<li role="presentation">
+<a href="#tabpanel_3_php" role="tab" aria-controls="tabpanel_3_php" data-tab="php" tabindex="-1" data-linktype="self-bookmark">PHP</a>
+</li>
+<li role="presentation">
+<a href="#tabpanel_3_powershell" role="tab" aria-controls="tabpanel_3_powershell" data-tab="powershell" tabindex="-1" data-linktype="self-bookmark">PowerShell</a>
+</li>
+<li role="presentation">
+<a href="#tabpanel_3_python" role="tab" aria-controls="tabpanel_3_python" data-tab="python" tabindex="-1" data-linktype="self-bookmark">Python</a>
+</li>
+</ul>
+<section id="tabpanel_3_http" role="tabpanel" data-tab="http">
+<!-- {
+  "blockType": "request",
+  "name": "create_user_customer_external_tenant"
+}-->
+<pre><code class="lang-http">POST https://graph.microsoft.com/v1.0/users
+Content-type: application/json
+
+{
+    "displayName": "Test User",
+    "identities": [
+        {
+            "signInType": "emailAddress",
+            "issuer": "contoso.onmicrosoft.com",
+            "issuerAssignedId": "adelev@adatum.com"
+        }
+    ],
+    "mail": "adelev@adatum.com",
+    "passwordProfile": {
+        "password": "passwordValue",
+        "forceChangePasswordNextSignIn": true
+    },
+    "passwordPolicies": "DisablePasswordExpiration"
+}
+</code></pre>
+</section>
+<section id="tabpanel_3_csharp" role="tabpanel" data-tab="csharp" aria-hidden="true" hidden="hidden">
+
+<pre><code class="lang-csharp">
+// Code snippets are only available for the latest version. Current version is 5.x
+
+// Dependencies
+using Microsoft.Graph.Models;
+
+var requestBody = new User
+{
+	DisplayName = "Test User",
+	Identities = new List&lt;ObjectIdentity&gt;
+	{
+		new ObjectIdentity
+		{
+			SignInType = "emailAddress",
+			Issuer = "contoso.onmicrosoft.com",
+			IssuerAssignedId = "adelev@adatum.com",
+		},
+	},
+	Mail = "adelev@adatum.com",
+	PasswordProfile = new PasswordProfile
+	{
+		Password = "passwordValue",
+		ForceChangePasswordNextSignIn = true,
+	},
+	PasswordPolicies = "DisablePasswordExpiration",
+};
+
+// To initialize your graphClient, see https://learn.microsoft.com/en-us/graph/sdks/create-client?from=snippets&amp;tabs=csharp
+var result = await graphClient.Users.PostAsync(requestBody);
+
+
+</code></pre>
+<!-- markdownlint-disable MD041-->
+<blockquote>
+<p>For details about how to <a href="/en-us/graph/sdks/sdk-installation" data-linktype="absolute-path">add the SDK</a> to your project and <a href="/en-us/graph/sdks/choose-authentication-providers" data-linktype="absolute-path">create an authProvider</a> instance, see the <a href="/en-us/graph/sdks/sdks-overview" data-linktype="absolute-path">SDK documentation</a>.</p>
+</blockquote>
+</section>
+<section id="tabpanel_3_go" role="tabpanel" data-tab="go" aria-hidden="true" hidden="hidden">
+
+<pre><code class="lang-go">
+
+// Code snippets are only available for the latest major version. Current major version is $v1.*
+
+// Dependencies
+import (
+	  "context"
+	  msgraphsdk "github.com/microsoftgraph/msgraph-sdk-go"
+	  graphmodels "github.com/microsoftgraph/msgraph-sdk-go/models"
+	  //other-imports
+)
+
+requestBody := graphmodels.NewUser()
+displayName := "Test User"
+requestBody.SetDisplayName(&amp;displayName) 
+
+
+objectIdentity := graphmodels.NewObjectIdentity()
+signInType := "emailAddress"
+objectIdentity.SetSignInType(&amp;signInType) 
+issuer := "contoso.onmicrosoft.com"
+objectIdentity.SetIssuer(&amp;issuer) 
+issuerAssignedId := "adelev@adatum.com"
+objectIdentity.SetIssuerAssignedId(&amp;issuerAssignedId) 
+
+identities := []graphmodels.ObjectIdentityable {
+	objectIdentity,
+}
+requestBody.SetIdentities(identities)
+mail := "adelev@adatum.com"
+requestBody.SetMail(&amp;mail) 
+passwordProfile := graphmodels.NewPasswordProfile()
+password := "passwordValue"
+passwordProfile.SetPassword(&amp;password) 
+forceChangePasswordNextSignIn := true
+passwordProfile.SetForceChangePasswordNextSignIn(&amp;forceChangePasswordNextSignIn) 
+requestBody.SetPasswordProfile(passwordProfile)
+passwordPolicies := "DisablePasswordExpiration"
+requestBody.SetPasswordPolicies(&amp;passwordPolicies) 
+
+// To initialize your graphClient, see https://learn.microsoft.com/en-us/graph/sdks/create-client?from=snippets&amp;tabs=go
+users, err := graphClient.Users().Post(context.Background(), requestBody, nil)
+
+
+</code></pre>
+<!-- markdownlint-disable MD041-->
+<blockquote>
+<p>For details about how to <a href="/en-us/graph/sdks/sdk-installation" data-linktype="absolute-path">add the SDK</a> to your project and <a href="/en-us/graph/sdks/choose-authentication-providers" data-linktype="absolute-path">create an authProvider</a> instance, see the <a href="/en-us/graph/sdks/sdks-overview" data-linktype="absolute-path">SDK documentation</a>.</p>
+</blockquote>
+</section>
+<section id="tabpanel_3_java" role="tabpanel" data-tab="java" aria-hidden="true" hidden="hidden">
+
+<pre><code class="lang-java">
+// Code snippets are only available for the latest version. Current version is 6.x
+
+GraphServiceClient graphClient = new GraphServiceClient(requestAdapter);
+
+User user = new User();
+user.setDisplayName("Test User");
+LinkedList&lt;ObjectIdentity&gt; identities = new LinkedList&lt;ObjectIdentity&gt;();
+ObjectIdentity objectIdentity = new ObjectIdentity();
+objectIdentity.setSignInType("emailAddress");
+objectIdentity.setIssuer("contoso.onmicrosoft.com");
+objectIdentity.setIssuerAssignedId("adelev@adatum.com");
+identities.add(objectIdentity);
+user.setIdentities(identities);
+user.setMail("adelev@adatum.com");
+PasswordProfile passwordProfile = new PasswordProfile();
+passwordProfile.setPassword("passwordValue");
+passwordProfile.setForceChangePasswordNextSignIn(true);
+user.setPasswordProfile(passwordProfile);
+user.setPasswordPolicies("DisablePasswordExpiration");
+User result = graphClient.users().post(user);
+
+
+</code></pre>
+<!-- markdownlint-disable MD041-->
+<blockquote>
+<p>For details about how to <a href="/en-us/graph/sdks/sdk-installation" data-linktype="absolute-path">add the SDK</a> to your project and <a href="/en-us/graph/sdks/choose-authentication-providers" data-linktype="absolute-path">create an authProvider</a> instance, see the <a href="/en-us/graph/sdks/sdks-overview" data-linktype="absolute-path">SDK documentation</a>.</p>
+</blockquote>
+</section>
+<section id="tabpanel_3_javascript" role="tabpanel" data-tab="javascript" aria-hidden="true" hidden="hidden">
+
+<pre><code class="lang-javascript">
+const options = {
+	authProvider,
+};
+
+const client = Client.init(options);
+
+const user = {
+    displayName: 'Test User',
+    identities: [
+        {
+            signInType: 'emailAddress',
+            issuer: 'contoso.onmicrosoft.com',
+            issuerAssignedId: 'adelev@adatum.com'
+        }
+    ],
+    mail: 'adelev@adatum.com',
+    passwordProfile: {
+        password: 'passwordValue',
+        forceChangePasswordNextSignIn: true
+    },
+    passwordPolicies: 'DisablePasswordExpiration'
+};
+
+await client.api('/users')
+	.post(user);
+
+</code></pre>
+<!-- markdownlint-disable MD041-->
+<blockquote>
+<p>For details about how to <a href="/en-us/graph/sdks/sdk-installation" data-linktype="absolute-path">add the SDK</a> to your project and <a href="/en-us/graph/sdks/choose-authentication-providers" data-linktype="absolute-path">create an authProvider</a> instance, see the <a href="/en-us/graph/sdks/sdks-overview" data-linktype="absolute-path">SDK documentation</a>.</p>
+</blockquote>
+</section>
+<section id="tabpanel_3_php" role="tabpanel" data-tab="php" aria-hidden="true" hidden="hidden">
+
+<pre><code class="lang-php">
+&lt;?php
+use Microsoft\Graph\GraphServiceClient;
+use Microsoft\Graph\Generated\Models\User;
+use Microsoft\Graph\Generated\Models\ObjectIdentity;
+use Microsoft\Graph\Generated\Models\PasswordProfile;
+
+
+$graphServiceClient = new GraphServiceClient($tokenRequestContext, $scopes);
+
+$requestBody = new User();
+$requestBody-&gt;setDisplayName('Test User');
+$identitiesObjectIdentity1 = new ObjectIdentity();
+$identitiesObjectIdentity1-&gt;setSignInType('emailAddress');
+$identitiesObjectIdentity1-&gt;setIssuer('contoso.onmicrosoft.com');
+$identitiesObjectIdentity1-&gt;setIssuerAssignedId('adelev@adatum.com');
+$identitiesArray []= $identitiesObjectIdentity1;
+$requestBody-&gt;setIdentities($identitiesArray);
+
+$requestBody-&gt;setMail('adelev@adatum.com');
+$passwordProfile = new PasswordProfile();
+$passwordProfile-&gt;setPassword('passwordValue');
+$passwordProfile-&gt;setForceChangePasswordNextSignIn(true);
+$requestBody-&gt;setPasswordProfile($passwordProfile);
+$requestBody-&gt;setPasswordPolicies('DisablePasswordExpiration');
+
+$result = $graphServiceClient-&gt;users()-&gt;post($requestBody)-&gt;wait();
+
+</code></pre>
+<!-- markdownlint-disable MD041-->
+<blockquote>
+<p>For details about how to <a href="/en-us/graph/sdks/sdk-installation" data-linktype="absolute-path">add the SDK</a> to your project and <a href="/en-us/graph/sdks/choose-authentication-providers" data-linktype="absolute-path">create an authProvider</a> instance, see the <a href="/en-us/graph/sdks/sdks-overview" data-linktype="absolute-path">SDK documentation</a>.</p>
+</blockquote>
+</section>
+<section id="tabpanel_3_powershell" role="tabpanel" data-tab="powershell" aria-hidden="true" hidden="hidden">
+
+<pre><code class="lang-powershell">
+Import-Module Microsoft.Graph.Users
+
+$params = @{
+	displayName = "Test User"
+	identities = @(
+		@{
+			signInType = "emailAddress"
+			issuer = "contoso.onmicrosoft.com"
+			issuerAssignedId = "adelev@adatum.com"
+		}
+	)
+	mail = "adelev@adatum.com"
+	passwordProfile = @{
+		password = "passwordValue"
+		forceChangePasswordNextSignIn = $true
+	}
+	passwordPolicies = "DisablePasswordExpiration"
+}
+
+New-MgUser -BodyParameter $params
+
+</code></pre>
+<!-- markdownlint-disable MD041-->
+<blockquote>
+<p>For details about how to <a href="/en-us/graph/sdks/sdk-installation" data-linktype="absolute-path">add the SDK</a> to your project and <a href="/en-us/graph/sdks/choose-authentication-providers" data-linktype="absolute-path">create an authProvider</a> instance, see the <a href="/en-us/graph/sdks/sdks-overview" data-linktype="absolute-path">SDK documentation</a>.</p>
+</blockquote>
+</section>
+<section id="tabpanel_3_python" role="tabpanel" data-tab="python" aria-hidden="true" hidden="hidden">
+
+<pre><code class="lang-python">
+# Code snippets are only available for the latest version. Current version is 1.x
+from msgraph import GraphServiceClient
+from msgraph.generated.models.user import User
+from msgraph.generated.models.object_identity import ObjectIdentity
+from msgraph.generated.models.password_profile import PasswordProfile
+# To initialize your graph_client, see https://learn.microsoft.com/en-us/graph/sdks/create-client?from=snippets&amp;tabs=python
+request_body = User(
+	display_name = "Test User",
+	identities = [
+		ObjectIdentity(
+			sign_in_type = "emailAddress",
+			issuer = "contoso.onmicrosoft.com",
+			issuer_assigned_id = "adelev@adatum.com",
+		),
+	],
+	mail = "adelev@adatum.com",
+	password_profile = PasswordProfile(
+		password = "passwordValue",
+		force_change_password_next_sign_in = True,
+	),
+	password_policies = "DisablePasswordExpiration",
+)
+
+result = await graph_client.users.post(request_body)
+
+
+</code></pre>
+<!-- markdownlint-disable MD041-->
+<blockquote>
+<p>For details about how to <a href="/en-us/graph/sdks/sdk-installation" data-linktype="absolute-path">add the SDK</a> to your project and <a href="/en-us/graph/sdks/choose-authentication-providers" data-linktype="absolute-path">create an authProvider</a> instance, see the <a href="/en-us/graph/sdks/sdks-overview" data-linktype="absolute-path">SDK documentation</a>.</p>
+</blockquote>
+</section>
+</div>
+<h4 id="response-3">Response</h4>
+<p>The following example shows the response.</p>
+<blockquote>
+<p><strong>Note:</strong> The response object shown here might be shortened for readability.</p>
+</blockquote>
+<!-- {
+  "blockType": "response",
+  "truncated": true,
+  "@odata.type": "microsoft.graph.user",
+} -->
+<pre><code class="lang-http">HTTP/1.1 201 Created
+Content-type: application/json
+
+{
+    "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users/$entity",
+    "id": "daabd280-3978-4d29-acce-d677b9cf2e4d",
+    "businessPhones": [],
+    "displayName": "Test User",
+    "givenName": null,
+    "jobTitle": null,
+    "mail": "adelev@adatum.com",
+    "mobilePhone": null,
+    "officeLocation": null,
+    "preferredLanguage": null,
+    "surname": null,
+    "userPrincipalName": "daabd280-3978-4d29-acce-d677b9cf2e4d@contoso.onmicrosoft.com"
+}
+</code></pre>
+<h2 id="related-content">Related content</h2>
+<ul>
+<li><a href="/en-us/graph/extensibility-overview" data-linktype="absolute-path">Add custom data to resources using extensions</a></li>
+<li><a href="/en-us/graph/extensibility-open-users" data-linktype="absolute-path">Add custom data to users using open extensions</a></li>
+</ul>
+<!-- uuid: 8fcb5dbc-d5aa-4681-8e31-b001d5168d79
+2015-10-25 14:57:30 UTC -->
+<!-- {
+  "type": "#page.annotation",
+  "description": "Create User",
+  "keywords": "",
+  "section": "documentation",
+  "tocPath": "",
+  "suppressions": [
+  ]
+}-->
+</div>
+					
+		<div
+			id="ms--inline-notifications"
+			class="margin-block-xs"
+			data-bi-name="inline-notification"
+		></div>
+	 
+		<div
+			id="assertive-live-region"
+			role="alert"
+			aria-live="assertive"
+			class="visually-hidden"
+			aria-relevant="additions"
+			aria-atomic="true"
+		></div>
+		<div
+			id="polite-live-region"
+			role="status"
+			aria-live="polite"
+			class="visually-hidden"
+			aria-relevant="additions"
+			aria-atomic="true"
+		></div>
+	
+					
+		<!-- feedback section -->
+		<section
+			id="site-user-feedback-footer"
+			class="font-size-sm margin-top-md display-none-print display-none-desktop"
+			data-test-id="site-user-feedback-footer"
+			data-bi-name="site-feedback-section"
+		>
+			<hr class="hr" />
+			<h2 id="ms--feedback" class="title is-3">Feedback</h2>
+			<div class="display-flex flex-wrap-wrap align-items-center">
+				<p class="font-weight-semibold margin-xxs margin-left-none">
+					Was this page helpful?
+				</p>
+				<div class="buttons">
+					<button
+						class="thumb-rating-button like button button-primary button-sm"
+						data-test-id="footer-rating-yes"
+						data-binary-rating-response="rating-yes"
+						type="button"
+						title="This article is helpful"
+						data-bi-name="button-rating-yes"
+						aria-pressed="false"
+					>
+						<span class="icon" aria-hidden="true">
+							<span class="docon docon-like"></span>
+						</span>
+						<span>Yes</span>
+					</button>
+					<button
+						class="thumb-rating-button dislike button button-primary button-sm"
+						id="standard-rating-no-button"
+						hidden
+						data-test-id="footer-rating-no"
+						data-binary-rating-response="rating-no"
+						type="button"
+						title="This article is not helpful"
+						data-bi-name="button-rating-no"
+						aria-pressed="false"
+					>
+						<span class="icon" aria-hidden="true">
+							<span class="docon docon-dislike"></span>
+						</span>
+						<span>No</span>
+					</button>
+					<details
+						class="popover popover-top"
+						id="mobile-help-popover"
+						data-test-id="footer-feedback-popover"
+					>
+						<summary
+							class="thumb-rating-button dislike button button-primary button-sm"
+							data-test-id="details-footer-rating-no"
+							data-binary-rating-response="rating-no"
+							title="This article is not helpful"
+							data-bi-name="button-rating-no"
+							aria-pressed="false"
+							data-bi-an="feedback-unhelpful-popover"
+						>
+							<span class="icon" aria-hidden="true">
+								<span class="docon docon-dislike"></span>
+							</span>
+							<span>No</span>
+						</summary>
+						<div
+							class="popover-content width-200 width-300-tablet"
+							role="dialog"
+							aria-labelledby="popover-heading"
+							aria-describedby="popover-description"
+						>
+							<p id="popover-heading" class="font-size-lg margin-bottom-xxs font-weight-semibold">
+								Need help with this topic?
+							</p>
+							<p id="popover-description" class="font-size-sm margin-bottom-xs">
+								Want to try using Ask Learn to clarify or guide you through this topic?
+							</p>
+							
+		<div class="buttons flex-direction-row flex-wrap justify-content-center gap-xxs">
+			<div>
+		<button
+			class="button button-sm border inner-focus display-none margin-right-xxs"
+			data-bi-name="ask-learn-assistant-entry-troubleshoot"
+			data-test-id="ask-learn-assistant-modal-entry-mobile-feedback"
+			data-ask-learn-modal-entry-feedback
+			data-bi-an=feedback-unhelpful-popover
+			type="button"
+			style="min-width: max-content;"
+			aria-expanded="false"
+			aria-label="Ask Learn"
+			hidden
+		>
+			<span class="icon font-size-lg" aria-hidden="true">
+				<span class="docon docon-chat-sparkle-fill gradient-ask-learn-logo"></span>
+			</span>
+		</button>
+		<button
+			class="button button-sm display-inline-flex display-none-desktop flex-shrink-0 margin-right-xxs border-color-ask-learn margin-right-xxs"
+			data-bi-name="ask-learn-assistant-entry-troubleshoot"
+			data-bi-an=feedback-unhelpful-popover
+			data-test-id="ask-learn-assistant-modal-entry-tablet-feedback"
+			data-ask-learn-modal-entry-feedback
+			type="button"
+			style="min-width: max-content;"
+			aria-expanded="false"
+			hidden
+		>
+			<span class="icon font-size-lg" aria-hidden="true">
+				<span class="docon docon-chat-sparkle-fill gradient-ask-learn-logo"></span>
+			</span>
+			<span>Ask Learn</span>
+		</button>
+		<button
+			class="button button-sm display-none flex-shrink-0 display-inline-flex-desktop margin-right-xxs border-color-ask-learn margin-right-xxs"
+			data-bi-name="ask-learn-assistant-entry-troubleshoot"
+			data-bi-an=feedback-unhelpful-popover
+			data-test-id="ask-learn-assistant-flyout-entry-feedback"
+			data-ask-learn-flyout-entry-show-only
+			data-flyout-button="toggle"
+			type="button"
+			style="min-width: max-content;"
+			aria-expanded="false"
+			aria-controls="ask-learn-flyout"
+			hidden
+		>
+			<span class="icon font-size-lg" aria-hidden="true">
+				<span class="docon docon-chat-sparkle-fill gradient-ask-learn-logo"></span>
+			</span>
+			<span>Ask Learn</span>
+		</button>
+	</div>
+			<button
+				type="button"
+				class="button button-sm margin-right-xxs"
+				data-help-option="suggest-fix"
+				data-bi-name="feedback-suggest"
+				data-bi-an="feedback-unhelpful-popover"
+				data-test-id="suggest-fix"
+			>
+				<span class="icon" aria-hidden="true">
+					<span class="docon docon-feedback"></span>
+				</span>
+				<span> Suggest a fix? </span>
+			</button>
+		</div>
+	
+						</div>
+					</details>
+				</div>
+			</div>
+		</section>
+		<!-- end feedback section -->
+	
+				</div>
+				
+		<div id="ms--additional-resources-mobile" class="display-none-print">
+			<hr class="hr" hidden />
+			<h2 id="ms--additional-resources-mobile-heading" class="title is-3" hidden>
+				Additional resources
+			</h2>
+			 
+		<section
+			id="right-rail-training-mobile"
+			class=""
+			data-bi-name="learning-resource-card"
+			hidden
+		></section>
+	 
+		<section
+			id="right-rail-events-mobile"
+			class=""
+			data-bi-name="events-card"
+			hidden
+		></section>
+	
+		</div>
+	 
+		<div
+			id="article-metadata-footer"
+			data-bi-name="article-metadata-footer"
+			data-test-id="article-metadata-footer"
+			class="page-metadata-container"
+		>
+			<hr class="hr" />
+			<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr">
+				<li class="visibility-hidden-visual-diff">
+			<span class="badge badge-sm text-wrap-pretty">
+				<span>Last updated on <local-time format="twoDigitNumeric"
+		datetime="2024-10-23T01:45:00.000Z"
+		data-article-date-source="calculated"
+		class="is-invisible"
+	>
+		2024-10-23
+	</local-time></span>
+			</span>
+		</li>
+			</ul>
+		</div>
+	
+			</div>
+			
+		<div
+			id="action-panel"
+			role="region"
+			aria-label="Action Panel"
+			class="action-panel"
+			tabindex="-1"
+		></div>
+	
+		
+				</main>
+				<aside
+					id="layout-body-aside"
+					class="layout-body-aside  "
+					data-bi-name="aside"
+					aria-label="Additional resources"
+			  >
+					
+		<div
+			id="ms--additional-resources"
+			class="right-container padding-sm display-none display-block-desktop height-full"
+			data-bi-name="pageactions"
+		>
+			<div id="affixed-right-container" data-bi-name="right-column">
+				
+		<nav
+			id="side-doc-outline"
+			class="doc-outline border-bottom padding-bottom-xs margin-bottom-xs scrollbar-width-thin"
+			data-bi-name="intopic toc"
+			aria-label="In this article"
+		>
+			<h3>In this article</h3>
+		</nav>
+	
+				<!-- Feedback -->
+				
+		<section
+			id="ms--site-user-feedback-right-rail"
+			class="font-size-sm display-none-print"
+			data-test-id="site-user-feedback-right-rail"
+			data-bi-name="site-feedback-right-rail"
+		>
+			<div class="display-flex flex-wrap-wrap align-items-center">
+				<p class="font-weight-semibold margin-xxs margin-left-none">
+					Was this page helpful?
+				</p>
+				<div class="display-flex flex-wrap-nowrap">
+					<button
+						class="thumb-rating-button like inner-focus"
+						data-test-id="right-rail-rating-yes"
+						data-binary-rating-response="rating-yes"
+						type="button"
+						title="This article is helpful"
+						aria-label="This article is helpful"
+						data-bi-name="button-rating-yes"
+						aria-pressed="false"
+					>
+						<span class="icon" aria-hidden="true">
+							<span class="docon docon-like"></span>
+						</span>
+					</button>
+					<button
+						class="thumb-rating-button dislike inner-focus"
+						id="right-rail-no-button"
+						hidden
+						data-test-id="right-rail-rating-no"
+						data-binary-rating-response="rating-no"
+						type="button"
+						title="This article is not helpful"
+						aria-label="This article is not helpful"
+						data-bi-name="button-rating-no"
+						aria-pressed="false"
+					>
+						<span class="icon" aria-hidden="true">
+							<span class="docon docon-dislike"></span>
+						</span>
+					</button>
+					<details class="popover popover-right" id="help-popover" data-test-id="feedback-popover">
+						<summary
+							tabindex="0"
+							class="thumb-rating-button dislike inner-focus"
+							data-test-id="details-right-rail-rating-no"
+							data-binary-rating-response="rating-no"
+							title="This article is not helpful"
+							aria-label="This article is not helpful"
+							data-bi-name="button-rating-no"
+							aria-pressed="false"
+							data-bi-an="feedback-unhelpful-popover"
+						>
+							<span class="icon" aria-hidden="true">
+								<span class="docon docon-dislike"></span>
+							</span>
+						</summary>
+						<div
+							class="popover-content width-200 width-300-tablet"
+							role="dialog"
+							aria-labelledby="popover-heading-right-rail"
+							aria-describedby="popover-description-right-rail"
+						>
+							<p
+								id="popover-heading-right-rail"
+								class="font-size-lg margin-bottom-xxs font-weight-semibold"
+							>
+								Need help with this topic?
+							</p>
+							<p id="popover-description-right-rail" class="font-size-sm margin-bottom-xs">
+								Want to try using Ask Learn to clarify or guide you through this topic?
+							</p>
+							
+		<div class="buttons flex-direction-row flex-wrap justify-content-center gap-xxs">
+			<div>
+		<button
+			class="button button-sm border inner-focus display-none margin-right-xxs"
+			data-bi-name="ask-learn-assistant-entry-troubleshoot"
+			data-test-id="ask-learn-assistant-modal-entry-mobile-feedback"
+			data-ask-learn-modal-entry-feedback
+			data-bi-an=feedback-unhelpful-popover
+			type="button"
+			style="min-width: max-content;"
+			aria-expanded="false"
+			aria-label="Ask Learn"
+			hidden
+		>
+			<span class="icon font-size-lg" aria-hidden="true">
+				<span class="docon docon-chat-sparkle-fill gradient-ask-learn-logo"></span>
+			</span>
+		</button>
+		<button
+			class="button button-sm display-inline-flex display-none-desktop flex-shrink-0 margin-right-xxs border-color-ask-learn margin-right-xxs"
+			data-bi-name="ask-learn-assistant-entry-troubleshoot"
+			data-bi-an=feedback-unhelpful-popover
+			data-test-id="ask-learn-assistant-modal-entry-tablet-feedback"
+			data-ask-learn-modal-entry-feedback
+			type="button"
+			style="min-width: max-content;"
+			aria-expanded="false"
+			hidden
+		>
+			<span class="icon font-size-lg" aria-hidden="true">
+				<span class="docon docon-chat-sparkle-fill gradient-ask-learn-logo"></span>
+			</span>
+			<span>Ask Learn</span>
+		</button>
+		<button
+			class="button button-sm display-none flex-shrink-0 display-inline-flex-desktop margin-right-xxs border-color-ask-learn margin-right-xxs"
+			data-bi-name="ask-learn-assistant-entry-troubleshoot"
+			data-bi-an=feedback-unhelpful-popover
+			data-test-id="ask-learn-assistant-flyout-entry-feedback"
+			data-ask-learn-flyout-entry-show-only
+			data-flyout-button="toggle"
+			type="button"
+			style="min-width: max-content;"
+			aria-expanded="false"
+			aria-controls="ask-learn-flyout"
+			hidden
+		>
+			<span class="icon font-size-lg" aria-hidden="true">
+				<span class="docon docon-chat-sparkle-fill gradient-ask-learn-logo"></span>
+			</span>
+			<span>Ask Learn</span>
+		</button>
+	</div>
+			<button
+				type="button"
+				class="button button-sm margin-right-xxs"
+				data-help-option="suggest-fix"
+				data-bi-name="feedback-suggest"
+				data-bi-an="feedback-unhelpful-popover"
+				data-test-id="suggest-fix"
+			>
+				<span class="icon" aria-hidden="true">
+					<span class="docon docon-feedback"></span>
+				</span>
+				<span> Suggest a fix? </span>
+			</button>
+		</div>
+	
+						</div>
+					</details>
+				</div>
+			</div>
+		</section>
+	
+			</div>
+		</div>
+	
+			  </aside> <section
+					id="layout-body-flyout"
+					class="layout-body-flyout "
+					data-bi-name="flyout"
+			  >
+					 <div
+	class="height-full border-left background-color-body-medium"
+	id="ask-learn-flyout"
+></div>
+			  </section> <div class="layout-body-footer " data-bi-name="layout-footer">
+		<footer
+			id="footer"
+			data-test-id="footer"
+			data-bi-name="footer"
+			class="footer-layout padding-xs padding-sm-desktop has-default-focus border-top"
+			role="contentinfo"
+		>
+			<div class="display-flex gap-xs flex-wrap-wrap is-full-height padding-right-lg-desktop">
+				
+		<a
+			data-mscc-ic="false"
+			href="#"
+			data-bi-name="select-locale"
+			class="locale-selector-link flex-shrink-0 button button-sm button-clear external-link-indicator"
+			id=""
+			title=""
+			><span class="icon" aria-hidden="true"
+				><span class="docon docon-world"></span></span
+			><span class="local-selector-link-text">en-us</span></a
+		>
+	 <div class="ccpa-privacy-link" data-ccpa-privacy-link hidden>
+		
+		<a
+			data-mscc-ic="false"
+			href="https://aka.ms/yourcaliforniaprivacychoices"
+			data-bi-name="your-privacy-choices"
+			class="button button-sm button-clear flex-shrink-0 external-link-indicator"
+			id=""
+			title=""
+			>
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			viewBox="0 0 30 14"
+			xml:space="preserve"
+			height="16"
+			width="43"
+			aria-hidden="true"
+			focusable="false"
+		>
+			<path
+				d="M7.4 12.8h6.8l3.1-11.6H7.4C4.2 1.2 1.6 3.8 1.6 7s2.6 5.8 5.8 5.8z"
+				style="fill-rule:evenodd;clip-rule:evenodd;fill:#fff"
+			></path>
+			<path
+				d="M22.6 0H7.4c-3.9 0-7 3.1-7 7s3.1 7 7 7h15.2c3.9 0 7-3.1 7-7s-3.2-7-7-7zm-21 7c0-3.2 2.6-5.8 5.8-5.8h9.9l-3.1 11.6H7.4c-3.2 0-5.8-2.6-5.8-5.8z"
+				style="fill-rule:evenodd;clip-rule:evenodd;fill:#06f"
+			></path>
+			<path
+				d="M24.6 4c.2.2.2.6 0 .8L22.5 7l2.2 2.2c.2.2.2.6 0 .8-.2.2-.6.2-.8 0l-2.2-2.2-2.2 2.2c-.2.2-.6.2-.8 0-.2-.2-.2-.6 0-.8L20.8 7l-2.2-2.2c-.2-.2-.2-.6 0-.8.2-.2.6-.2.8 0l2.2 2.2L23.8 4c.2-.2.6-.2.8 0z"
+				style="fill:#fff"
+			></path>
+			<path
+				d="M12.7 4.1c.2.2.3.6.1.8L8.6 9.8c-.1.1-.2.2-.3.2-.2.1-.5.1-.7-.1L5.4 7.7c-.2-.2-.2-.6 0-.8.2-.2.6-.2.8 0L8 8.6l3.8-4.5c.2-.2.6-.2.9 0z"
+				style="fill:#06f"
+			></path>
+		</svg>
+	
+			<span>Your Privacy Choices</span></a
+		>
+	
+	</div>
+				<div class="flex-shrink-0">
+		<div class="dropdown has-caret-up">
+			<button
+				data-test-id="theme-selector-button"
+				class="dropdown-trigger button button-clear button-sm inner-focus theme-dropdown-trigger"
+				aria-controls="{{ themeMenuId }}"
+				aria-haspopup="true"
+				aria-expanded="false"
+				data-bi-name="theme"
+			>
+				<span class="icon" aria-hidden="true"><span class="docon docon-sun"></span></span>
+				<span>Theme</span>
+				<span class="icon expanded-indicator" aria-hidden="true">
+					<span class="docon docon-chevron-down-light"></span>
+				</span>
+			</button>
+			<div class="dropdown-menu" id="{{ themeMenuId }}" role="menu">
+				<ul class="theme-selector padding-xxs" data-test-id="theme-dropdown-menu" role="none">
+					<li class="theme display-block" role="none">
+						<button
+							class="button button-clear button-sm theme-control button-block justify-content-flex-start text-align-left"
+							role="menuitemradio"
+							aria-checked="false"
+							data-theme-to="light"
+							tabindex="-1"
+						>
+							<span class="theme-light margin-right-xxs">
+								<span
+									class="theme-selector-icon border display-inline-block has-body-background"
+									aria-hidden="true"
+								>
+									<svg class="svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 14">
+										<rect width="22" height="14" class="has-fill-body-background" />
+										<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+										<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+										<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+										<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+										<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+										<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+										<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+									</svg>
+								</span>
+							</span>
+							<span> Light </span>
+						</button>
+					</li>
+					<li class="theme display-block" role="none">
+						<button
+							class="button button-clear button-sm theme-control button-block justify-content-flex-start text-align-left"
+							role="menuitemradio"
+							aria-checked="false"
+							data-theme-to="dark"
+							tabindex="-1"
+						>
+							<span class="theme-dark margin-right-xxs">
+								<span
+									class="border theme-selector-icon display-inline-block has-body-background"
+									aria-hidden="true"
+								>
+									<svg class="svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 14">
+										<rect width="22" height="14" class="has-fill-body-background" />
+										<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+										<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+										<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+										<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+										<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+										<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+										<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+									</svg>
+								</span>
+							</span>
+							<span> Dark </span>
+						</button>
+					</li>
+					<li class="theme display-block" role="none">
+						<button
+							class="button button-clear button-sm theme-control button-block justify-content-flex-start text-align-left"
+							role="menuitemradio"
+							aria-checked="false"
+							data-theme-to="high-contrast"
+							tabindex="-1"
+						>
+							<span class="theme-high-contrast margin-right-xxs">
+								<span
+									class="border theme-selector-icon display-inline-block has-body-background"
+									aria-hidden="true"
+								>
+									<svg class="svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 14">
+										<rect width="22" height="14" class="has-fill-body-background" />
+										<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+										<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+										<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+										<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+										<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+										<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+										<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+									</svg>
+								</span>
+							</span>
+							<span> High contrast </span>
+						</button>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+			</div>
+			<ul class="links" data-bi-name="footerlinks">
+				<li class="manage-cookies-holder" hidden=""></li>
+				<li>
+		
+		<a
+			data-mscc-ic="false"
+			href="https://learn.microsoft.com/en-us/principles-for-ai-generated-content"
+			data-bi-name="aiDisclaimer"
+			class=" external-link-indicator"
+			id=""
+			title=""
+			>AI Disclaimer</a
+		>
+	
+	</li><li>
+		
+		<a
+			data-mscc-ic="false"
+			href="https://learn.microsoft.com/en-us/previous-versions/"
+			data-bi-name="archivelink"
+			class=" external-link-indicator"
+			id=""
+			title=""
+			>Previous Versions</a
+		>
+	
+	</li> <li>
+		
+		<a
+			data-mscc-ic="false"
+			href="https://techcommunity.microsoft.com/t5/microsoft-learn-blog/bg-p/MicrosoftLearnBlog"
+			data-bi-name="bloglink"
+			class=" external-link-indicator"
+			id=""
+			title=""
+			>Blog</a
+		>
+	
+	</li> <li>
+		
+		<a
+			data-mscc-ic="false"
+			href="https://learn.microsoft.com/en-us/contribute"
+			data-bi-name="contributorGuide"
+			class=" external-link-indicator"
+			id=""
+			title=""
+			>Contribute</a
+		>
+	
+	</li><li>
+		
+		<a
+			data-mscc-ic="false"
+			href="https://go.microsoft.com/fwlink/?LinkId=521839"
+			data-bi-name="privacy"
+			class=" external-link-indicator"
+			id=""
+			title=""
+			>Privacy</a
+		>
+	
+	</li><li>
+		
+		<a
+			data-mscc-ic="false"
+			href="https://go.microsoft.com/fwlink/?linkid=2259814"
+			data-bi-name="consumer-health-privacy"
+			class=" external-link-indicator"
+			id=""
+			title=""
+			>Consumer Health Privacy</a
+		>
+	
+	</li><li>
+		
+		<a
+			data-mscc-ic="false"
+			href="https://learn.microsoft.com/en-us/legal/termsofuse"
+			data-bi-name="termsofuse"
+			class=" external-link-indicator"
+			id=""
+			title=""
+			>Terms of Use</a
+		>
+	
+	</li><li>
+		
+		<a
+			data-mscc-ic="false"
+			href="https://www.microsoft.com/legal/intellectualproperty/Trademarks/"
+			data-bi-name="trademarks"
+			class=" external-link-indicator"
+			id=""
+			title=""
+			>Trademarks</a
+		>
+	
+	</li>
+				<li>&copy; Microsoft 2026</li>
+			</ul>
+		</footer>
+	</footer>
+			</body>
+		</html>

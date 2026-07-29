@@ -2,6 +2,7 @@ import { z } from "zod";
 import type { Tool } from "../types.js";
 import type { Knowledge, Scenario } from "../knowledge/schema.js";
 import { ok } from "../util/result.js";
+import { basePathFor, baseUrlFor } from "../knowledge/apis.js";
 
 interface Finding { severity: "error" | "warning" | "info"; message: string; fix?: string }
 
@@ -38,8 +39,12 @@ export const validateRequest: Tool = {
     const headerNames = Object.keys(headers).map((h) => h.toLowerCase());
     const hasHeader = (name: string) => headerNames.includes(name.toLowerCase());
 
-    // Path / method matching.
-    const samePath = k.scenarios.filter((s) => pathMatches(s.path, path));
+    // Path / method matching. A scenario matches either its bare (relative)
+    // path or that path prefixed with its api's base pathname (e.g. Graph's
+    // "/v1.0"), so a pasted full URL and a bare path both resolve the same
+    // scenario. For partner-center scenarios basePathFor is "", so the two
+    // forms are identical and behavior is unchanged.
+    const samePath = k.scenarios.filter((s) => pathMatches(s.path, path) || pathMatches(basePathFor(s.api) + s.path, path));
     const matched: Scenario | undefined = samePath.find((s) => s.method === args.method);
 
     if (samePath.length === 0) {
@@ -80,7 +85,10 @@ export const validateRequest: Tool = {
     const hasError = findings.some((f) => f.severity === "error");
     return ok({
       ok: !hasError,
-      matched: matched ? { id: matched.id, title: matched.title, method: matched.method, path: matched.path, authType: matched.authType, docUrl: matched.docUrl } : null,
+      // `url` resolves the api-relative `path` against its base: the caller
+      // may have pasted a bare Graph path, and echoing it back host-less
+      // would leave them no way to tell which host it belongs to.
+      matched: matched ? { id: matched.id, title: matched.title, method: matched.method, path: matched.path, url: baseUrlFor(matched.api) + matched.path, authType: matched.authType, docUrl: matched.docUrl } : null,
       findings,
     });
   },

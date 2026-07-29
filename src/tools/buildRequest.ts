@@ -3,8 +3,7 @@ import { randomUUID } from "node:crypto";
 import type { Tool } from "../types.js";
 import { ok, notFound } from "../util/result.js";
 import type { Knowledge, Scenario } from "../knowledge/schema.js";
-
-const COMMERCIAL = "https://api.partnercenter.microsoft.com";
+import { baseUrlFor } from "../knowledge/apis.js";
 
 function defaultFor(type: string, note?: string): unknown {
   const lit = note?.match(/'([^']+)'/);
@@ -64,12 +63,12 @@ export const buildRequest: Tool = {
       if (v == null) { missingParams.push(token); return `{${token}}`; }
       return encodeURIComponent(v);
     });
-    const url = filledPath.startsWith("http") ? filledPath : COMMERCIAL + filledPath;
+    const url = baseUrlFor(scenario.api) + filledPath;
 
     // Build concrete headers.
     const isWrite = ["POST", "PUT", "PATCH", "DELETE"].includes(scenario.method);
     const headers: Record<string, string> = {};
-    const isGraph = url.startsWith("https://graph.microsoft.com");
+    const isGraph = scenario.api === "graph";
     for (const h of scenario.headers) {
       const n = h.name.toLowerCase();
       if (n === "authorization") headers[h.name] = isGraph ? "Bearer <graph-access-token>" : "Bearer <access-token>";
