@@ -2089,3 +2089,48 @@ git commit -m "docs: describe the two-half verification workflow"
 
 - The spec's section 2 table lists eval inside `check-pack`. Here `npm run eval` stays its own script and its own CI step, as it already is; both are offline and both block. Same gate, one less indirection.
 - The spec described the snapshot as holding `tocHrefs`; Task 9 adds those only when TOC ingestion lands, so the snapshot written in Task 5 has an empty `tocHrefs` array. The schema carries the field from the start, so no migration is needed.
+
+---
+
+## Amendment (2026-07-29): Task 7 splits into 7A / 7B / 7C
+
+Running `checkFields` against the real pack for the first time produced **19 errors**. Triage showed
+they were not 19 instances of one problem, and that Task 7 as written would have corrupted the
+knowledge pack. Two rulings were taken by the human partner; this amendment records them and the
+resulting split.
+
+### What the 19 errors actually were
+
+| Class | Count | Cause |
+| --- | --- | --- |
+| A | 17 | The pack stores an absolute URL in `path` for scenarios on a non-Partner-Center host; the docs state the route relative (and Graph docs omit the `/v1.0` prefix). Segment counts differ, so every one reports as a path mismatch. |
+| B | 1 | `create-subscription-transition`: its doc page documents **two** endpoints (`<h4 id="request-syntax">` GET transitionEligibilities and `<h4 id="request-syntax-1">` POST transitions). The extractor reads only the first, so the scenario compares against the wrong endpoint. |
+| C | 1 | `get-fraud-events`: the extracted URI is `/v1/fraudEvents>` — a stray `>` leaking from the page markup. |
+
+### Ruling 1 (Class A): apply the plan — make the pack relative
+
+Task 7 as written says the docs are authoritative for `method` and `path`. Applying that literally
+rewrites 18 absolute paths into relative ones, which silently breaks request building:
+`src/tools/buildRequest.ts:67` and `src/tools/generateCall.ts:119` both branch on
+`path.startsWith("http")` to decide whether to prepend the Partner Center base URL. This concern was
+raised and the human partner confirmed the plan governs, **with** the host moved onto the scenario so
+the tools keep working. That expansion is Task 7B.
+
+### Ruling 2 (Class B): extract every request-syntax table, match any
+
+`DocFacts` gains all of a page's request syntaxes rather than only the first, and field verification
+passes when the scenario matches **any** of them. Learn suffixes duplicate heading ids (`request-syntax`,
+`request-syntax-1`, …; `http-request`, `http-request-1`, …), so enumeration is deterministic. That is
+Task 7A.
+
+### The split
+
+- **Task 7A — extractor: all request syntaxes, and the stray-`>` artifact.** Changes `DocFacts`,
+  `extract.ts`, and `checks/fields.ts`; regenerates the snapshot.
+- **Task 7B — pack: relative paths and a per-scenario API base.** Adds an `api` field to the scenario
+  schema, rewrites the 18 absolute paths, and updates `buildRequest.ts` / `generateCall.ts` to resolve
+  the base from that field instead of sniffing `startsWith("http")`.
+- **Task 7C — the offline gate.** The original Task 7: `report.ts`, `scripts/check-pack.mjs`, and the
+  `ci.yml` wiring, run to green.
+
+Tasks 8-11 are unchanged and still follow.
