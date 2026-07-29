@@ -69,6 +69,27 @@ test("guided workflows return ordered, resolvable steps", async () => {
   }
 });
 
+test("guided workflow steps carry a resolved absolute url, per step api", async () => {
+  // pc_plan_gdap_onboarding is entirely Graph; pc_plan_transfer is entirely
+  // Partner Center. A host-less path in either would send an agent to the
+  // wrong host.
+  const gdap = (await planGdapOnboarding.run({}, ctx)).data as any;
+  const byId = gdap.steps.find((s: any) => s.scenarioId === "get-gdap-relationship-by-id");
+  expect(byId.url).toBe("https://graph.microsoft.com/v1.0" + byId.path);
+  expect(gdap.steps.every((s: any) => s.url.startsWith("https://graph.microsoft.com/v1.0/"))).toBe(true);
+
+  const transfer = (await planTransfer.run({ customerId: "abc" }, ctx)).data as any;
+  expect(transfer.steps.every((s: any) => s.url === "https://api.partnercenter.microsoft.com" + s.path)).toBe(true);
+});
+
+test("a filled placeholder is reflected in url, not just path", async () => {
+  const d = (await planTransfer.run({ customerId: "abc" }, ctx)).data as any;
+  const step = d.steps.find((s: any) => s.path.includes("/abc"));
+  expect(step).toBeTruthy();
+  expect(step.url).toBe("https://api.partnercenter.microsoft.com" + step.path);
+  expect(step.url).not.toContain("{customer-id}");
+});
+
 test("pc_lookup_error resolves related scenarios", async () => {
   const r = (await import("../src/tools/lookupError.js")).lookupError;
   const d = (await r.run({ code: "13605" }, ctx)).data as any;
