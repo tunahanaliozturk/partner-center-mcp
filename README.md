@@ -200,9 +200,10 @@ each scenario's `method`, `path`, and headers against `verification/doc-facts.js
 snapshot of what the Microsoft Learn pages actually say — and reports documented endpoints that have
 no scenario yet. `npm run check-docs` is the weekly networked half: it re-fetches every referenced
 page and compares it to the snapshot, keying drift off the source commit each Learn page embeds. It
-exits non-zero only when a field the pack depends on changed — the weekly GitHub Action then opens
-an issue; an upstream edit that touched only prose is reported without failing. `npm run
-check-docs:update` does the same fetch and then rewrites the snapshot. `npm run docfacts:refresh`
+exits non-zero on a dead, moved, or replaced page, on a page that became unreadable, or when a field
+the pack depends on changed — the weekly GitHub Action then opens an issue; an upstream edit that
+touched only prose is reported without failing. `npm run check-docs:update` does the same fetch and
+then rewrites the snapshot. `npm run docfacts:refresh`
 rebuilds the snapshot from scratch, including the whole `developer/` section of the Learn table of
 contents.
 
