@@ -15,6 +15,10 @@ function decodeEntities(s: string): string {
   return s.replace(/&(amp|lt|gt|quot|apos|nbsp|#39);/g, (whole, name: string) => ENTITIES[name] ?? whole);
 }
 
+function escapeRegExp(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 /** Visible text of an HTML fragment: tags stripped, entities decoded, whitespace collapsed. */
 export function text(html: string): string {
   return decodeEntities(html.replace(/<[^>]+>/g, " ")).replace(/\s+/g, " ").trim();
@@ -22,7 +26,7 @@ export function text(html: string): string {
 
 /** The `content` of `<meta name="...">`, or null when the tag is absent. */
 export function metaContent(html: string, name: string): string | null {
-  const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const escaped = escapeRegExp(name);
   const match = html.match(new RegExp(`<meta\\s+name="${escaped}"\\s+content="([^"]*)"`, "i"));
   return match?.[1] ?? null;
 }
@@ -33,7 +37,7 @@ export function metaContent(html: string, name: string): string | null {
  * section from swallowing its siblings.
  */
 export function sectionAfter(html: string, headingId: string): string | null {
-  const escaped = headingId.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const escaped = escapeRegExp(headingId);
   const start = html.search(new RegExp(`<h[1-6][^>]*id="${escaped}"`, "i"));
   if (start < 0) return null;
   const rest = html.slice(start);
