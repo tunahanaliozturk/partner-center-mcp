@@ -85,6 +85,40 @@ test("a changed source commit with a changed requestSyntaxes list (but unchanged
   expect(findings.some((f) => f.kind === "drift" && f.severity === "error")).toBe(true);
 });
 
+// The depended-on-field comparison must fire INDEPENDENTLY of sourceSha.
+// Learn re-renders from unchanged source (template change = the spec's top
+// risk), so a field change with an unchanged commit is exactly the case that
+// must not pass silently. Every other drift test above varies sourceSha.
+test("a changed requestSyntaxes with an UNCHANGED sourceSha is still an error", () => {
+  const snap = baseline({ requestSyntaxes: [] });
+  const { findings } = checkDrift([page()], snap, [scenario()], NOW, 180);
+  expect(findings.some((f) => f.kind === "drift" && f.severity === "error")).toBe(true);
+  expect(findings.find((f) => f.kind === "drift")?.message).toContain("requestSyntaxes");
+});
+
+test("a changed headerNames with an UNCHANGED sourceSha is still an error", () => {
+  const snap = baseline({ headerNames: ["X-Gone-Header"] });
+  const { findings } = checkDrift([page()], snap, [scenario()], NOW, 180);
+  expect(findings.some((f) => f.kind === "drift" && f.severity === "error")).toBe(true);
+  expect(findings.find((f) => f.kind === "drift")?.message).toContain("headerNames");
+});
+
+test("a changed bodyFields with an UNCHANGED sourceSha is still an error", () => {
+  const snap = baseline({ bodyFields: [{ name: "gone", type: "string" }] });
+  const { findings } = checkDrift([page()], snap, [scenario()], NOW, 180);
+  expect(findings.some((f) => f.kind === "drift" && f.severity === "error")).toBe(true);
+  expect(findings.find((f) => f.kind === "drift")?.message).toContain("bodyFields");
+});
+
+test("the drift message names the field that actually differs, not always requestSyntax", () => {
+  const snap = baseline({ sourceSha: "b".repeat(40), headerNames: ["X-Gone-Header"] });
+  const { findings } = checkDrift([page()], snap, [scenario()], NOW, 180);
+  const drift = findings.find((f) => f.kind === "drift");
+  expect(drift?.message).toContain("headerNames");
+  expect(drift?.message).not.toContain("requestSyntax ");
+  expect(drift?.detail).toContain("X-Gone-Header");
+});
+
 test("a page not in the snapshot is a warning, not an error", () => {
   const { findings } = checkDrift([page()], emptySnapshot("2026-07"), [scenario()], NOW, 180);
   expect(findings).toHaveLength(1);

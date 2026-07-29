@@ -10,13 +10,21 @@ import type { DocFacts, Snapshot } from "../types.js";
  *  requestSyntaxes is included, not just requestSyntax: checkFields (Task 6)
  *  matches a scenario's method/path against ANY entry in the full list, so the
  *  pack depends on the whole list, not just its first entry. */
-function dependedOn(facts: DocFacts): string {
-  return JSON.stringify({
-    requestSyntax: facts.requestSyntax,
-    requestSyntaxes: facts.requestSyntaxes,
-    headerNames: facts.headerNames,
-    bodyFields: facts.bodyFields,
-  });
+const DEPENDED_ON = ["requestSyntax", "requestSyntaxes", "headerNames", "bodyFields"] as const;
+
+/** The depended-on fields that differ, each with its before/after value.
+ *
+ *  Named rather than boolean because this comparison is now the PRIMARY drift
+ *  trigger and fires independently of sourceSha, so a finding may be about
+ *  headerNames or bodyFields alone; the message must say which. */
+function changedFields(facts: DocFacts, before: DocFacts): { name: string; before: string; after: string }[] {
+  const out: { name: string; before: string; after: string }[] = [];
+  for (const name of DEPENDED_ON) {
+    const b = JSON.stringify(before[name]);
+    const a = JSON.stringify(facts[name]);
+    if (a !== b) out.push({ name, before: b, after: a });
+  }
+  return out;
 }
 
 /** Learn redirects bare paths to a locale, which is not a move. */
@@ -88,19 +96,25 @@ export function checkDrift(
       continue;
     }
 
-    if (facts.sourceSha !== before.sourceSha) {
-      const changed = dependedOn(facts) !== dependedOn(before);
-      findings.push(changed
-        ? {
-            kind: "drift", severity: "error", ref: page.url,
-            message: `source changed AND a field the pack depends on changed: requestSyntax ${JSON.stringify(before.requestSyntax)} -> ${JSON.stringify(facts.requestSyntax)}.`,
-            detail: `requestSyntaxes ${JSON.stringify(before.requestSyntaxes)} -> ${JSON.stringify(facts.requestSyntaxes)}; headers ${JSON.stringify(before.headerNames)} -> ${JSON.stringify(facts.headerNames)}; bodyFields ${JSON.stringify(before.bodyFields)} -> ${JSON.stringify(facts.bodyFields)}`,
-          }
-        : {
-            kind: "drift-low", severity: "info", ref: page.url,
-            message: "source changed, but no field the pack depends on changed.",
-            detail: `${before.sourceSha} -> ${facts.sourceSha}`,
-          });
+    // A changed field is the primary trigger, INDEPENDENT of sourceSha. Learn
+    // re-renders pages from an unchanged source (a template change is the
+    // spec's own top risk), so gating this on sourceSha would let a changed
+    // request path, header, or body field pass silently and permanently --
+    // the weekly job runs without --update, so check-pack keeps comparing
+    // against the stale snapshot forever.
+    const changed = changedFields(facts, before);
+    if (changed.length > 0) {
+      findings.push({
+        kind: "drift", severity: "error", ref: page.url,
+        message: `a field the pack depends on changed: ${changed.map((c) => `${c.name} ${c.before} -> ${c.after}`).join("; ")}.`,
+        detail: `requestSyntaxes ${JSON.stringify(before.requestSyntaxes)} -> ${JSON.stringify(facts.requestSyntaxes)}; headers ${JSON.stringify(before.headerNames)} -> ${JSON.stringify(facts.headerNames)}; bodyFields ${JSON.stringify(before.bodyFields)} -> ${JSON.stringify(facts.bodyFields)}`,
+      });
+    } else if (facts.sourceSha !== before.sourceSha) {
+      findings.push({
+        kind: "drift-low", severity: "info", ref: page.url,
+        message: "source changed, but no field the pack depends on changed.",
+        detail: `${before.sourceSha} -> ${facts.sourceSha}`,
+      });
     }
   }
 
