@@ -19,10 +19,15 @@ function canonical(url: string): string {
 export function checkCoverage(snapshot: Snapshot, scenarios: Scenario[]): Finding[] {
   const findings: Finding[] = [];
   const covered = new Set(scenarios.map((s) => canonical(s.docUrl)));
+  // A page can be linked from more than one TOC node (it shows up under two
+  // nav sections); report it as a gap at most once.
+  const seen = new Set<string>();
 
   for (const href of snapshot.tocHrefs) {
     if (!href.startsWith("developer/")) continue;
     const url = tocHrefToUrl(href);
+    if (seen.has(url)) continue;
+    seen.add(url);
     const facts = snapshot.pages[url];
     if (!facts?.isEndpointPage) continue;
     if (covered.has(canonical(url))) continue;

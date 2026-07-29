@@ -70,3 +70,11 @@ test("a scenario whose page left the TOC is a retirement candidate", () => {
   const findings = checkCoverage(snap, [scenario(covered)]);
   expect(findings.some((f) => f.kind === "retired-page" && f.severity === "warning" && f.ref === "s1")).toBe(true);
 });
+
+test("a page listed under more than one TOC node is reported as a gap only once", () => {
+  const snap = snapshot();
+  snap.tocHrefs = ["developer/create-a-customer", "developer/get-a-cart", "developer/get-a-cart", "developer/get-started"];
+  const findings = checkCoverage(snap, [scenario(covered)]);
+  const gaps = findings.filter((f) => f.kind === "coverage-gap" && f.ref === uncovered);
+  expect(gaps).toHaveLength(1);
+});
