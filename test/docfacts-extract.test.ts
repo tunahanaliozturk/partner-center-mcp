@@ -228,3 +228,25 @@ test("a request-syntax section whose extracted uri does not start with '/' contr
   const facts = extractDocFacts(url, url, html);
   expect(facts.requestSyntaxes).toEqual([{ method: "GET", uri: "/v1/fraudEvents" }]);
 });
+
+// get-a-list-of-referrals states its Request URI as a full absolute URL
+// instead of a {baseURL}-relative path: `<code>https://api.partner.microsoft.com/v1.0/engagements/referrals</code>`.
+// That's a legitimate documentation style, distinct from the bracket-garbage
+// case above -- both must be told apart by the same guard.
+test("a request-syntax section whose uri is an absolute http(s) URL is collected as-is", () => {
+  const url = "https://learn.microsoft.com/partner-center/developer/get-a-list-of-referrals";
+  const html = `
+    <meta name="gitcommit" content="https://github.com/MicrosoftDocs/partner-center-pr/blob/0000000000000000000000000000000000000000/path.md">
+    <meta name="document_id" content="00000000-0000-0000-0000-000000000000">
+    <h1>Get a list of referrals</h1>
+    <h3 id="request-syntax">Request syntax</h3>
+    <table>
+    <thead><tr><th style="text-align: left;">Method</th><th style="text-align: left;">Request URI</th></tr></thead>
+    <tbody><tr><td style="text-align: left;"><strong>GET</strong></td><td style="text-align: left;"><code>https://api.partner.microsoft.com/v1.0/engagements/referrals</code></td></tr></tbody>
+    </table>
+  `;
+  const facts = extractDocFacts(url, url, html);
+  expect(facts.requestSyntaxes).toEqual([
+    { method: "GET", uri: "https://api.partner.microsoft.com/v1.0/engagements/referrals" },
+  ]);
+});

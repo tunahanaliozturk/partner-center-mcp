@@ -61,6 +61,18 @@ function title(html: string): string | null {
   return value === "" ? null : value;
 }
 
+// A Request URI is either a {baseURL}-relative path or, on some pages (e.g.
+// get-a-list-of-referrals), a full absolute URL -- both are legitimate
+// documentation styles. Anything else (a bracket-convention leftover like
+// "[]/v1/fraudEvents") is neither, and is rejected. The absolute form is
+// stored as-is: DocFacts records what the page said, and pathsMatch (in
+// checks/fields.ts) is what strips the scheme+host for comparison.
+const ABSOLUTE_URL = /^https?:\/\//i;
+
+function isUri(uri: string): boolean {
+  return uri.startsWith("/") || ABSOLUTE_URL.test(uri);
+}
+
 function partnerCenterSyntaxEntry(section: string): SyntaxEntry | null {
   const table = parseTables(section)[0];
   if (!table || (table.headers[0] ?? "").toLowerCase() !== "method") return null;
@@ -68,7 +80,7 @@ function partnerCenterSyntaxEntry(section: string): SyntaxEntry | null {
   if (!row) return null;
   const method = (row[0] ?? "").toUpperCase();
   const uri = normalizeUri(row[1] ?? "");
-  if (!METHODS.test(method) || !uri.startsWith("/")) return null;
+  if (!METHODS.test(method) || !isUri(uri)) return null;
   return { method, uri };
 }
 
