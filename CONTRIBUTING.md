@@ -43,6 +43,13 @@ same way its docs state the route (Graph docs omit the host and the `/v1.0` pref
 docs omit the host entirely). `src/knowledge/apis.ts` resolves the actual base URL from `api` at
 request-build time, so `pc_build_request` and `pc_generate_call` still emit the correct absolute URL.
 
+Do not generalise the Graph rule to the other APIs: each base is exactly, and only, what that API's
+docs leave out. The `pricing-and-referrals` base is `https://api.partner.microsoft.com` with **no**
+version segment, so its scenarios **keep** the version in `path` — `get-referrals` is
+`"/v1.0/engagements/referrals"`, not `"/engagements/referrals"`. Only Graph drops `/v1.0`, because
+only Graph's base already carries it. When in doubt, `baseUrlFor(api) + path` must reproduce the URI
+the doc page states verbatim; `npm run check-pack` verifies exactly that, including the host.
+
 ## Add or update a scenario
 
 1. Add an entry to [`data/scenarios.json`](data/scenarios.json). Fields are validated by

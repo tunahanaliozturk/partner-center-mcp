@@ -47,10 +47,17 @@ for (const c of cases) {
   }
   const missing = (c.contains ?? []).filter((s) => !blob.includes(s));
   const leaked = (c.notContains ?? []).filter((s) => blob.includes(s));
-  const wrong = (c.assert ?? [])
-    .map((a) => ({ a, actual: valueAt(data, a.path) }))
-    .filter(({ a, actual }) => JSON.stringify(actual) !== JSON.stringify(a.equals))
-    .map(({ a, actual }) => `${a.path}=${JSON.stringify(actual)} expected ${JSON.stringify(a.equals)}`);
+  // A malformed assertion must be loud. Comparing serialized values means an
+  // assertion written without an `equals` key compares undefined to undefined
+  // and can NEVER fail -- a case that looks precise but asserts nothing.
+  const wrong = (c.assert ?? []).map((a) => {
+    if (a === null || typeof a !== "object") return `malformed assertion ${JSON.stringify(a)}: expected an object`;
+    if (typeof a.path !== "string" || a.path === "") return `malformed assertion ${JSON.stringify(a)}: needs a non-empty string \`path\``;
+    if (!("equals" in a)) return `malformed assertion at ${a.path}: needs an \`equals\` key (an absent one asserts nothing)`;
+    const actual = valueAt(data, a.path);
+    if (JSON.stringify(actual) === JSON.stringify(a.equals)) return null;
+    return `${a.path}=${JSON.stringify(actual)} expected ${JSON.stringify(a.equals)}`;
+  }).filter((m) => m !== null);
 
   if (missing.length || leaked.length || wrong.length) {
     const parts = [];
