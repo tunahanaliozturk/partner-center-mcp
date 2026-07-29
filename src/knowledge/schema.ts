@@ -9,38 +9,47 @@ export const AREAS = [
 ] as const;
 
 export const ScenarioSchema = z.object({
-  id: z.string(),
-  area: z.enum(AREAS),
-  title: z.string(),
-  method: z.enum(["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD"]),
+  id: z.string().describe("Stable kebab-case identifier, e.g. \"create-cart\". Pass this to pc_get_scenario, pc_generate_call, or pc_build_request."),
+  area: z.enum(AREAS).describe("Functional area of the Partner Center API this operation belongs to."),
+  title: z.string().describe("Human-readable name of the operation."),
+  method: z.enum(["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD"]).describe("HTTP verb for the call."),
   // Absent means "partner-center": the default host a relative path resolves
   // against. See src/knowledge/apis.ts for the base each api id maps to.
-  api: z.enum(["partner-center", "graph", "pricing-and-referrals"]).optional(),
-  path: z.string(),
-  authType: z.enum(["app-only", "app+user"]),
-  headers: z.array(z.object({ name: z.string(), required: z.boolean(), note: z.string().optional() })),
-  requestShape: z.union([z.string(), z.null()]),
+  api: z.enum(["partner-center", "graph", "pricing-and-referrals"]).optional()
+    .describe("Which API surface hosts this operation. Absent means \"partner-center\". GDAP and reconciliation-v2 operations are \"graph\" and need a different token audience."),
+  path: z.string().describe("API-relative path with {placeholder} segments, e.g. \"/v1/customers/{customer-id}/subscriptions\". Resolve it against the base URL for `api`."),
+  authType: z.enum(["app-only", "app+user"]).describe("Token flavour the operation requires. \"app+user\" needs the Secure Application Model refresh-token flow."),
+  headers: z.array(z.object({
+    name: z.string().describe("Header name."),
+    required: z.boolean().describe("Whether the call fails without it."),
+    note: z.string().optional().describe("What to put in the header and why."),
+  })).describe("Request headers this operation expects."),
+  requestShape: z.union([z.string(), z.null()]).describe("JSON body template, or null for operations that take no body."),
   requestFields: z.array(z.object({
-    name: z.string(),
-    type: z.string(),
-    required: z.boolean(),
-    note: z.string().optional(),
-  })).optional(),
-  responseShape: z.union([z.string(), z.null()]),
-  examples: z.object({ curl: z.string(), csharp: z.string(), typescript: z.string() }),
-  gotchas: z.array(z.string()),
-  docUrl: z.string().url(),
-  lastVerified: isoDate,
+    name: z.string().describe("Field path within the request body; \"[]\" marks an array hop, e.g. \"lineItems[].catalogItemId\"."),
+    type: z.string().describe("Declared type of the field."),
+    required: z.boolean().describe("Whether the request is rejected without it."),
+    note: z.string().optional().describe("Constraints, accepted values, or gotchas for this field."),
+  })).optional().describe("Per-field documentation for the request body, when the operation takes one."),
+  responseShape: z.union([z.string(), z.null()]).describe("JSON response template, or null when the operation returns no body."),
+  examples: z.object({
+    curl: z.string().describe("Runnable curl invocation."),
+    csharp: z.string().describe("C# HttpClient snippet."),
+    typescript: z.string().describe("TypeScript fetch snippet."),
+  }).describe("Ready-to-adapt request examples per language."),
+  gotchas: z.array(z.string()).describe("Pitfalls that commonly break this call in practice, most consequential first."),
+  docUrl: z.string().url().describe("Microsoft Learn page documenting this operation."),
+  lastVerified: isoDate.describe("YYYY-MM-DD on which this entry was last checked against the live documentation."),
 });
 
 export const ErrorEntrySchema = z.object({
-  httpStatus: z.number(),
-  errorCode: z.string(),
-  description: z.string(),
-  causes: z.array(z.string()),
-  remediation: z.string(),
-  docUrl: z.string().url(),
-  relatedScenarios: z.array(z.string()).optional(),
+  httpStatus: z.number().describe("HTTP status code the API returns with this error."),
+  errorCode: z.string().describe("Partner Center error code, e.g. \"900400\"."),
+  description: z.string().describe("What the error means."),
+  causes: z.array(z.string()).describe("Known conditions that trigger it."),
+  remediation: z.string().describe("Concrete fix to apply."),
+  docUrl: z.string().url().describe("Microsoft Learn page covering this error."),
+  relatedScenarios: z.array(z.string()).optional().describe("Scenario ids where this error commonly surfaces."),
 });
 
 export const AuthSchema = z.object({

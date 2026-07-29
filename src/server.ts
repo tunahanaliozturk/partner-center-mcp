@@ -8,7 +8,13 @@ export function createServer(tools: Tool[], ctx: ToolContext, version = "0.0.0")
   for (const tool of tools) {
     server.registerTool(
       tool.name,
-      { description: tool.description, inputSchema: tool.inputShape },
+      {
+        title: tool.title,
+        description: tool.description,
+        inputSchema: tool.inputShape,
+        outputSchema: tool.outputShape,
+        annotations: { title: tool.title, ...tool.annotations },
+      },
       async (args: unknown) => {
         const result = await tool.run(args, ctx);
         return {

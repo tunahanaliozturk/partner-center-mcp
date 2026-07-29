@@ -43,6 +43,19 @@ jobs:
             gh issue create --title "📚 Documentation drift detected" --label doc-drift --body-file doc-report.md
           fi
 
+      # An auto-opened issue that is silently closed leaves no record of what
+      # happened, and reads from the outside like an unanswered report. Close it
+      # explicitly, saying which run cleared it.
+      - name: Close the drift issue once the check is clean
+        if: steps.check.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          existing=$(gh issue list --state open --label doc-drift --json number -q '.[0].number')
+          if [ -n "$existing" ]; then
+            gh issue close "$existing" --comment "Resolved: the doc freshness check found no high-severity drift in [run \`${GITHUB_RUN_ID}\`](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}). Reopening automatically if it returns."
+          fi
+
       - name: Fail the run if high-severity drift was found
         if: steps.check.outcome == 'failure'
         run: exit 1

@@ -1,6 +1,7 @@
 import { z } from "zod";
 import type { Tool } from "../types.js";
 import { ok } from "../util/result.js";
+import { envelope, OFFLINE } from "../util/schema.js";
 
 interface Rule { pattern: RegExp; severity: "error" | "warning"; message: string; fix: string; docUrl: string }
 
@@ -44,8 +45,29 @@ const RULES: Rule[] = [
 
 export const checkAuth: Tool = {
   name: "pc_check_auth",
-  description: "Lint a Partner Center auth or client snippet for retired/deprecated patterns (graph.windows.net audience, ADAL, archived SDK) and return fixes.",
-  inputShape: { code: z.string() },
+  title: "Lint auth code for retired patterns",
+  description:
+    "Scan a Partner Center auth or client code snippet for retired and deprecated patterns — the graph.windows.net token audience, ADAL, the archived .NET SDK, and the AzureAD/MSOnline PowerShell modules — and return the severity, explanation, fix, and doc link for each hit. " +
+    "Use this to triage existing code before or after a 401. For guidance on what to build instead, use pc_auth_guidance; to translate archived SDK calls into REST, use pc_migrate_from_sdk. " +
+    "Read-only, offline, deterministic pattern matching: the snippet is not executed, nothing is sent anywhere, and no code is modified. " +
+    "A clean snippet returns findings: [] with clean: true. Detection is regex-based, so a clean result is not a guarantee of correctness.",
+  inputShape: {
+    code: z.string().describe(
+      "The code to lint, pasted as-is. Any language — C#, TypeScript, PowerShell, or a raw token request URL. " +
+      "A partial snippet is fine: only the auth-related lines matter, and matching is case-insensitive. Secrets are matched against locally and never transmitted, but paste redacted code where you can.",
+    ),
+  },
+  outputShape: envelope(z.object({
+    findings: z.array(z.object({
+      pattern: z.string().describe("Source of the regex that matched, so you can see exactly what was detected."),
+      severity: z.enum(["error", "warning"]).describe("\"error\" means the code is already broken against the live API; \"warning\" means deprecated but still working."),
+      message: z.string().describe("What was detected and why it is a problem."),
+      fix: z.string().describe("The concrete change to make."),
+      docUrl: z.string().describe("Microsoft Learn page covering the retirement or its replacement."),
+    })).describe("One entry per matched pattern. Empty when nothing matched."),
+    clean: z.boolean().describe("True when no pattern matched. Means only that these specific retirements were not found, not that the code is correct overall."),
+  })),
+  annotations: OFFLINE,
   run(args) {
     const findings = RULES.filter((r) => r.pattern.test(args.code)).map((r) => ({
       pattern: r.pattern.source,
