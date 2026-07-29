@@ -5,12 +5,13 @@ import { writeFileSync } from "node:fs";
 import { loadKnowledge } from "../dist/knowledge/load.js";
 import { readSnapshot } from "../dist/docfacts/snapshot.js";
 import { checkFields } from "../dist/docfacts/checks/fields.js";
+import { checkCoverage } from "../dist/docfacts/checks/coverage.js";
 import { hasErrors } from "../dist/docfacts/findings.js";
 import { renderReport } from "../dist/docfacts/report.js";
 
 const knowledge = loadKnowledge("data");
 const snapshot = readSnapshot();
-const findings = checkFields(snapshot, knowledge.scenarios);
+const findings = [...checkFields(snapshot, knowledge.scenarios), ...checkCoverage(snapshot, knowledge.scenarios)];
 
 const errors = findings.filter((f) => f.severity === "error").length;
 const skipped = findings.filter((f) => f.kind === "field-skipped").length;
@@ -18,6 +19,7 @@ const report = renderReport("Pack verification", findings, [
   `Checked **${knowledge.scenarios.length}** scenarios against **${Object.keys(snapshot.pages).length}** snapshotted pages.`,
   `Field errors: **${errors}**`,
   `Skipped (no comparable request syntax): **${skipped}**`,
+  `Documented endpoints with no scenario: **${findings.filter((f) => f.kind === "coverage-gap").length}**`,
 ]);
 
 writeFileSync("pack-report.md", report);

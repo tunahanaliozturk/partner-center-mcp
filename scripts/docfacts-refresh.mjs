@@ -5,17 +5,25 @@ import { loadKnowledge } from "../dist/knowledge/load.js";
 import { fetchAll } from "../dist/docfacts/fetch.js";
 import { extractDocFacts } from "../dist/docfacts/extract.js";
 import { emptySnapshot, writeSnapshot, SNAPSHOT_PATH } from "../dist/docfacts/snapshot.js";
+import { fetchTocHrefs, tocHrefToUrl } from "../dist/docfacts/toc.js";
 
 const knowledge = loadKnowledge("data");
+
+console.log("fetching the Learn TOC...");
+const tocHrefs = await fetchTocHrefs();
+const developerUrls = tocHrefs.filter((h) => h.startsWith("developer/")).map(tocHrefToUrl);
+
 const urls = [...new Set([
   ...knowledge.scenarios.map((s) => s.docUrl),
   ...knowledge.errors.map((e) => e.docUrl),
+  ...developerUrls,
 ])].sort();
 
 console.log(`fetching ${urls.length} pages...`);
 const fetched = await fetchAll(urls);
 
 const snapshot = emptySnapshot(new Date().toISOString().slice(0, 7));
+snapshot.tocHrefs = tocHrefs;
 let failed = 0;
 for (const page of fetched) {
   if (page.html === null) {
