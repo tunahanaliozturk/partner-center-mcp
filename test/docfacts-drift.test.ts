@@ -92,6 +92,26 @@ test("a page not in the snapshot is a warning, not an error", () => {
   expect(findings[0]?.severity).toBe("warning");
 });
 
+test("a replaced page whose sourceSha also changed produces exactly one finding, not a stray field diff against the old document", () => {
+  const snap = baseline({ documentId: "old-id", sourceSha: "b".repeat(40) });
+  const { findings } = checkDrift([page()], snap, [scenario()], NOW, 180);
+  expect(findings).toHaveLength(1);
+  expect(findings[0]?.kind).toBe("page-replaced");
+});
+
+test("a moved page whose sourceSha also changed produces exactly one finding, not a stray field diff against the old destination", () => {
+  const snap = baseline({ sourceSha: "b".repeat(40) });
+  const { findings } = checkDrift(
+    [page({ finalUrl: "https://learn.microsoft.com/partner-center/developer/elsewhere" })],
+    snap,
+    [scenario()],
+    NOW,
+    180,
+  );
+  expect(findings).toHaveLength(1);
+  expect(findings[0]?.kind).toBe("page-moved");
+});
+
 test("an unparseable finalUrl falls back to string comparison instead of throwing", () => {
   const { findings } = checkDrift(
     [page({ finalUrl: "not-a-url" })],

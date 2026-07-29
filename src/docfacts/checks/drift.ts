@@ -68,11 +68,16 @@ export function checkDrift(
       continue;
     }
 
+    // Both continue: once the page has moved to a different destination, or
+    // this url now serves a different document entirely, any further
+    // sourceSha/field diff below would be comparing the old document against
+    // a new, unrelated one -- a misleading diff, not a useful one.
     if (canonicalPath(page.finalUrl) !== canonicalPath(before.finalUrl)) {
       findings.push({
         kind: "page-moved", severity: "error", ref: page.url,
         message: `now redirects to ${page.finalUrl}.`,
       });
+      continue;
     }
 
     if (facts.documentId !== before.documentId) {
@@ -80,6 +85,7 @@ export function checkDrift(
         kind: "page-replaced", severity: "error", ref: page.url,
         message: `document_id changed (${before.documentId} -> ${facts.documentId}); the page was replaced, not edited.`,
       });
+      continue;
     }
 
     if (facts.sourceSha !== before.sourceSha) {
