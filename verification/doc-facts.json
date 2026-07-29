@@ -1,0 +1,2161 @@
+{
+  "version": "2026-07",
+  "extractorVersion": 1,
+  "tocHrefs": [],
+  "pages": {
+    "https://learn.microsoft.com/entra/identity-platform/reference-error-codes": {
+      "url": "https://learn.microsoft.com/entra/identity-platform/reference-error-codes",
+      "finalUrl": "https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes",
+      "template": "unknown",
+      "documentId": "a826ee6f-f457-7109-9f77-67c57977d4e7",
+      "sourceRepo": "MicrosoftDocs/entra-docs-pr",
+      "sourceSha": "a4be4ac419c4e857b1c4de7dee22c9f7e0c750f9",
+      "sourcePath": "docs/identity-platform/reference-error-codes.md",
+      "msDate": "2025-02-03T00:00:00Z",
+      "updatedAt": "2026-06-15T17:40:00Z",
+      "title": "Microsoft Entra authentication and authorization error codes",
+      "requestSyntax": null,
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": false,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/graph/api/delegatedadminaccessassignment-update?view=graph-rest-1.0": {
+      "url": "https://learn.microsoft.com/graph/api/delegatedadminaccessassignment-update?view=graph-rest-1.0",
+      "finalUrl": "https://learn.microsoft.com/en-us/graph/api/delegatedadminaccessassignment-update?view=graph-rest-1.0",
+      "template": "graph",
+      "documentId": "30e93860-77cf-f573-ad2a-2857623e63bf",
+      "sourceRepo": "microsoftgraph/microsoft-graph-docs",
+      "sourceSha": "36552a0188f7ee25fd29355d50a13a156f23aa1d",
+      "sourcePath": "api-reference/v1.0/api/delegatedadminaccessassignment-update.md",
+      "msDate": "2024-04-04T00:00:00Z",
+      "updatedAt": "2025-08-27T00:46:00Z",
+      "title": "Update delegatedAdminAccessAssignment",
+      "requestSyntax": {
+        "method": "PATCH",
+        "uri": "/tenantRelationships/delegatedAdminRelationships/{delegatedAdminRelationshipId}/accessAssignments/{delegatedAdminAccessAssignmentId}"
+      },
+      "headerNames": [
+        "Authorization",
+        "If-Match",
+        "Content-Type"
+      ],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/graph/api/delegatedadminrelationship-delete?view=graph-rest-1.0": {
+      "url": "https://learn.microsoft.com/graph/api/delegatedadminrelationship-delete?view=graph-rest-1.0",
+      "finalUrl": "https://learn.microsoft.com/en-us/graph/api/delegatedadminrelationship-delete?view=graph-rest-1.0",
+      "template": "graph",
+      "documentId": "1c158138-0136-db43-6a80-628e8c513cfc",
+      "sourceRepo": "microsoftgraph/microsoft-graph-docs",
+      "sourceSha": "36552a0188f7ee25fd29355d50a13a156f23aa1d",
+      "sourcePath": "api-reference/v1.0/api/delegatedadminrelationship-delete.md",
+      "msDate": "2024-04-04T00:00:00Z",
+      "updatedAt": "2025-08-27T00:46:00Z",
+      "title": "Delete delegatedAdminRelationship",
+      "requestSyntax": {
+        "method": "DELETE",
+        "uri": "/tenantRelationships/delegatedAdminRelationships/{delegatedAdminRelationshipId}"
+      },
+      "headerNames": [
+        "Authorization",
+        "If-Match"
+      ],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/graph/api/delegatedadminrelationship-get?view=graph-rest-1.0": {
+      "url": "https://learn.microsoft.com/graph/api/delegatedadminrelationship-get?view=graph-rest-1.0",
+      "finalUrl": "https://learn.microsoft.com/en-us/graph/api/delegatedadminrelationship-get?view=graph-rest-1.0",
+      "template": "graph",
+      "documentId": "1f437c57-63d5-63ef-c4d3-df25d9988a82",
+      "sourceRepo": "microsoftgraph/microsoft-graph-docs",
+      "sourceSha": "36552a0188f7ee25fd29355d50a13a156f23aa1d",
+      "sourcePath": "api-reference/v1.0/api/delegatedadminrelationship-get.md",
+      "msDate": "2024-04-04T00:00:00Z",
+      "updatedAt": "2025-08-27T00:46:00Z",
+      "title": "Get delegatedAdminRelationship",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/tenantRelationships/delegatedAdminRelationships/{delegatedAdminRelationshipId}"
+      },
+      "headerNames": [
+        "Authorization"
+      ],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/graph/api/delegatedadminrelationship-list-accessassignments?view=graph-rest-1.0": {
+      "url": "https://learn.microsoft.com/graph/api/delegatedadminrelationship-list-accessassignments?view=graph-rest-1.0",
+      "finalUrl": "https://learn.microsoft.com/en-us/graph/api/delegatedadminrelationship-list-accessassignments?view=graph-rest-1.0",
+      "template": "graph",
+      "documentId": "f30a55c9-f8b4-9c8f-277b-cd4bd1d3bafa",
+      "sourceRepo": "microsoftgraph/microsoft-graph-docs",
+      "sourceSha": "36552a0188f7ee25fd29355d50a13a156f23aa1d",
+      "sourcePath": "api-reference/v1.0/api/delegatedadminrelationship-list-accessassignments.md",
+      "msDate": "2024-04-04T00:00:00Z",
+      "updatedAt": "2025-08-27T00:46:00Z",
+      "title": "List accessAssignments",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/tenantRelationships/delegatedAdminRelationships/{delegatedAdminRelationshipId}/accessAssignments"
+      },
+      "headerNames": [
+        "Authorization"
+      ],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/graph/api/delegatedadminrelationship-post-accessassignments?view=graph-rest-1.0": {
+      "url": "https://learn.microsoft.com/graph/api/delegatedadminrelationship-post-accessassignments?view=graph-rest-1.0",
+      "finalUrl": "https://learn.microsoft.com/en-us/graph/api/delegatedadminrelationship-post-accessassignments?view=graph-rest-1.0",
+      "template": "graph",
+      "documentId": "0a622ec4-f0ef-cdfa-c3e4-ef425379d5b1",
+      "sourceRepo": "microsoftgraph/microsoft-graph-docs",
+      "sourceSha": "36552a0188f7ee25fd29355d50a13a156f23aa1d",
+      "sourcePath": "api-reference/v1.0/api/delegatedadminrelationship-post-accessassignments.md",
+      "msDate": "2024-04-04T00:00:00Z",
+      "updatedAt": "2025-08-27T00:46:00Z",
+      "title": "Create accessAssignments",
+      "requestSyntax": {
+        "method": "POST",
+        "uri": "/tenantRelationships/delegatedAdminRelationships/{delegatedAdminRelationshipId}/accessAssignments"
+      },
+      "headerNames": [
+        "Authorization",
+        "Content-Type"
+      ],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/graph/api/delegatedadminrelationship-post-requests?view=graph-rest-1.0": {
+      "url": "https://learn.microsoft.com/graph/api/delegatedadminrelationship-post-requests?view=graph-rest-1.0",
+      "finalUrl": "https://learn.microsoft.com/en-us/graph/api/delegatedadminrelationship-post-requests?view=graph-rest-1.0",
+      "template": "graph",
+      "documentId": "d28f7c7d-62d7-c54a-de59-97598e3c5a19",
+      "sourceRepo": "microsoftgraph/microsoft-graph-docs",
+      "sourceSha": "5e1e85b206a0766fe45a1a4c00dd5cba3423bd00",
+      "sourcePath": "api-reference/v1.0/api/delegatedadminrelationship-post-requests.md",
+      "msDate": "2024-04-04T00:00:00Z",
+      "updatedAt": "2025-12-03T00:23:00Z",
+      "title": "Create requests",
+      "requestSyntax": {
+        "method": "POST",
+        "uri": "/tenantRelationships/delegatedAdminRelationships/{delegatedAdminRelationshipId}/requests"
+      },
+      "headerNames": [
+        "Authorization",
+        "Content-Type"
+      ],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/graph/api/group-assignlicense?view=graph-rest-1.0": {
+      "url": "https://learn.microsoft.com/graph/api/group-assignlicense?view=graph-rest-1.0",
+      "finalUrl": "https://learn.microsoft.com/en-us/graph/api/group-assignlicense?view=graph-rest-1.0",
+      "template": "graph",
+      "documentId": "55a0c1ea-55ef-cde5-717d-6c48980afe7d",
+      "sourceRepo": "microsoftgraph/microsoft-graph-docs",
+      "sourceSha": "82d0912dd8dd5a5f9a5e51d471f9c7f248f8e118",
+      "sourcePath": "api-reference/v1.0/api/group-assignlicense.md",
+      "msDate": "2024-10-15T00:00:00Z",
+      "updatedAt": "2025-07-23T10:06:00Z",
+      "title": "group: assignLicense",
+      "requestSyntax": {
+        "method": "POST",
+        "uri": "/groups/{id}/assignLicense"
+      },
+      "headerNames": [
+        "Authorization",
+        "Content-Type"
+      ],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/graph/api/partners-billing-billedreconciliation-export?view=graph-rest-1.0": {
+      "url": "https://learn.microsoft.com/graph/api/partners-billing-billedreconciliation-export?view=graph-rest-1.0",
+      "finalUrl": "https://learn.microsoft.com/en-us/graph/api/partners-billing-billedreconciliation-export?view=graph-rest-1.0",
+      "template": "graph",
+      "documentId": "af5b18db-cad0-a719-4906-b6cc453dede5",
+      "sourceRepo": "microsoftgraph/microsoft-graph-docs",
+      "sourceSha": "e8eace7fa9bfa9e7afacfe9f5dec1ba42ffd493f",
+      "sourcePath": "api-reference/v1.0/api/partners-billing-billedreconciliation-export.md",
+      "msDate": "2024-06-21T00:00:00Z",
+      "updatedAt": "2025-12-03T00:23:00Z",
+      "title": "billedReconciliation: export",
+      "requestSyntax": {
+        "method": "POST",
+        "uri": "/reports/partners/billing/reconciliation/billed/export"
+      },
+      "headerNames": [
+        "Authorization",
+        "Content-Type"
+      ],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/graph/api/partners-billing-unbilledreconciliation-export?view=graph-rest-1.0": {
+      "url": "https://learn.microsoft.com/graph/api/partners-billing-unbilledreconciliation-export?view=graph-rest-1.0",
+      "finalUrl": "https://learn.microsoft.com/en-us/graph/api/partners-billing-unbilledreconciliation-export?view=graph-rest-1.0",
+      "template": "graph",
+      "documentId": "4843cbdf-a0c3-57cd-3397-ae7ead9fa7a0",
+      "sourceRepo": "microsoftgraph/microsoft-graph-docs",
+      "sourceSha": "e8eace7fa9bfa9e7afacfe9f5dec1ba42ffd493f",
+      "sourcePath": "api-reference/v1.0/api/partners-billing-unbilledreconciliation-export.md",
+      "msDate": "2025-06-11T00:00:00Z",
+      "updatedAt": "2025-12-03T00:23:00Z",
+      "title": "unbilledReconciliation: export",
+      "requestSyntax": {
+        "method": "POST",
+        "uri": "/reports/partners/billing/reconciliation/unbilled/export"
+      },
+      "headerNames": [
+        "Authorization",
+        "Content-Type"
+      ],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/graph/api/serviceannouncement-list-healthoverviews?view=graph-rest-1.0": {
+      "url": "https://learn.microsoft.com/graph/api/serviceannouncement-list-healthoverviews?view=graph-rest-1.0",
+      "finalUrl": "https://learn.microsoft.com/en-us/graph/api/serviceannouncement-list-healthoverviews?view=graph-rest-1.0",
+      "template": "graph",
+      "documentId": "86cfc73c-397e-d5f7-2dda-e3c5f7405b74",
+      "sourceRepo": "microsoftgraph/microsoft-graph-docs",
+      "sourceSha": "b22910642f2464336204104c2a6863d4b0a7b4d9",
+      "sourcePath": "api-reference/v1.0/api/serviceannouncement-list-healthoverviews.md",
+      "msDate": "2024-04-04T00:00:00Z",
+      "updatedAt": "2025-11-13T10:32:00Z",
+      "title": "List healthOverviews",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/admin/serviceAnnouncement/healthOverviews"
+      },
+      "headerNames": [
+        "Authorization"
+      ],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/graph/api/serviceannouncement-list-issues?view=graph-rest-1.0": {
+      "url": "https://learn.microsoft.com/graph/api/serviceannouncement-list-issues?view=graph-rest-1.0",
+      "finalUrl": "https://learn.microsoft.com/en-us/graph/api/serviceannouncement-list-issues?view=graph-rest-1.0",
+      "template": "graph",
+      "documentId": "76010c10-a1fe-9349-f329-2745a4c60a10",
+      "sourceRepo": "microsoftgraph/microsoft-graph-docs",
+      "sourceSha": "b22910642f2464336204104c2a6863d4b0a7b4d9",
+      "sourcePath": "api-reference/v1.0/api/serviceannouncement-list-issues.md",
+      "msDate": "2024-04-04T00:00:00Z",
+      "updatedAt": "2025-11-13T10:32:00Z",
+      "title": "List issues",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/admin/serviceAnnouncement/issues"
+      },
+      "headerNames": [
+        "Authorization",
+        "Prefer: odata.maxpagesize={x}"
+      ],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/graph/api/serviceannouncement-list-messages?view=graph-rest-1.0": {
+      "url": "https://learn.microsoft.com/graph/api/serviceannouncement-list-messages?view=graph-rest-1.0",
+      "finalUrl": "https://learn.microsoft.com/en-us/graph/api/serviceannouncement-list-messages?view=graph-rest-1.0",
+      "template": "graph",
+      "documentId": "c300e587-e7b9-82ed-29ba-667ebcc626ad",
+      "sourceRepo": "microsoftgraph/microsoft-graph-docs",
+      "sourceSha": "b22910642f2464336204104c2a6863d4b0a7b4d9",
+      "sourcePath": "api-reference/v1.0/api/serviceannouncement-list-messages.md",
+      "msDate": "2024-04-04T00:00:00Z",
+      "updatedAt": "2025-11-13T10:32:00Z",
+      "title": "List serviceAnnouncement messages",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/admin/serviceAnnouncement/messages"
+      },
+      "headerNames": [
+        "Authorization",
+        "Prefer: odata.maxpagesize={x}"
+      ],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/graph/api/tenantrelationship-list-delegatedadmincustomers?view=graph-rest-1.0": {
+      "url": "https://learn.microsoft.com/graph/api/tenantrelationship-list-delegatedadmincustomers?view=graph-rest-1.0",
+      "finalUrl": "https://learn.microsoft.com/en-us/graph/api/tenantrelationship-list-delegatedadmincustomers?view=graph-rest-1.0",
+      "template": "graph",
+      "documentId": "dab4eff1-b4cf-1a2b-0a55-1267cf0afe80",
+      "sourceRepo": "microsoftgraph/microsoft-graph-docs",
+      "sourceSha": "b22910642f2464336204104c2a6863d4b0a7b4d9",
+      "sourcePath": "api-reference/v1.0/api/tenantrelationship-list-delegatedadmincustomers.md",
+      "msDate": "2024-04-04T00:00:00Z",
+      "updatedAt": "2025-11-13T10:32:00Z",
+      "title": "List delegatedAdminCustomers",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/tenantRelationships/delegatedAdminCustomers"
+      },
+      "headerNames": [
+        "Authorization"
+      ],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/graph/api/tenantrelationship-list-delegatedadminrelationships?view=graph-rest-1.0": {
+      "url": "https://learn.microsoft.com/graph/api/tenantrelationship-list-delegatedadminrelationships?view=graph-rest-1.0",
+      "finalUrl": "https://learn.microsoft.com/en-us/graph/api/tenantrelationship-list-delegatedadminrelationships?view=graph-rest-1.0",
+      "template": "graph",
+      "documentId": "e60aef4d-9ddb-d16c-d765-964a126e3199",
+      "sourceRepo": "microsoftgraph/microsoft-graph-docs",
+      "sourceSha": "b22910642f2464336204104c2a6863d4b0a7b4d9",
+      "sourcePath": "api-reference/v1.0/api/tenantrelationship-list-delegatedadminrelationships.md",
+      "msDate": "2024-04-04T00:00:00Z",
+      "updatedAt": "2025-11-13T10:32:00Z",
+      "title": "List delegatedAdminRelationships",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/tenantRelationships/delegatedAdminRelationships"
+      },
+      "headerNames": [
+        "Authorization"
+      ],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/graph/api/tenantrelationship-post-delegatedadminrelationships?view=graph-rest-1.0": {
+      "url": "https://learn.microsoft.com/graph/api/tenantrelationship-post-delegatedadminrelationships?view=graph-rest-1.0",
+      "finalUrl": "https://learn.microsoft.com/en-us/graph/api/tenantrelationship-post-delegatedadminrelationships?view=graph-rest-1.0",
+      "template": "graph",
+      "documentId": "b385560d-8ce5-9ff1-ab49-4b04994bee9a",
+      "sourceRepo": "microsoftgraph/microsoft-graph-docs",
+      "sourceSha": "c5bdea5b2d849451be9b260f1f9bbf3d27997198",
+      "sourcePath": "api-reference/v1.0/api/tenantrelationship-post-delegatedadminrelationships.md",
+      "msDate": "2024-04-04T00:00:00Z",
+      "updatedAt": "2025-11-08T00:36:00Z",
+      "title": "Create delegatedAdminRelationship",
+      "requestSyntax": {
+        "method": "POST",
+        "uri": "/tenantRelationships/delegatedAdminRelationships"
+      },
+      "headerNames": [
+        "Authorization",
+        "Content-Type"
+      ],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/assign-licenses-to-a-user": {
+      "url": "https://learn.microsoft.com/partner-center/developer/assign-licenses-to-a-user",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/assign-licenses-to-a-user",
+      "template": "partner-center",
+      "documentId": "a595cae0-8dc8-9568-14fc-3b872037359d",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "a91c4349b453283c77163a399de7828266da9e71",
+      "sourcePath": "partner-center/developer/assign-licenses-to-a-user.md",
+      "msDate": "2024-09-11T00:00:00Z",
+      "updatedAt": "2025-06-27T22:05:00Z",
+      "title": "Assign licenses to a user with Partner Center APIs",
+      "requestSyntax": {
+        "method": "POST",
+        "uri": "/v1/customers/{customer-id}/users/{user-id}/licenseupdates"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/change-the-billing-cycle": {
+      "url": "https://learn.microsoft.com/partner-center/developer/change-the-billing-cycle",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/change-the-billing-cycle",
+      "template": "partner-center",
+      "documentId": "e2b841e9-e46c-2f6c-64df-9de4abf70e1c",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "02fcfe5468cebc04ad9f5a162ff9e8b0e2904204",
+      "sourcePath": "partner-center/developer/change-the-billing-cycle.md",
+      "msDate": "2024-06-11T00:00:00Z",
+      "updatedAt": "2024-10-31T16:02:00Z",
+      "title": "Change a customer subscription billing cycle",
+      "requestSyntax": {
+        "method": "PATCH",
+        "uri": "/v1/customers/{customer-tenant-id}/orders/{order-id}"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/check-inventory": {
+      "url": "https://learn.microsoft.com/partner-center/developer/check-inventory",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/check-inventory",
+      "template": "partner-center",
+      "documentId": "85814b6a-29e5-ad8f-20fc-0fce7cdfb090",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "8cfc60b9eef0c96b0a3e99a727ef11c5ce654116",
+      "sourcePath": "partner-center/developer/check-inventory.md",
+      "msDate": "2026-06-23T00:00:00Z",
+      "updatedAt": "2026-06-24T16:03:00Z",
+      "title": "Check the inventory of catalog items using Partner Center APIs",
+      "requestSyntax": {
+        "method": "POST",
+        "uri": "/v1/extensions/product/checkInventory?country={country-code}"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/check-inventory-by-resource-type": {
+      "url": "https://learn.microsoft.com/partner-center/developer/check-inventory-by-resource-type",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/check-inventory-by-resource-type",
+      "template": "partner-center",
+      "documentId": "2e81e022-8c61-2df8-1c6d-e34c08f12731",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "01637837d62e44603325adecc91947294a8536a9",
+      "sourcePath": "partner-center/developer/check-inventory-by-resource-type.md",
+      "msDate": "2026-06-23T00:00:00Z",
+      "updatedAt": "2026-07-22T22:02:00Z",
+      "title": "Check inventory by resource type using Partner Center APIs",
+      "requestSyntax": {
+        "method": "POST",
+        "uri": "/v1/extensions/product/checkinventorybyresourcetype?country={country-code}&resourceType={resourceTypeValue}"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/check-which-licenses-are-assigned-to-a-user": {
+      "url": "https://learn.microsoft.com/partner-center/developer/check-which-licenses-are-assigned-to-a-user",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/check-which-licenses-are-assigned-to-a-user",
+      "template": "partner-center",
+      "documentId": "a0c49996-648b-a1ad-7a44-d417003596ab",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "02fcfe5468cebc04ad9f5a162ff9e8b0e2904204",
+      "sourcePath": "partner-center/developer/check-which-licenses-are-assigned-to-a-user.md",
+      "msDate": "2024-09-11T00:00:00Z",
+      "updatedAt": "2024-10-31T16:02:00Z",
+      "title": "Get licenses assigned to a user within a customer account",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/customers/{customer-id}/users/{user-id}/licenses"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/checkout-a-cart": {
+      "url": "https://learn.microsoft.com/partner-center/developer/checkout-a-cart",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/checkout-a-cart",
+      "template": "partner-center",
+      "documentId": "86cdb6aa-ade0-16cc-6afb-71f93bf23c1f",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "02fcfe5468cebc04ad9f5a162ff9e8b0e2904204",
+      "sourcePath": "partner-center/developer/checkout-a-cart.md",
+      "msDate": "2024-01-31T00:00:00Z",
+      "updatedAt": "2024-10-31T16:02:00Z",
+      "title": "Check out an order for a customer in a cart",
+      "requestSyntax": {
+        "method": "POST",
+        "uri": "/v1/customers/{customer-id}/carts/{cart-id}/checkout"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/confirm-customer-consent-customer-agreement": {
+      "url": "https://learn.microsoft.com/partner-center/developer/confirm-customer-consent-customer-agreement",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/confirm-customer-consent-customer-agreement",
+      "template": "partner-center",
+      "documentId": "9aed0a61-f367-1a6d-d21a-f37b93f6c678",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "1d006f6a303f609b5b969df0cf31337b629ad7ae",
+      "sourcePath": "partner-center/developer/confirm-customer-consent-customer-agreement.md",
+      "msDate": "2024-08-02T00:00:00Z",
+      "updatedAt": "2025-03-13T16:02:00Z",
+      "title": "Confirm customer acceptance of the Microsoft Customer Agreement using Partner Center APIs",
+      "requestSyntax": {
+        "method": "POST",
+        "uri": "/v1/customers/{customer-tenant-id}/agreements"
+      },
+      "headerNames": [],
+      "bodyFields": [
+        {
+          "name": "Agreement",
+          "type": "object"
+        }
+      ],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/create-a-cart": {
+      "url": "https://learn.microsoft.com/partner-center/developer/create-a-cart",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/create-a-cart",
+      "template": "partner-center",
+      "documentId": "e9f7d07a-824e-a4ab-259e-26d3f6d302eb",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "fefffd1dbdf6a42659c15f16a05f371e6d49cbfa",
+      "sourcePath": "partner-center/developer/create-a-cart.md",
+      "msDate": "2025-12-15T00:00:00Z",
+      "updatedAt": "2025-12-15T23:03:00Z",
+      "title": "Create a cart with a customer order",
+      "requestSyntax": {
+        "method": "POST",
+        "uri": "/v1/customers/{customer-id}/carts"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/create-a-customer": {
+      "url": "https://learn.microsoft.com/partner-center/developer/create-a-customer",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/create-a-customer",
+      "template": "partner-center",
+      "documentId": "173eb2eb-0757-3a42-9982-159e5238fb31",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "229a898eb12129d2d465d882a95eb149d333a3f0",
+      "sourcePath": "partner-center/developer/create-a-customer.md",
+      "msDate": "2024-03-20T00:00:00Z",
+      "updatedAt": "2025-03-12T22:01:00Z",
+      "title": "Create a customer",
+      "requestSyntax": {
+        "method": "POST",
+        "uri": "/v1/customers"
+      },
+      "headerNames": [],
+      "bodyFields": [
+        {
+          "name": "BillingProfile",
+          "type": "object"
+        },
+        {
+          "name": "CompanyProfile",
+          "type": "object"
+        }
+      ],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/create-a-referral": {
+      "url": "https://learn.microsoft.com/partner-center/developer/create-a-referral",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/create-a-referral",
+      "template": "partner-center",
+      "documentId": "88712c76-bd8a-2501-be23-65c94431fadf",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "613e89224f1bd281e1961dcb8be202125901664f",
+      "sourcePath": "partner-center/developer/create-a-referral.md",
+      "msDate": "2024-08-11T00:00:00Z",
+      "updatedAt": "2026-07-23T16:03:00Z",
+      "title": "Create a referral",
+      "requestSyntax": {
+        "method": "POST",
+        "uri": "https://api.partner.microsoft.com/v1.0/engagements/referrals"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/create-a-transfer": {
+      "url": "https://learn.microsoft.com/partner-center/developer/create-a-transfer",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/create-a-transfer",
+      "template": "partner-center",
+      "documentId": "97973376-fc3e-3c37-65c7-dbe2f867ffb5",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "d601c60abdd18681728106c94e5139203fa1136e",
+      "sourcePath": "partner-center/developer/create-a-transfer.md",
+      "msDate": "2025-01-28T00:00:00Z",
+      "updatedAt": "2026-01-29T17:03:00Z",
+      "title": "Create a transfer for new commerce using Partner Center REST APIs",
+      "requestSyntax": {
+        "method": "POST",
+        "uri": "/v1/customers/{customer-ID}/transfers"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/create-migration": {
+      "url": "https://learn.microsoft.com/partner-center/developer/create-migration",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/create-migration",
+      "template": "partner-center",
+      "documentId": "41def70d-aa79-a86f-6b04-2288d0467eef",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "5aa9c1221534c1a5a772cf3e9161696f7f77f306",
+      "sourcePath": "partner-center/developer/create-migration.md",
+      "msDate": "2024-10-28T00:00:00Z",
+      "updatedAt": "2024-11-20T17:02:00Z",
+      "title": "Create a new commerce migration",
+      "requestSyntax": {
+        "method": "POST",
+        "uri": "/v1/customers/{customer-tenant-id}/migrations/newcommerce"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/create-product-upgrade-entity": {
+      "url": "https://learn.microsoft.com/partner-center/developer/create-product-upgrade-entity",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/create-product-upgrade-entity",
+      "template": "partner-center",
+      "documentId": "96c5de5c-3714-6438-454d-e0a75f69e5ce",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "02fcfe5468cebc04ad9f5a162ff9e8b0e2904204",
+      "sourcePath": "partner-center/developer/create-product-upgrade-entity.md",
+      "msDate": "2024-10-01T00:00:00Z",
+      "updatedAt": "2024-10-31T16:02:00Z",
+      "title": "Create a product upgrade entity for a customer",
+      "requestSyntax": {
+        "method": "POST",
+        "uri": "/v1/productupgrades"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/create-user-accounts-for-a-customer": {
+      "url": "https://learn.microsoft.com/partner-center/developer/create-user-accounts-for-a-customer",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/create-user-accounts-for-a-customer",
+      "template": "partner-center",
+      "documentId": "8efbc334-cf2f-52f2-72b4-f8db75093ba3",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "dff7f01baa3405fe240111e09b7204af9ed22332",
+      "sourcePath": "partner-center/developer/create-user-accounts-for-a-customer.md",
+      "msDate": "2024-09-11T00:00:00Z",
+      "updatedAt": "2024-10-31T16:02:00Z",
+      "title": "Create user accounts for a customer",
+      "requestSyntax": {
+        "method": "POST",
+        "uri": "/v1/customers/{customer-tenant-id}/users"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/delete-a-customer-account-from-the-integration-sandbox": {
+      "url": "https://learn.microsoft.com/partner-center/developer/delete-a-customer-account-from-the-integration-sandbox",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/delete-a-customer-account-from-the-integration-sandbox",
+      "template": "partner-center",
+      "documentId": "420090b0-92e7-a6e9-58d2-7b7c5a31295c",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "f3211ae9291af329cd5bc1ecd3476a78584fb321",
+      "sourcePath": "partner-center/developer/delete-a-customer-account-from-the-integration-sandbox.md",
+      "msDate": "2024-03-15T00:00:00Z",
+      "updatedAt": "2025-03-12T16:02:00Z",
+      "title": "Delete a customer account from the integration sandbox",
+      "requestSyntax": {
+        "method": "DELETE",
+        "uri": "/v1/customers/{customer-tenant-id}"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/delete-user-accounts-for-a-customer": {
+      "url": "https://learn.microsoft.com/partner-center/developer/delete-user-accounts-for-a-customer",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/delete-user-accounts-for-a-customer",
+      "template": "partner-center",
+      "documentId": "315b556d-23a9-0cb2-f3bb-2f0a26192e8e",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "dff7f01baa3405fe240111e09b7204af9ed22332",
+      "sourcePath": "partner-center/developer/delete-user-accounts-for-a-customer.md",
+      "msDate": "2024-09-11T00:00:00Z",
+      "updatedAt": "2024-10-31T16:02:00Z",
+      "title": "Delete a user account for a customer",
+      "requestSyntax": {
+        "method": "DELETE",
+        "uri": "/v1/customers/{customer-tenant-id}/users/{user-id}"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/deprecate-azure-active-directory-graph-token": {
+      "url": "https://learn.microsoft.com/partner-center/developer/deprecate-azure-active-directory-graph-token",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/deprecate-azure-active-directory-graph-token",
+      "template": "partner-center",
+      "documentId": "39122ced-3412-6ccd-8144-853fb77e038c",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "1d5886c8fffc801a68ccdc2e8b01be5647bf7d2e",
+      "sourcePath": "partner-center/developer/deprecate-azure-active-directory-graph-token.md",
+      "msDate": "2025-10-15T00:00:00Z",
+      "updatedAt": "2025-10-16T22:02:00Z",
+      "title": "Deprecate Azure AD graph token",
+      "requestSyntax": null,
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": false,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/download-customer-agreement-template": {
+      "url": "https://learn.microsoft.com/partner-center/developer/download-customer-agreement-template",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/download-customer-agreement-template",
+      "template": "partner-center",
+      "documentId": "f3f901c0-fd72-0fa3-3e07-ad12eab5077a",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "f3211ae9291af329cd5bc1ecd3476a78584fb321",
+      "sourcePath": "partner-center/developer/download-customer-agreement-template.md",
+      "msDate": "2024-03-05T00:00:00Z",
+      "updatedAt": "2025-03-12T16:02:00Z",
+      "title": "Get a download link for the Microsoft Customer Agreement template",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/agreementtemplates/{agreement-template-id}/document?language={language}&country={country}"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/error-codes": {
+      "url": "https://learn.microsoft.com/partner-center/developer/error-codes",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/error-codes",
+      "template": "partner-center",
+      "documentId": "e9c878d5-84db-9170-e326-f27d33362c3a",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "0a1351a4fc0936aa00d2a0fcd719f5240bbf78e1",
+      "sourcePath": "partner-center/developer/error-codes.md",
+      "msDate": "2025-08-19T00:00:00Z",
+      "updatedAt": "2025-10-16T22:02:00Z",
+      "title": "Partner Center REST error codes",
+      "requestSyntax": null,
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": false,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-a-collection-of-entitlements": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-a-collection-of-entitlements",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-a-collection-of-entitlements",
+      "template": "partner-center",
+      "documentId": "a358744b-e706-7d7a-af18-8960fed6b4ee",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "da533d070870695c661a29a8a392431908d53114",
+      "sourcePath": "partner-center/developer/get-a-collection-of-entitlements.md",
+      "msDate": "2024-05-31T00:00:00Z",
+      "updatedAt": "2026-03-27T22:05:00Z",
+      "title": "Get a collection of entitlements",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/customers/{customerId}/entitlements"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-a-collection-of-invoices": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-a-collection-of-invoices",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-a-collection-of-invoices",
+      "template": "partner-center",
+      "documentId": "ccd9e075-d299-ee1e-05a5-fe663b7ca1dc",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "82dc46ada1182257bb7a824cfb0dc1db89803a8f",
+      "sourcePath": "partner-center/developer/get-a-collection-of-invoices.md",
+      "msDate": "2026-01-30T00:00:00Z",
+      "updatedAt": "2026-02-02T17:05:00Z",
+      "title": "Get a collection of invoices",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/invoices?size={size}&offset={offset}"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-a-customer-by-id": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-a-customer-by-id",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-a-customer-by-id",
+      "template": "partner-center",
+      "documentId": "6bf6678a-ab2d-c491-1c01-493e95bcc1a2",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "a08a79cb06e26fa8cd86a8ae8a8217e8e6ed1559",
+      "sourcePath": "partner-center/developer/get-a-customer-by-id.md",
+      "msDate": "2024-09-20T00:00:00Z",
+      "updatedAt": "2025-03-14T16:02:00Z",
+      "title": "Get a customer by ID",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/customers/{customer-tenant-id}"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-a-customer-s-utilization-record-for-azure": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-a-customer-s-utilization-record-for-azure",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-a-customer-s-utilization-record-for-azure",
+      "template": "partner-center",
+      "documentId": "36a98c4d-5ba4-53a6-fa55-22e480861952",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "1aac9a53625a5553fd286f2833b7a8a52f449873",
+      "sourcePath": "partner-center/developer/get-a-customer-s-utilization-record-for-azure.md",
+      "msDate": "2024-10-07T00:00:00Z",
+      "updatedAt": "2025-03-10T16:02:00Z",
+      "title": "Get a customer's utilization records for Azure",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/customers/{customer-tenant-id}/subscriptions/{subscription-id}/utilizations/azure?start_time={start-time}&end_time={end-time}&granularity={granularity}&show_details={True}"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-a-list-of-a-customer-s-policies": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-a-customer-s-policies",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-a-list-of-a-customer-s-policies",
+      "template": "partner-center",
+      "documentId": "54daebc0-b4d9-a97e-0fdb-18173855c9ff",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "88e1e55b7469cc328484d582b5d7dbff53f230e0",
+      "sourcePath": "partner-center/developer/get-a-list-of-a-customer-s-policies.md",
+      "msDate": "2024-09-11T00:00:00Z",
+      "updatedAt": "2024-10-31T16:02:00Z",
+      "title": "Get a list of a customer's policies",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/customers/{customer-id}/policies"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-a-list-of-all-user-accounts-for-a-customer": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-all-user-accounts-for-a-customer",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-a-list-of-all-user-accounts-for-a-customer",
+      "template": "partner-center",
+      "documentId": "7ac5f917-ed8a-c1f0-467e-b0a4a87ec556",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "88e1e55b7469cc328484d582b5d7dbff53f230e0",
+      "sourcePath": "partner-center/developer/get-a-list-of-all-user-accounts-for-a-customer.md",
+      "msDate": "2024-09-11T00:00:00Z",
+      "updatedAt": "2024-10-31T16:02:00Z",
+      "title": "Get a list of all user accounts for a customer",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/customers/{customer-tenant-id}/users"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-a-list-of-availabilities-for-a-sku": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-availabilities-for-a-sku",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-a-list-of-availabilities-for-a-sku",
+      "template": "partner-center",
+      "documentId": "cfc038df-5d9a-fc2d-62a9-bacbbaa1c2c5",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "3a790b2430f0bb91bf7e4e1d90abece050f890e6",
+      "sourcePath": "partner-center/developer/get-a-list-of-availabilities-for-a-sku.md",
+      "msDate": "2025-06-06T00:00:00Z",
+      "updatedAt": "2025-06-06T22:07:00Z",
+      "title": "Get a list of availabilities for a SKU (by country/region)",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/products/{product-id}/skus/{sku-id}/availabilities?country={country-code}&targetSegment={target-segment}"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-a-list-of-available-licenses": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-available-licenses",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-a-list-of-available-licenses",
+      "template": "partner-center",
+      "documentId": "b03da729-5a48-7d59-3a82-c8a5a492aace",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "88e1e55b7469cc328484d582b5d7dbff53f230e0",
+      "sourcePath": "partner-center/developer/get-a-list-of-available-licenses.md",
+      "msDate": "2024-09-11T00:00:00Z",
+      "updatedAt": "2024-10-31T16:02:00Z",
+      "title": "Get a list of available licenses",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/customers/{customer-id}/subscribedskus"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-a-list-of-azure-entitlements-for-subscription": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-azure-entitlements-for-subscription",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-a-list-of-azure-entitlements-for-subscription",
+      "template": "partner-center",
+      "documentId": "f9257310-de5f-a75f-a511-633cfd712935",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "88e1e55b7469cc328484d582b5d7dbff53f230e0",
+      "sourcePath": "partner-center/developer/get-a-list-of-azure-entitlements-for-subscription.md",
+      "msDate": "2024-02-05T00:00:00Z",
+      "updatedAt": "2024-10-31T16:02:00Z",
+      "title": "Get a list of Azure entitlements for a subscription",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/customers/{customer-tenant-id}/subscriptions/{subscription-id}/azureentitlements"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-a-list-of-customers": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-customers",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-a-list-of-customers",
+      "template": "partner-center",
+      "documentId": "e87215d1-6300-eae0-df1e-39953ba8c7b0",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "1d006f6a303f609b5b969df0cf31337b629ad7ae",
+      "sourcePath": "partner-center/developer/get-a-list-of-customers.md",
+      "msDate": "2024-07-24T00:00:00Z",
+      "updatedAt": "2025-03-13T16:02:00Z",
+      "title": "Get a list of customers",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/customers?size={size}"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-a-list-of-products": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-products",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-a-list-of-products",
+      "template": "partner-center",
+      "documentId": "59f5a62a-a3fa-2a37-0e9b-b7ed86b6210e",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "60ce81667c417bfd03438097598240a8baa38fe9",
+      "sourcePath": "partner-center/developer/get-a-list-of-products.md",
+      "msDate": "2024-09-27T00:00:00Z",
+      "updatedAt": "2025-09-25T16:02:00Z",
+      "title": "Get a list of products (by country/region)",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/products?country={country}&targetView={targetView}&targetSegment={targetSegment}"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-a-list-of-referrals": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-referrals",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-a-list-of-referrals",
+      "template": "partner-center",
+      "documentId": "a28e6bc0-c202-5868-c2d9-df55bed5b234",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "60ce81667c417bfd03438097598240a8baa38fe9",
+      "sourcePath": "partner-center/developer/get-a-list-of-referrals.md",
+      "msDate": "2024-08-11T00:00:00Z",
+      "updatedAt": "2025-09-25T16:02:00Z",
+      "title": "Get the list of leads and opportunities",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "https://api.partner.microsoft.com/v1.0/engagements/referrals"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-a-list-of-subscriptions-by-order": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-subscriptions-by-order",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-a-list-of-subscriptions-by-order",
+      "template": "partner-center",
+      "documentId": "8a125b45-c134-c9fd-7658-e7da217828d3",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "fdff155ce177e323e824313c8145b95d36da77b4",
+      "sourcePath": "partner-center/developer/get-a-list-of-subscriptions-by-order.md",
+      "msDate": "2024-06-11T00:00:00Z",
+      "updatedAt": "2024-10-31T16:02:00Z",
+      "title": "Get a list of subscriptions by order",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/customers/{customer-tenant-id}/subscriptions?order_id={id-for-order}"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-a-product-by-id": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-a-product-by-id",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-a-product-by-id",
+      "template": "partner-center",
+      "documentId": "b1d788f7-093c-0a25-83fc-475fd7f856af",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "fdff155ce177e323e824313c8145b95d36da77b4",
+      "sourcePath": "partner-center/developer/get-a-product-by-id.md",
+      "msDate": "2024-01-31T00:00:00Z",
+      "updatedAt": "2024-10-31T16:02:00Z",
+      "title": "Get a product by ID",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/products/{product-id}?country={country}"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-a-record-of-partner-center-activity-by-user": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-a-record-of-partner-center-activity-by-user",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-a-record-of-partner-center-activity-by-user",
+      "template": "partner-center",
+      "documentId": "bfa47d7c-d81c-95cf-70b5-03efc283c3f4",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "5aa9c1221534c1a5a772cf3e9161696f7f77f306",
+      "sourcePath": "partner-center/developer/get-a-record-of-partner-center-activity-by-user.md",
+      "msDate": "2024-09-11T00:00:00Z",
+      "updatedAt": "2024-11-20T17:02:00Z",
+      "title": "Get a record of Partner Center activity",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/auditrecords?startDate={startDate}"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-a-sku-by-id": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-a-sku-by-id",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-a-sku-by-id",
+      "template": "partner-center",
+      "documentId": "661c4a5f-2025-cb1b-07ad-57481c29d84a",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "fdff155ce177e323e824313c8145b95d36da77b4",
+      "sourcePath": "partner-center/developer/get-a-sku-by-id.md",
+      "msDate": "2024-10-01T00:00:00Z",
+      "updatedAt": "2024-10-31T16:02:00Z",
+      "title": "Get a SKU by ID",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/products/{product-id}/skus/{sku-id}?country={country-code}"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-a-subscription-by-id": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-a-subscription-by-id",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-a-subscription-by-id",
+      "template": "partner-center",
+      "documentId": "fdbea9fb-881c-90a2-70c4-ca3024f1b205",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "f7a8198d53924cd25b765aa5efb485d1a7be27f5",
+      "sourcePath": "partner-center/developer/get-a-subscription-by-id.md",
+      "msDate": "2025-12-23T00:00:00Z",
+      "updatedAt": "2025-12-24T17:02:00Z",
+      "title": "Get a subscription by ID",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/customers/{customer-tenant-id}/subscriptions/{id-for-subscription}"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-all-azure-usage-analytics": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-all-azure-usage-analytics",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-all-azure-usage-analytics",
+      "template": "partner-center",
+      "documentId": "a81ba2a2-0baf-f180-b436-554e5bc192d6",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "03e0f6ea43d2769f2de91456fbcc530ed1715525",
+      "sourcePath": "partner-center/developer/get-all-azure-usage-analytics.md",
+      "msDate": "2024-05-28T00:00:00Z",
+      "updatedAt": "2025-02-06T17:02:00Z",
+      "title": "Get all Azure usage analytics information",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/partner/v1/analytics/usage/azure"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-all-of-a-customer-s-orders": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-all-of-a-customer-s-orders",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-all-of-a-customer-s-orders",
+      "template": "partner-center",
+      "documentId": "3d2bc37b-bbd3-a1f8-4fb2-9cb8dc521097",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "bcba8042bdf0827e53f7f022a10666a5695aa07e",
+      "sourcePath": "partner-center/developer/get-all-of-a-customer-s-orders.md",
+      "msDate": "2024-02-09T00:00:00Z",
+      "updatedAt": "2024-10-31T16:02:00Z",
+      "title": "Get all of a customer's orders",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/customers/{customer-tenant-id}/orders"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-all-of-a-customer-s-subscriptions": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-all-of-a-customer-s-subscriptions",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-all-of-a-customer-s-subscriptions",
+      "template": "partner-center",
+      "documentId": "c9f60094-e7c9-a540-a71c-31e43cb01190",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "bcba8042bdf0827e53f7f022a10666a5695aa07e",
+      "sourcePath": "partner-center/developer/get-all-of-a-customer-s-subscriptions.md",
+      "msDate": "2023-11-28T00:00:00Z",
+      "updatedAt": "2024-10-31T16:02:00Z",
+      "title": "Get a customer's subscriptions",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/customers/{customer-tenant-id}/subscriptions"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-all-service-requests-for-a-customer": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-all-service-requests-for-a-customer",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-all-service-requests-for-a-customer",
+      "template": "partner-center",
+      "documentId": "45957498-9cf5-f231-3b72-08c100ee81eb",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "bcba8042bdf0827e53f7f022a10666a5695aa07e",
+      "sourcePath": "partner-center/developer/get-all-service-requests-for-a-customer.md",
+      "msDate": "2024-06-04T00:00:00Z",
+      "updatedAt": "2024-10-31T16:02:00Z",
+      "title": "Get all service requests for a customer",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/customers/{customer-tenant-id}/servicerequests"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-an-order-by-id": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-an-order-by-id",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-an-order-by-id",
+      "template": "partner-center",
+      "documentId": "061d972e-163e-174f-2d4c-a48c25692149",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "1aac9a53625a5553fd286f2833b7a8a52f449873",
+      "sourcePath": "partner-center/developer/get-an-order-by-id.md",
+      "msDate": "2024-02-09T00:00:00Z",
+      "updatedAt": "2025-03-10T16:02:00Z",
+      "title": "Get an order by ID",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/customers/{customer-tenant-id}/orders/{id-for-order}"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-an-organization-profile": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-an-organization-profile",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-an-organization-profile",
+      "template": "partner-center",
+      "documentId": "4e1d4aa1-fc61-f3bb-00a4-bd992ed4d84b",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "1aac9a53625a5553fd286f2833b7a8a52f449873",
+      "sourcePath": "partner-center/developer/get-an-organization-profile.md",
+      "msDate": "2024-09-16T00:00:00Z",
+      "updatedAt": "2025-03-10T16:02:00Z",
+      "title": "Get an organization profile",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/profiles/organization"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-api-request-details": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-api-request-details",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-api-request-details",
+      "template": "partner-center",
+      "documentId": "bc58e3a7-e750-15f4-db3b-5383063a9610",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "bcba8042bdf0827e53f7f022a10666a5695aa07e",
+      "sourcePath": "partner-center/developer/get-api-request-details.md",
+      "msDate": "2024-01-31T00:00:00Z",
+      "updatedAt": "2024-10-31T16:02:00Z",
+      "title": "Get App and User API requests",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/partnerRequests"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-confirmation-of-customer-agreement": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-confirmation-of-customer-agreement",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-confirmation-of-customer-agreement",
+      "template": "partner-center",
+      "documentId": "9f89b684-6059-57b0-c959-02b43436e0e8",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "f3211ae9291af329cd5bc1ecd3476a78584fb321",
+      "sourcePath": "partner-center/developer/get-confirmation-of-customer-agreement.md",
+      "msDate": "2024-03-05T00:00:00Z",
+      "updatedAt": "2025-03-12T16:02:00Z",
+      "title": "Get confirmation of customer acceptance of Microsoft Customer Agreement",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/customers/{customer-tenant-id}/agreements?agreementType={agreement-type}"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-customer-licenses-usage-information": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-customer-licenses-usage-information",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-customer-licenses-usage-information",
+      "template": "partner-center",
+      "documentId": "bf6f159b-04af-5cae-9833-851073acced6",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "218f12deaf4373214254056f0c34f7fad86bd265",
+      "sourcePath": "partner-center/developer/get-customer-licenses-usage-information.md",
+      "msDate": "2024-09-11T00:00:00Z",
+      "updatedAt": "2026-03-09T16:19:00Z",
+      "title": "Get customer licenses usage information",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/customers/{customer-id}/analytics/licenses/usage"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-customer-qualification-asynchronous": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-customer-qualification-asynchronous",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-customer-qualification-asynchronous",
+      "template": "partner-center",
+      "documentId": "07224b37-2c51-0267-916d-d5761e597bdd",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "d241ece4887fc85d2d2af8aca53febbc98c42084",
+      "sourcePath": "partner-center/developer/get-customer-qualification-asynchronous.md",
+      "msDate": "2024-07-11T00:00:00Z",
+      "updatedAt": "2025-03-13T16:02:00Z",
+      "title": "Get a customer's qualification asynchronously",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/customers/{customer-tenant-id}/qualifications"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-fraud-events": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-fraud-events",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-fraud-events",
+      "template": "partner-center",
+      "documentId": "a0b896df-51e2-3a67-bb9c-d769ba4763fa",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "1aac9a53625a5553fd286f2833b7a8a52f449873",
+      "sourcePath": "partner-center/developer/get-fraud-events.md",
+      "msDate": "2024-08-08T00:00:00Z",
+      "updatedAt": "2025-03-10T16:02:00Z",
+      "title": "Azure fraud notification - Get fraud events",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/fraudEvents>"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-indirect-resellers-of-a-customer": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-indirect-resellers-of-a-customer",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-indirect-resellers-of-a-customer",
+      "template": "partner-center",
+      "documentId": "72518c2b-bb89-ffbc-ecd2-a7da3cde5f99",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "218f12deaf4373214254056f0c34f7fad86bd265",
+      "sourcePath": "partner-center/developer/get-indirect-resellers-of-a-customer.md",
+      "msDate": "2024-12-13T00:00:00Z",
+      "updatedAt": "2026-03-09T16:19:00Z",
+      "title": "Get partners of a customer",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/customers/{customer-id}/relationships"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-invoice-by-id": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-invoice-by-id",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-invoice-by-id",
+      "template": "partner-center",
+      "documentId": "e2d6980b-86fc-b2d6-a3d6-b94d478c296f",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "82dc46ada1182257bb7a824cfb0dc1db89803a8f",
+      "sourcePath": "partner-center/developer/get-invoice-by-id.md",
+      "msDate": "2026-01-30T00:00:00Z",
+      "updatedAt": "2026-02-02T17:05:00Z",
+      "title": "Get invoice by ID",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/invoices/{invoice-id}"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-invoice-receipt-statement": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-invoice-receipt-statement",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-invoice-receipt-statement",
+      "template": "partner-center",
+      "documentId": "83d0f6d3-89c3-acfc-431f-5320d6c0c1ee",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "558698a6566112e06e4ca768c218b4fcf1469c85",
+      "sourcePath": "partner-center/developer/get-invoice-receipt-statement.md",
+      "msDate": "2024-10-07T00:00:00Z",
+      "updatedAt": "2024-10-31T16:02:00Z",
+      "title": "Get invoice receipt statement",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/invoices/{invoice-id}/receipts/{receipt-id}/documents/statement"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-invoice-statement": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-invoice-statement",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-invoice-statement",
+      "template": "partner-center",
+      "documentId": "eff608b1-b52c-5be6-042e-bf6426178f63",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "558698a6566112e06e4ca768c218b4fcf1469c85",
+      "sourcePath": "partner-center/developer/get-invoice-statement.md",
+      "msDate": "2024-10-07T00:00:00Z",
+      "updatedAt": "2024-10-31T16:02:00Z",
+      "title": "Get invoice statement",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/invoices/{invoice-id}/documents/statement"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-invoice-unbilled-recon-lineitems": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-invoice-unbilled-recon-lineitems",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-invoice-unbilled-recon-lineitems",
+      "template": "partner-center",
+      "documentId": "7ddfaaa0-0778-956d-ce84-4bf4a65c0c77",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "a838ff42e8341df99eeb18857e6c40fcf5da1ab4",
+      "sourcePath": "partner-center/developer/get-invoice-unbilled-recon-lineitems.md",
+      "msDate": "2024-10-07T00:00:00Z",
+      "updatedAt": "2025-08-22T16:03:00Z",
+      "title": "Get invoice's unbilled reconciliation line items",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/invoices/unbilled/lineitems?provider=onetime&invoicelineitemtype=billinglineitems&currencycode={currencycode}&period={period}"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-invoiceline-items": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-invoiceline-items",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-invoiceline-items",
+      "template": "partner-center",
+      "documentId": "6daf605b-f46a-2c18-0d9a-405f7fb6fd48",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "60ce81667c417bfd03438097598240a8baa38fe9",
+      "sourcePath": "partner-center/developer/get-invoiceline-items.md",
+      "msDate": "2025-04-22T00:00:00Z",
+      "updatedAt": "2025-09-25T16:02:00Z",
+      "title": "Get invoice line items",
+      "requestSyntax": null,
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": false,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-legal-business-profile": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-legal-business-profile",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-legal-business-profile",
+      "template": "partner-center",
+      "documentId": "c22de703-fbaa-470b-7fe0-a6e45e02bbf6",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "c671f06616d4dd0ce1e73937b12953bdc6da27b3",
+      "sourcePath": "partner-center/developer/get-legal-business-profile.md",
+      "msDate": "2024-09-16T00:00:00Z",
+      "updatedAt": "2024-10-31T16:02:00Z",
+      "title": "Get the partner legal business profile",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/profiles/legalbusiness"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-partner-billing-profile": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-partner-billing-profile",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-partner-billing-profile",
+      "template": "partner-center",
+      "documentId": "c8efc5a1-5f6e-e28b-7bd5-ec4ed3669a7b",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "df80802fe9797468218ce6c0234d44b65f495c80",
+      "sourcePath": "partner-center/developer/get-partner-billing-profile.md",
+      "msDate": "2024-09-16T00:00:00Z",
+      "updatedAt": "2024-10-31T16:02:00Z",
+      "title": "Get partner billing profile",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/profiles/billing"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-partner-by-mpn-id": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-partner-by-mpn-id",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-partner-by-mpn-id",
+      "template": "partner-center",
+      "documentId": "99315dac-e11c-74dc-387c-6674b217bf45",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "df80802fe9797468218ce6c0234d44b65f495c80",
+      "sourcePath": "partner-center/developer/get-partner-by-mpn-id.md",
+      "msDate": "2024-03-29T00:00:00Z",
+      "updatedAt": "2024-10-31T16:02:00Z",
+      "title": "Verify a partner PartnerID via C# or the Partner Center REST API",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/profiles/mpn?mpnId={mpn-id}"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-prices-for-microsoft-azure": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-prices-for-microsoft-azure",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-prices-for-microsoft-azure",
+      "template": "partner-center",
+      "documentId": "fdcf29a1-fe02-3d21-9411-3c742147a0b0",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "1aac9a53625a5553fd286f2833b7a8a52f449873",
+      "sourcePath": "partner-center/developer/get-prices-for-microsoft-azure.md",
+      "msDate": "2024-10-07T00:00:00Z",
+      "updatedAt": "2025-03-10T16:02:00Z",
+      "title": "Get prices for Microsoft Azure",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/ratecards/azure?currency={currency}&region={region}"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-prices-for-microsoft-azure-partner-shared-services": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-prices-for-microsoft-azure-partner-shared-services",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-prices-for-microsoft-azure-partner-shared-services",
+      "template": "partner-center",
+      "documentId": "01c6da63-3980-3346-f25c-c01a466051fb",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "1aac9a53625a5553fd286f2833b7a8a52f449873",
+      "sourcePath": "partner-center/developer/get-prices-for-microsoft-azure-partner-shared-services.md",
+      "msDate": "2024-10-07T00:00:00Z",
+      "updatedAt": "2025-03-10T16:02:00Z",
+      "title": "Get prices for Microsoft Azure Partner Shared Services",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/ratecards/azure-shared?currency={currency}&region={region}"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-promotion-by-id": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-promotion-by-id",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-promotion-by-id",
+      "template": "partner-center",
+      "documentId": "281b65d2-5460-2107-b568-d178aa5e0cb8",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "df80802fe9797468218ce6c0234d44b65f495c80",
+      "sourcePath": "partner-center/developer/get-promotion-by-id.md",
+      "msDate": "2024-09-27T00:00:00Z",
+      "updatedAt": "2024-10-31T16:02:00Z",
+      "title": "Get promotion by ID",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/productpromotions/{promotion-id}?country={country-code"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-promotions": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-promotions",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-promotions",
+      "template": "partner-center",
+      "documentId": "7b7c2e38-dccd-4e10-46e0-ffdd6ca454fa",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "df80802fe9797468218ce6c0234d44b65f495c80",
+      "sourcePath": "partner-center/developer/get-promotions.md",
+      "msDate": "2024-09-27T00:00:00Z",
+      "updatedAt": "2024-10-31T16:02:00Z",
+      "title": "Get promotions",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/productpromotions?country={country-code}&segment={segment}"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-service-request-details-by-id": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-service-request-details-by-id",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-service-request-details-by-id",
+      "template": "partner-center",
+      "documentId": "6227544d-57b1-b1c5-68bd-2fdeab2536b7",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "5aa9c1221534c1a5a772cf3e9161696f7f77f306",
+      "sourcePath": "partner-center/developer/get-service-request-details-by-id.md",
+      "msDate": "2024-05-28T00:00:00Z",
+      "updatedAt": "2024-11-20T17:02:00Z",
+      "title": "Get service request details by ID",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/servicerequests/{servicerequest-id}"
+      },
+      "headerNames": [
+        "IncludeOrganizationRequests"
+      ],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-subscription-registration-status": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-subscription-registration-status",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-subscription-registration-status",
+      "template": "partner-center",
+      "documentId": "1c869cc2-cb38-22d3-5cb5-bc925936b453",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "df80802fe9797468218ce6c0234d44b65f495c80",
+      "sourcePath": "partner-center/developer/get-subscription-registration-status.md",
+      "msDate": "2024-02-05T00:00:00Z",
+      "updatedAt": "2024-10-31T16:02:00Z",
+      "title": "Get subscription registration status",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/customers/{customer-id}/subscriptions/{subscription-id}/registrationstatus"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-support-profile": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-support-profile",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-support-profile",
+      "template": "partner-center",
+      "documentId": "68b51c2e-8f47-69ee-343d-ebb47d5ab65c",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "df80802fe9797468218ce6c0234d44b65f495c80",
+      "sourcePath": "partner-center/developer/get-support-profile.md",
+      "msDate": "2024-09-16T00:00:00Z",
+      "updatedAt": "2024-10-31T16:02:00Z",
+      "title": "Get support profile",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/profiles/support"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-the-list-of-device-batches-for-the-specified-customer": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-the-list-of-device-batches-for-the-specified-customer",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-the-list-of-device-batches-for-the-specified-customer",
+      "template": "partner-center",
+      "documentId": "ec6938ee-9ef4-571c-defd-f6693d3384a7",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "ffe9cb4cbaafa32dd239af9a82a0e8be947584c1",
+      "sourcePath": "partner-center/developer/get-the-list-of-device-batches-for-the-specified-customer.md",
+      "msDate": "2024-09-11T00:00:00Z",
+      "updatedAt": "2026-03-09T16:19:00Z",
+      "title": "Get a list of device batches for the specified customer",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/customers/{customer-id}/deviceBatches"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-the-reseller-s-current-account-balance": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-the-reseller-s-current-account-balance",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-the-reseller-s-current-account-balance",
+      "template": "partner-center",
+      "documentId": "0de902cd-f2f9-69ee-6ea2-40f6b51bd370",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "f46a827bdc42d506c608f2fc4c91748808ba4517",
+      "sourcePath": "partner-center/developer/get-the-reseller-s-current-account-balance.md",
+      "msDate": "2024-10-07T00:00:00Z",
+      "updatedAt": "2024-10-31T16:02:00Z",
+      "title": "Get the partner's current account balance",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/invoices/summary"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/get-transfer-by-id": {
+      "url": "https://learn.microsoft.com/partner-center/developer/get-transfer-by-id",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/get-transfer-by-id",
+      "template": "partner-center",
+      "documentId": "de2b30fe-39ec-ccf7-d0b9-4b0003fc1846",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "e314c3c92944bcc9012bc0834ea0c83add9c37e5",
+      "sourcePath": "partner-center/developer/get-transfer-by-id.md",
+      "msDate": "2024-05-15T00:00:00Z",
+      "updatedAt": "2024-11-20T17:02:00Z",
+      "title": "Get transfer details by ID",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/customers/{customer-id}/transfers/{transfer-id}"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/register-a-subscription": {
+      "url": "https://learn.microsoft.com/partner-center/developer/register-a-subscription",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/register-a-subscription",
+      "template": "partner-center",
+      "documentId": "99cdea3c-e188-a85e-d2f4-ef7fdb317864",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "cec5ef0aa4951a7d5189deeb3afffc5b7b3948ea",
+      "sourcePath": "partner-center/developer/register-a-subscription.md",
+      "msDate": "2024-01-10T00:00:00Z",
+      "updatedAt": "2024-10-31T16:02:00Z",
+      "title": "Register a subscription",
+      "requestSyntax": {
+        "method": "POST",
+        "uri": "/v1/customers/{customer-id}/subscriptions/{subscription-id}/registrations"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/remove-customer-user-from-a-role": {
+      "url": "https://learn.microsoft.com/partner-center/developer/remove-customer-user-from-a-role",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/remove-customer-user-from-a-role",
+      "template": "partner-center",
+      "documentId": "e9ec9f2e-a5ba-4e43-e5c8-3f3b12a0ceb6",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "ffe9cb4cbaafa32dd239af9a82a0e8be947584c1",
+      "sourcePath": "partner-center/developer/remove-customer-user-from-a-role.md",
+      "msDate": "2024-09-11T00:00:00Z",
+      "updatedAt": "2026-03-09T16:19:00Z",
+      "title": "Remove a customer user from a role",
+      "requestSyntax": {
+        "method": "DELETE",
+        "uri": "/v1/customers/{customer-tenant-id}/directoryroles/{role-ID}/usermembers/{user-ID}"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/request-reseller-relationship": {
+      "url": "https://learn.microsoft.com/partner-center/developer/request-reseller-relationship",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/request-reseller-relationship",
+      "template": "partner-center",
+      "documentId": "a2ef8bde-a216-0c7e-c8fa-6e830b233018",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "229a898eb12129d2d465d882a95eb149d333a3f0",
+      "sourcePath": "partner-center/developer/request-reseller-relationship.md",
+      "msDate": "2024-03-20T00:00:00Z",
+      "updatedAt": "2025-03-12T22:01:00Z",
+      "title": "Retrieve a relationship request URL",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/customers/relationshiprequests"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/reset-user-password-for-a-customer": {
+      "url": "https://learn.microsoft.com/partner-center/developer/reset-user-password-for-a-customer",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/reset-user-password-for-a-customer",
+      "template": "partner-center",
+      "documentId": "f70ee69b-4474-509f-3311-fb2a15f01a2e",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "cec5ef0aa4951a7d5189deeb3afffc5b7b3948ea",
+      "sourcePath": "partner-center/developer/reset-user-password-for-a-customer.md",
+      "msDate": "2024-09-11T00:00:00Z",
+      "updatedAt": "2024-10-31T16:02:00Z",
+      "title": "Reset user password for a customer",
+      "requestSyntax": {
+        "method": "PATCH",
+        "uri": "/v1/customers/{customer-tenant-id}/users/{user-id}/resetpassword"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/restore-a-user-for-a-customer": {
+      "url": "https://learn.microsoft.com/partner-center/developer/restore-a-user-for-a-customer",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/restore-a-user-for-a-customer",
+      "template": "partner-center",
+      "documentId": "606d54f9-9728-e97c-c5e7-2da0fd49317b",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "ffe9cb4cbaafa32dd239af9a82a0e8be947584c1",
+      "sourcePath": "partner-center/developer/restore-a-user-for-a-customer.md",
+      "msDate": "2024-09-11T00:00:00Z",
+      "updatedAt": "2026-03-09T16:19:00Z",
+      "title": "Restore a deleted user for a customer",
+      "requestSyntax": {
+        "method": "PATCH",
+        "uri": "/v1/customers/{customer-tenant-id}/users/{user-id}"
+      },
+      "headerNames": [],
+      "bodyFields": [
+        {
+          "name": "State",
+          "type": "string"
+        },
+        {
+          "name": "Attributes",
+          "type": "object"
+        }
+      ],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/retrieve-a-list-of-indirect-resellers": {
+      "url": "https://learn.microsoft.com/partner-center/developer/retrieve-a-list-of-indirect-resellers",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/retrieve-a-list-of-indirect-resellers",
+      "template": "partner-center",
+      "documentId": "5aba0155-3291-94c0-4962-5fc72ab7a108",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "229a898eb12129d2d465d882a95eb149d333a3f0",
+      "sourcePath": "partner-center/developer/retrieve-a-list-of-indirect-resellers.md",
+      "msDate": "2024-03-20T00:00:00Z",
+      "updatedAt": "2025-03-12T22:01:00Z",
+      "title": "Retrieve a list of indirect resellers",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/relationships?relationship_type=IsIndirectCloudSolutionProviderOf"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/set-user-roles-for-a-customer": {
+      "url": "https://learn.microsoft.com/partner-center/developer/set-user-roles-for-a-customer",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/set-user-roles-for-a-customer",
+      "template": "partner-center",
+      "documentId": "4a3b8fff-3a01-b4c5-2b94-6506bff13617",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "ffe9cb4cbaafa32dd239af9a82a0e8be947584c1",
+      "sourcePath": "partner-center/developer/set-user-roles-for-a-customer.md",
+      "msDate": "2024-09-11T00:00:00Z",
+      "updatedAt": "2026-03-09T16:19:00Z",
+      "title": "Set user roles for a customer",
+      "requestSyntax": {
+        "method": "POST",
+        "uri": "/v1/customers/{customer-tenant-id}/directoryroles/{role-ID}/usermembers"
+      },
+      "headerNames": [],
+      "bodyFields": [
+        {
+          "name": "Id",
+          "type": "string"
+        },
+        {
+          "name": "DisplayName",
+          "type": "string"
+        },
+        {
+          "name": "UserPrincipalName",
+          "type": "string"
+        },
+        {
+          "name": "Attributes",
+          "type": "object"
+        }
+      ],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/transition-a-new-commerce-subscription": {
+      "url": "https://learn.microsoft.com/partner-center/developer/transition-a-new-commerce-subscription",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/transition-a-new-commerce-subscription",
+      "template": "partner-center",
+      "documentId": "380e4382-1b7e-7fde-c421-b3998bd08fd7",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "40ac5f8d7c71bab89c3b59689cb4667980c060f0",
+      "sourcePath": "partner-center/developer/transition-a-new-commerce-subscription.md",
+      "msDate": "2026-06-16T00:00:00Z",
+      "updatedAt": "2026-06-17T16:04:00Z",
+      "title": "Transition a new commerce subscription",
+      "requestSyntax": {
+        "method": "GET",
+        "uri": "/v1/customers/{customer-tenant-id}/subscriptions/{subscription-id}/transitionEligibilities?eligibilityType={immediate,scheduled}"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/update-a-service-request": {
+      "url": "https://learn.microsoft.com/partner-center/developer/update-a-service-request",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/update-a-service-request",
+      "template": "partner-center",
+      "documentId": "13409350-50d6-24fa-5a94-d4f368f59448",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "5aa9c1221534c1a5a772cf3e9161696f7f77f306",
+      "sourcePath": "partner-center/developer/update-a-service-request.md",
+      "msDate": "2024-07-09T00:00:00Z",
+      "updatedAt": "2024-11-20T17:02:00Z",
+      "title": "Update a service request",
+      "requestSyntax": {
+        "method": "PATCH",
+        "uri": "/v1/servicerequests/{servicerequest-id}"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/update-a-subscription-by-id": {
+      "url": "https://learn.microsoft.com/partner-center/developer/update-a-subscription-by-id",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/update-a-subscription-by-id",
+      "template": "partner-center",
+      "documentId": "4cf84de0-7a62-7c1a-b57b-6e5110621654",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "fef784697ca464e6fe944b319909cd9ebcedd5ce",
+      "sourcePath": "partner-center/developer/update-a-subscription-by-id.md",
+      "msDate": "2025-12-23T00:00:00Z",
+      "updatedAt": "2025-12-24T17:02:00Z",
+      "title": "Update a subscription by ID",
+      "requestSyntax": {
+        "method": "PATCH",
+        "uri": "/v1/customers/{customer-tenant-id}/subscriptions/{subscription-id}"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/update-customer-qualification-asynchronous": {
+      "url": "https://learn.microsoft.com/partner-center/developer/update-customer-qualification-asynchronous",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/update-customer-qualification-asynchronous",
+      "template": "partner-center",
+      "documentId": "5cec9ec5-cb81-c60c-76a1-2257f9db43c9",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "d241ece4887fc85d2d2af8aca53febbc98c42084",
+      "sourcePath": "partner-center/developer/update-customer-qualification-asynchronous.md",
+      "msDate": "2024-07-11T00:00:00Z",
+      "updatedAt": "2025-03-13T16:02:00Z",
+      "title": "Update a customer's qualifications asynchronously",
+      "requestSyntax": {
+        "method": "POST",
+        "uri": "/v1/customers/{customer_tenant_id}/qualifications"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/update-partner-billing-profile": {
+      "url": "https://learn.microsoft.com/partner-center/developer/update-partner-billing-profile",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/update-partner-billing-profile",
+      "template": "partner-center",
+      "documentId": "b053ec29-6d55-73d2-5a4e-19d05bbc4f19",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "a366f86fba7c3ff2681f792474798f205140104f",
+      "sourcePath": "partner-center/developer/update-partner-billing-profile.md",
+      "msDate": "2024-09-16T00:00:00Z",
+      "updatedAt": "2024-10-31T16:02:00Z",
+      "title": "Update the partner billing profile",
+      "requestSyntax": {
+        "method": "PUT",
+        "uri": "/v1/profiles/billing"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/upload-a-list-of-devices-for-the-specified-customer": {
+      "url": "https://learn.microsoft.com/partner-center/developer/upload-a-list-of-devices-for-the-specified-customer",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/upload-a-list-of-devices-for-the-specified-customer",
+      "template": "partner-center",
+      "documentId": "d71abdb8-3767-badb-c9b1-63ac4daf31fe",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "c6a74dce2c1963c91c67b865201c16416c483c49",
+      "sourcePath": "partner-center/developer/upload-a-list-of-devices-for-the-specified-customer.md",
+      "msDate": "2024-09-11T00:00:00Z",
+      "updatedAt": "2026-03-09T16:19:00Z",
+      "title": "Upload a list of devices to an existing batch for the specified customer",
+      "requestSyntax": {
+        "method": "POST",
+        "uri": "/v1/customers/{customer-id}/deviceBatches/{devicebatch-id}/devices"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/upload-a-list-of-devices-to-create-a-new-batch-for-the-specified-customer": {
+      "url": "https://learn.microsoft.com/partner-center/developer/upload-a-list-of-devices-to-create-a-new-batch-for-the-specified-customer",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/upload-a-list-of-devices-to-create-a-new-batch-for-the-specified-customer",
+      "template": "partner-center",
+      "documentId": "e3f960cf-5d80-615d-1655-7a0fb9505137",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "c6a74dce2c1963c91c67b865201c16416c483c49",
+      "sourcePath": "partner-center/developer/upload-a-list-of-devices-to-create-a-new-batch-for-the-specified-customer.md",
+      "msDate": "2024-09-11T00:00:00Z",
+      "updatedAt": "2026-03-09T16:19:00Z",
+      "title": "Upload a list of devices to create a new batch for the specified customer",
+      "requestSyntax": {
+        "method": "POST",
+        "uri": "/v1/customers/{customer-id}/deviceBatches"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/validate-an-address": {
+      "url": "https://learn.microsoft.com/partner-center/developer/validate-an-address",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/validate-an-address",
+      "template": "partner-center",
+      "documentId": "bc990a5f-b921-28d7-e47b-d065d417f72a",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "db204baced9fa2675e1a23cba02e18319dd28dbd",
+      "sourcePath": "partner-center/developer/validate-an-address.md",
+      "msDate": "2024-07-11T00:00:00Z",
+      "updatedAt": "2026-03-30T16:03:00Z",
+      "title": "Validate an address",
+      "requestSyntax": {
+        "method": "POST",
+        "uri": "/v1/validations/address"
+      },
+      "headerNames": [],
+      "bodyFields": [
+        {
+          "name": "addressline1",
+          "type": "string"
+        },
+        {
+          "name": "addressline2",
+          "type": "string"
+        },
+        {
+          "name": "city",
+          "type": "string"
+        },
+        {
+          "name": "state",
+          "type": "string"
+        },
+        {
+          "name": "postalcode",
+          "type": "string"
+        },
+        {
+          "name": "country",
+          "type": "string"
+        }
+      ],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    },
+    "https://learn.microsoft.com/partner-center/developer/verify-domain-availability": {
+      "url": "https://learn.microsoft.com/partner-center/developer/verify-domain-availability",
+      "finalUrl": "https://learn.microsoft.com/en-us/partner-center/developer/verify-domain-availability",
+      "template": "partner-center",
+      "documentId": "f77558c1-7de2-9be0-6293-5c6d04742780",
+      "sourceRepo": "MicrosoftDocs/partner-center-pr",
+      "sourceSha": "1d006f6a303f609b5b969df0cf31337b629ad7ae",
+      "sourcePath": "partner-center/developer/verify-domain-availability.md",
+      "msDate": "2024-09-12T00:00:00Z",
+      "updatedAt": "2025-03-13T16:02:00Z",
+      "title": "Verify domain availability",
+      "requestSyntax": {
+        "method": "HEAD",
+        "uri": "/v1/domains/{domain}"
+      },
+      "headerNames": [],
+      "bodyFields": [],
+      "isEndpointPage": true,
+      "extractionError": null,
+      "extractorVersion": 1
+    }
+  }
+}
