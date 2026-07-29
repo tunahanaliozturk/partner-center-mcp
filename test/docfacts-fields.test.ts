@@ -79,3 +79,10 @@ test("a conceptual page is skipped, and a scenario missing from the snapshot is 
   expect(absent[0]?.kind).toBe("unverified");
   expect(absent[0]?.severity).toBe("warning");
 });
+
+test("a header the scenario declares but the docs don't tabulate is not flagged", () => {
+  const findings = checkFields(snapshotWith(facts()), [
+    scenario({ headers: [{ name: "X-Extra", required: false }] }),
+  ]);
+  expect(findings).toEqual([]);
+});
