@@ -57,6 +57,21 @@ function partnerCenterRequestSyntax(html: string): DocFacts["requestSyntax"] {
   return { method, uri };
 }
 
+// Graph publishes the route as an http code block. Pages that document several
+// routes list them one per line; the first is the canonical one, which is what
+// the pack records.
+function graphRequestSyntax(html: string): DocFacts["requestSyntax"] {
+  const section = sectionAfter(html, "http-request");
+  if (section === null) return null;
+  const block = section.match(/<pre><code[^>]*>([\s\S]*?)<\/code><\/pre>/i);
+  if (!block) return null;
+  const firstLine = text(block[1] ?? "").split(/\s+/);
+  const method = (firstLine[0] ?? "").toUpperCase();
+  const uri = firstLine[1] ?? "";
+  if (!METHODS.test(method) || !uri.startsWith("/")) return null;
+  return { method, uri };
+}
+
 function headerNames(html: string): string[] {
   const section = sectionAfter(html, "request-headers");
   if (section === null) return [];
@@ -95,7 +110,11 @@ export function extractDocFacts(url: string, finalUrl: string, html: string): Do
   if (documentId === null) problems.push("no document_id meta");
   if (pageTitle === null) problems.push("no <h1>");
 
-  const requestSyntax = template === "partner-center" ? partnerCenterRequestSyntax(html) : null;
+  const requestSyntax = template === "graph"
+    ? graphRequestSyntax(html)
+    : template === "partner-center"
+      ? partnerCenterRequestSyntax(html)
+      : null;
 
   return {
     url,

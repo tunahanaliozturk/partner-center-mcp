@@ -58,3 +58,15 @@ test("a page without Learn metadata reports an extraction error rather than empt
   expect(facts.sourceSha).toBeNull();
   expect(facts.isEndpointPage).toBe(false);
 });
+
+test("a Graph endpoint page yields its route and tabulated headers", () => {
+  const url = "https://learn.microsoft.com/graph/api/user-post-users";
+  const facts = extractDocFacts(url, url, fixture("graph-endpoint.html"));
+  expect(facts.template).toBe("graph");
+  expect(facts.sourceRepo).toBe("microsoftgraph/microsoft-graph-docs");
+  expect(facts.sourceSha).toMatch(/^[0-9a-f]{40}$/);
+  expect(facts.requestSyntax).toEqual({ method: "POST", uri: "/users" });
+  expect(facts.isEndpointPage).toBe(true);
+  expect(facts.headerNames).toContain("Authorization");
+  expect(facts.extractionError).toBeNull();
+});
