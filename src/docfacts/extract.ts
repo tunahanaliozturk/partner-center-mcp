@@ -68,7 +68,7 @@ function partnerCenterSyntaxEntry(section: string): SyntaxEntry | null {
   if (!row) return null;
   const method = (row[0] ?? "").toUpperCase();
   const uri = normalizeUri(row[1] ?? "");
-  if (!METHODS.test(method) || uri === "") return null;
+  if (!METHODS.test(method) || !uri.startsWith("/")) return null;
   return { method, uri };
 }
 

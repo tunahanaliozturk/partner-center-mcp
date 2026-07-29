@@ -204,3 +204,27 @@ test("a stray '>' character trailing the request URI in the source markup does n
   const facts = extractDocFacts(url, url, html);
   expect(facts.requestSyntax).toEqual({ method: "GET", uri: "/v1/fraudEvents" });
 });
+
+// get-fraud-events's *second* request-syntax section wraps the placeholder in
+// brackets instead of a link: `[<em>{baseURL}</em>]/v1/fraudEvents`. Nothing
+// strips the leading "[", so the resulting uri doesn't start with "/" -- it is
+// not a URI at all, and must be treated the same as any other malformed
+// section: it contributes nothing, and does not truncate the walk.
+test("a request-syntax section whose extracted uri does not start with '/' contributes nothing, without truncating the walk", () => {
+  const url = "https://learn.microsoft.com/partner-center/developer/example-bracket";
+  const html = `
+    <meta name="gitcommit" content="https://github.com/MicrosoftDocs/partner-center-pr/blob/0000000000000000000000000000000000000000/path.md">
+    <meta name="document_id" content="00000000-0000-0000-0000-000000000000">
+    <h1>Example</h1>
+    <h3 id="request-syntax">Request syntax</h3>
+    <table>
+    <thead><tr><th>Method</th><th>Request URI</th></tr></thead>
+    <tbody><tr><td>GET</td><td>[<em>{baseURL}</em>]/v1/fraudEvents&gt;</td></tr></tbody>
+    </table>
+    <h3 id="request-syntax-1">Request syntax</h3>
+    <table><thead><tr><th>Method</th><th>Request URI</th></tr></thead>
+    <tbody><tr><td>GET</td><td>{baseURL}/v1/fraudEvents HTTP/1.1</td></tr></tbody></table>
+  `;
+  const facts = extractDocFacts(url, url, html);
+  expect(facts.requestSyntaxes).toEqual([{ method: "GET", uri: "/v1/fraudEvents" }]);
+});
