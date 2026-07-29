@@ -124,3 +124,64 @@ test("a scenario matching neither of two documented syntaxes reports how many ca
   expect(errors.length).toBeGreaterThan(0);
   expect(errors.every((f) => f.detail?.includes("2 candidate"))).toBe(true);
 });
+
+// `api` picks the request host, and pathsMatch strips scheme+host from both
+// sides -- so without these two cross-checks nothing in the pack verifies the
+// one field the new schema added. A wrong host is a wrong request: error.
+
+test("a graph scenario on a graph page, and a partner-center scenario on a partner-center page, both pass", () => {
+  const graph = checkFields(
+    snapshotWith(facts({ template: "graph", requestSyntax: { method: "GET", uri: "/tenantRelationships/x" } })),
+    [scenario({ api: "graph", path: "/tenantRelationships/x" })],
+  );
+  expect(graph.filter((f) => f.kind === "field-api")).toEqual([]);
+
+  const pc = checkFields(snapshotWith(facts()), [scenario()]);
+  expect(pc.filter((f) => f.kind === "field-api")).toEqual([]);
+});
+
+test("a scenario declaring api graph against a non-graph page is an error", () => {
+  const findings = checkFields(snapshotWith(facts()), [scenario({ api: "graph" })]);
+  const api = findings.filter((f) => f.kind === "field-api");
+  expect(api).toHaveLength(1);
+  expect(api[0]?.severity).toBe("error");
+  expect(api[0]?.message).toContain("graph");
+});
+
+test("a scenario omitting api on a graph page is an error", () => {
+  const findings = checkFields(
+    snapshotWith(facts({ template: "graph" })),
+    [scenario({ api: undefined })],
+  );
+  const api = findings.filter((f) => f.kind === "field-api");
+  expect(api).toHaveLength(1);
+  expect(api[0]?.severity).toBe("error");
+  expect(api[0]?.message).toContain("Microsoft Graph");
+});
+
+test("an absolute documented URI whose origin matches the scenario's api base passes", () => {
+  const uri = "https://api.partner.microsoft.com/v1.0/engagements/referrals";
+  const findings = checkFields(
+    snapshotWith(facts({ requestSyntax: { method: "GET", uri } })),
+    [scenario({ api: "pricing-and-referrals", path: "/v1.0/engagements/referrals" })],
+  );
+  expect(findings.filter((f) => f.kind === "field-api")).toEqual([]);
+});
+
+test("an absolute documented URI on a different host than the scenario's api base is an error", () => {
+  const uri = "https://api.partner.microsoft.com/v1.0/engagements/referrals";
+  const findings = checkFields(
+    snapshotWith(facts({ requestSyntax: { method: "GET", uri } })),
+    [scenario({ api: "partner-center", path: "/v1.0/engagements/referrals" })],
+  );
+  const api = findings.filter((f) => f.kind === "field-api");
+  expect(api).toHaveLength(1);
+  expect(api[0]?.severity).toBe("error");
+  expect(api[0]?.message).toContain("https://api.partnercenter.microsoft.com");
+  expect(api[0]?.message).toContain("https://api.partner.microsoft.com");
+});
+
+test("a relatively-stated documented URI is not origin-checked", () => {
+  const findings = checkFields(snapshotWith(facts()), [scenario({ api: "partner-center" })]);
+  expect(findings.filter((f) => f.kind === "field-api")).toEqual([]);
+});

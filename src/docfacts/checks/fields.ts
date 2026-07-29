@@ -1,3 +1,4 @@
+import { baseUrlFor } from "../../knowledge/apis.js";
 import type { Scenario } from "../../knowledge/schema.js";
 import type { Finding } from "../findings.js";
 import type { Snapshot } from "../types.js";
@@ -33,6 +34,22 @@ export function pathsMatch(scenarioPath: string, docUri: string): boolean {
   });
 }
 
+/**
+ * The origin of a documented URI, or null when the URI is stated relatively.
+ *
+ * `pathsMatch` deliberately strips scheme+host from both sides, so nothing
+ * else in this file can catch a scenario pointing its `api` at the wrong host.
+ */
+function originOf(uri: string): string | null {
+  const match = /^[a-z][a-z0-9+.-]*:\/\/[^/\s]+/i.exec(uri.trim());
+  if (!match) return null;
+  try {
+    return new URL(match[0]).origin;
+  } catch {
+    return null;
+  }
+}
+
 export function checkFields(snapshot: Snapshot, scenarios: Scenario[]): Finding[] {
   const findings: Finding[] = [];
   for (const scenario of scenarios) {
@@ -52,6 +69,21 @@ export function checkFields(snapshot: Snapshot, scenarios: Scenario[]): Finding[
       });
       continue;
     }
+    // `api` selects the request host, and until now nothing verified it: the
+    // path comparison strips scheme+host from both sides, so a scenario could
+    // claim api "graph" against a Partner Center page and pass while
+    // buildRequest sent to the wrong host. Graph pages use a distinct Learn
+    // template, which makes this an exact iff.
+    if ((scenario.api === "graph") !== (facts.template === "graph")) {
+      findings.push({
+        kind: "field-api", severity: "error", ref: scenario.id,
+        message: scenario.api === "graph"
+          ? `declares api "graph" but ${facts.url} is a ${facts.template} page.`
+          : `declares api "${scenario.api ?? "partner-center"}" but ${facts.url} is a Microsoft Graph page.`,
+        detail: `requests would be sent to ${baseUrlFor(scenario.api)}.`,
+      });
+    }
+
     if (facts.requestSyntax === null) {
       findings.push({
         kind: "field-skipped", severity: "info", ref: scenario.id,
@@ -62,7 +94,25 @@ export function checkFields(snapshot: Snapshot, scenarios: Scenario[]): Finding[
     const matches = (entry: { method: string; uri: string }) =>
       scenario.method === entry.method && pathsMatch(scenario.path, entry.uri);
 
-    if (!facts.requestSyntaxes.some(matches)) {
+    const matched = facts.requestSyntaxes.find(matches);
+
+    // When the docs state the URI absolutely (the referrals pages do), its
+    // origin is the authoritative host for this route. It must be the origin
+    // the scenario's `api` resolves to, or the pack builds a request against
+    // a host the documentation never mentions.
+    if (matched) {
+      const documented = originOf(matched.uri);
+      const declared = new URL(baseUrlFor(scenario.api)).origin;
+      if (documented !== null && documented !== declared) {
+        findings.push({
+          kind: "field-api", severity: "error", ref: scenario.id,
+          message: `api "${scenario.api ?? "partner-center"}" resolves to ${declared} but the docs state ${documented}.`,
+          detail: `${facts.url}: ${matched.uri}`,
+        });
+      }
+    }
+
+    if (!matched) {
       // No documented syntax matches. Pick the entry that is the closest fit
       // so the finding stays actionable instead of listing every candidate:
       // prefer a path match (report the method difference), then a method
