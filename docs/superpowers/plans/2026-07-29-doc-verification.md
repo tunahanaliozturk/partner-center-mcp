@@ -859,7 +859,14 @@ Add to `package.json` `scripts`:
 - [ ] **Step 6: Generate the first snapshot**
 
 Run: `npm run build && npm run docfacts:refresh`
-Expected: `wrote verification/doc-facts.json: 95 pages, 0 unreachable, 0 with extraction errors`
+Expected: `wrote verification/doc-facts.json: 98 pages, 0 unreachable, 0 with extraction errors`
+
+98, not 95: the 95 unique scenario `docUrl`s plus three that only `errors.json` references —
+`deprecate-azure-active-directory-graph-token`, `error-codes`, and
+`entra/identity-platform/reference-error-codes`. The last is a third doc family, so
+`detectTemplate` returns `"unknown"` for it and its `requestSyntax` is `null`. That is correct: it
+is a reference page, not an endpoint. It must still extract identity cleanly — an `extractionError`
+on it would be a real finding.
 
 If any page reports an extraction error, that is a real finding about that page — investigate before committing. A handful of unreachable pages means the doc links are already dead and belong in a separate fix.
 
