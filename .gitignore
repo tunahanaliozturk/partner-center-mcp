@@ -10,3 +10,8 @@ doc-report.md
 [Bb]in/
 [Oo]bj/
 *.nupkg
+
+# Agent scratch: git worktrees and subagent-driven-development workspaces
+.claude/worktrees/
+.superpowers/
+pack-report.md
