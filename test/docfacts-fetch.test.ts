@@ -43,10 +43,29 @@ test("fetchPage reports a transport failure as an error, not a throw", async () 
 });
 
 test("fetchAll preserves input order under concurrency", async () => {
-  await withServer((path) => ({ status: 200, body: `<h1>${path}</h1>` }), async (base) => {
-    const urls = ["/a", "/b", "/c", "/d", "/e"].map((p) => base + p);
+  // Delay is inverted relative to request order: the first-requested URL is the
+  // slowest to respond, the last is the fastest. That forces responses to arrive
+  // out of order, so this only passes if fetchAll assembles results by index
+  // rather than by completion order (a completion-order/push implementation
+  // would return them roughly reversed).
+  const paths = ["/a", "/b", "/c", "/d", "/e"];
+  const delayMs: Record<string, number> = { "/a": 150, "/b": 90, "/c": 40, "/d": 15, "/e": 0 };
+  const server: Server = createServer((req, res) => {
+    const path = req.url ?? "/";
+    setTimeout(() => {
+      res.writeHead(200, { "content-type": "text/html" });
+      res.end(`<h1>${path}</h1>`);
+    }, delayMs[path] ?? 0);
+  });
+  await new Promise<void>((resolve) => server.listen(0, resolve));
+  const port = (server.address() as AddressInfo).port;
+  try {
+    const base = `http://127.0.0.1:${port}`;
+    const urls = paths.map((p) => base + p);
     const results = await fetchAll(urls, 2);
     expect(results.map((r) => r.url)).toEqual(urls);
     expect(results[2]?.html).toBe("<h1>/c</h1>");
-  });
+  } finally {
+    await new Promise<void>((resolve) => server.close(() => resolve()));
+  }
 });
