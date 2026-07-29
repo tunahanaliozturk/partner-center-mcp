@@ -121,8 +121,21 @@ PORT=3000 npx -p partner-center-mcp partner-center-mcp-http
 | `pc_get_enums` | Look up enum values (billingCycle, termDuration, targetView, transitionType, status, …). |
 | `pc_get_resource` | Field dictionary for resources (Customer, Subscription, Order, Invoice, …). |
 | `pc_whats_new` | Deprecations & deadlines (MFA enforcement, graph.windows.net, v1→v2 reconciliation, …). |
-| `pc_search_docs` | Search the curated pack and fetch live Microsoft Learn docs. |
+| `pc_search_docs` | Fetch live Microsoft Learn excerpts — the fallback when the curated pack has no answer. |
 | `pc_get_reference` | Base URLs, headers, versioning, sandbox, rate limits, national-cloud differences. |
+
+Every tool ships full metadata for the calling agent: a `title`, a description that says
+when to use it *and* which sibling tool to prefer instead, a description on every input
+parameter, a declared `outputSchema`, and MCP behaviour annotations. All 23 are
+`readOnlyHint: true` / `destructiveHint: false` — this server holds no credentials and
+calls no Partner Center endpoint, it only reads the bundled knowledge pack. The two
+exceptions to `idempotentHint`/`openWorldHint` are `pc_search_docs` (and
+`pc_get_scenario` with `enrich: true`), which reach Microsoft Learn, and
+`pc_build_request`, which mints a fresh `MS-RequestId` per call.
+
+Responses use one envelope — `{ ok, data }` on success, `{ ok: false, error, suggestions? }`
+on failure — returned as `structuredContent` and validated against each tool's
+`outputSchema` by the MCP SDK.
 
 ## Coverage
 

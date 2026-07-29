@@ -43,6 +43,27 @@ jobs:
             gh issue create --title "📚 Documentation drift detected" --label doc-drift --body-file doc-report.md
           fi
 
-      - name: Fail the run if high-severity drift was found
-        if: steps.check.outcome == 'failure'
-        run: exit 1
+      # An auto-opened issue that is silently closed leaves no record of what
+      # happened, and reads from the outside like an unanswered report. Close it
+      # explicitly, saying which run cleared it.
+      - name: Close the drift issue once the check is clean
+        if: steps.check.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          existing=$(gh issue list --state open --label doc-drift --json number -q '.[0].number')
+          if [ -n "$existing" ]; then
+            gh issue close "$existing" --comment "Resolved: the doc freshness check found no high-severity drift in [run \`${GITHUB_RUN_ID}\`](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}). Reopening automatically if it returns."
+          fi
+
+      # Deliberately does NOT fail the run. Drift is a finding about Microsoft's
+      # documentation, not a broken build — the issue above is the notification,
+      # and a red run here would misreport the repo's health to anyone reading
+      # the workflow list.
+      - name: Summarize
+        run: |
+          if [ "${{ steps.check.outcome }}" = "failure" ]; then
+            echo "::notice::High-severity doc drift found — see the open doc-drift issue."
+          else
+            echo "::notice::No high-severity doc drift."
+          fi

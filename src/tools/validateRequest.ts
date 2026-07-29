@@ -2,6 +2,7 @@ import { z } from "zod";
 import type { Tool } from "../types.js";
 import type { Knowledge, Scenario } from "../knowledge/schema.js";
 import { ok } from "../util/result.js";
+import { envelope, OFFLINE } from "../util/schema.js";
 import { basePathFor, baseUrlFor } from "../knowledge/apis.js";
 
 interface Finding { severity: "error" | "warning" | "info"; message: string; fix?: string }
@@ -23,14 +24,52 @@ function normalizePath(url: string): string {
 
 export const validateRequest: Tool = {
   name: "pc_validate_request",
-  description: "Lint a Partner Center REST call (method, URL, headers, auth) against the known scenarios: wrong method/path, missing Authorization or MS-RequestId, retired audience, and unsupported app-only usage.",
+  title: "Lint a REST request",
+  description:
+    "Check a Partner Center REST request you have already written against the documented operations and report what is wrong: unrecognised or mismatched method and path, missing Authorization or MS-RequestId, a retired token audience, app-only used where it is not supported, and sovereign-cloud host mismatches. " +
+    "Use this to catch mistakes before sending, or to explain a call that is failing. To build a correct request from scratch instead, use pc_build_request; to decode a response you already received, use pc_decode_error. " +
+    "Read-only, offline, deterministic: the request is analysed statically and never sent, so pass placeholder tokens rather than real ones. " +
+    "Findings are limited to what the bundled pack covers, so an empty list means no known problem — not a guarantee the call will succeed.",
   inputShape: {
-    method: z.enum(["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD"]),
-    url: z.string(),
-    authType: z.enum(["app-only", "app+user"]).optional(),
-    cloud: z.enum(["commercial", "china-21vianet", "us-gov"]).optional(),
-    headers: z.record(z.string(), z.string()).optional(),
+    method: z.enum(["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD"]).describe(
+      "HTTP verb of the request you are checking. Required — a verb that does not match the endpoint is one of the things this reports.",
+    ),
+    url: z.string().describe(
+      "The request URL. A full URL or a bare path both work; the scheme and host are stripped before matching. " +
+      "Concrete ids in place of {placeholder} segments are expected and matched positionally, e.g. \"https://api.partnercenter.microsoft.com/v1/customers/c7f6.../subscriptions\". A query string is ignored.",
+    ),
+    authType: z.enum(["app-only", "app+user"]).optional().describe(
+      "The token flavour you intend to use. Supply it to be told when the endpoint does not accept app-only. Omit to skip that check.",
+    ),
+    cloud: z.enum(["commercial", "china-21vianet", "us-gov"]).optional().describe(
+      "Sovereign cloud the request targets. Defaults to \"commercial\". Supply a non-commercial value to get the correct base URL and login authority reported as an info finding.",
+    ),
+    headers: z.record(z.string(), z.string()).optional().describe(
+      "Request headers as a flat string-to-string map, e.g. { \"Authorization\": \"Bearer <token>\", \"MS-RequestId\": \"...\" }. " +
+      "Names are compared case-insensitively. Omit to skip the header checks entirely — which also suppresses the missing-Authorization finding. Use placeholder token values; real ones are unnecessary.",
+    ),
   },
+  outputShape: envelope(z.object({
+    ok: z.boolean().describe("True when no finding has severity \"error\". Warnings and info findings can still be present."),
+    matched: z.union([
+      z.object({
+        id: z.string().describe("Scenario id of the matched operation."),
+        title: z.string().describe("Human-readable name of the operation."),
+        method: z.string().describe("The verb the operation actually expects."),
+        path: z.string().describe("The path template it matched against."),
+        url: z.string().describe("Fully resolved URL for the operation against its correct host."),
+        authType: z.enum(["app-only", "app+user"]).describe("Token flavour the operation requires."),
+        docUrl: z.string().describe("Microsoft Learn page documenting the operation."),
+      }),
+      z.null(),
+    ]).describe("The documented operation this request was matched to, or null when no known endpoint has that shape."),
+    findings: z.array(z.object({
+      severity: z.enum(["error", "warning", "info"]).describe("\"error\" will break the call; \"warning\" is risky but works; \"info\" is contextual guidance."),
+      message: z.string().describe("What is wrong."),
+      fix: z.string().optional().describe("The concrete change to make, when there is one."),
+    })).describe("Everything detected, in the order the checks ran. Empty means nothing known was wrong."),
+  })),
+  annotations: OFFLINE,
   run(args, ctx) {
     const k = ctx.knowledge as Knowledge;
     const findings: Finding[] = [];

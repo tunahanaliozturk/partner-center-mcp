@@ -2,6 +2,7 @@ import { z } from "zod";
 import type { Tool } from "../types.js";
 import type { Knowledge, Scenario } from "../knowledge/schema.js";
 import { ok, notFound } from "../util/result.js";
+import { envelope, OFFLINE } from "../util/schema.js";
 import { baseUrlFor } from "../knowledge/apis.js";
 
 type Lang = "curl" | "csharp" | "typescript" | "powershell";
@@ -106,12 +107,40 @@ function notesFor(s: Scenario): string[] {
 
 export const generateCall: Tool = {
   name: "pc_generate_call",
-  description: "Generate a current Partner Center REST call for a scenario in the chosen language, with optional auth/retry/pagination boilerplate. Never emits the archived .NET SDK.",
+  title: "Generate REST call code",
+  description:
+    "Emit ready-to-adapt code for one Partner Center scenario in the language you ask for, plus the Secure Application Model token exchange, 429 retry, 202 polling, and pagination boilerplate. " +
+    "Use this when you want code. For a structured method/url/headers/body object to send yourself, use pc_build_request; for the underlying facts and gotchas, use pc_get_scenario. " +
+    "Only current REST is emitted — never the archived .NET SDK. " +
+    "Read-only, offline, deterministic: the code is returned as text and is never executed, and the placeholder credentials it contains are read from environment variables at your end. " +
+    "An unknown id returns ok:false with `suggestions` listing every valid id.",
   inputShape: {
-    id: z.string(),
-    language: z.enum(["curl", "csharp", "typescript", "powershell"]),
-    includeHelpers: z.boolean().optional(),
+    id: z.string().describe(
+      "Exact scenario id in kebab-case, e.g. \"create-cart\". Case-sensitive; discover ids with pc_list_scenarios or any pc_plan_* tool.",
+    ),
+    language: z.enum(["curl", "csharp", "typescript", "powershell"]).describe(
+      "Target language for the snippet. Required — there is no default. " +
+      "\"curl\", \"csharp\", and \"typescript\" come from curated per-scenario examples; \"powershell\" is generated from the endpoint definition and is therefore more skeletal.",
+    ),
+    includeHelpers: z.boolean().optional().describe(
+      "Whether to append the reusable boilerplate — token exchange, 429/Retry-After handling, 202 polling, pagination — as a separate `helpers` field. " +
+      "Defaults to true. Set false when you already have that plumbing and only want the call itself.",
+    ),
   },
+  outputShape: envelope(
+    z.object({
+      language: z.enum(["curl", "csharp", "typescript", "powershell"]).describe("Language the snippet was emitted in."),
+      code: z.string().describe("The call itself, with {placeholder} path segments left for you to substitute."),
+      helpers: z.string().optional().describe("Reusable auth, retry, polling, and pagination boilerplate. Present unless includeHelpers was false."),
+      notes: z.array(z.string()).describe("Operational requirements for this specific call: pagination, MS-RequestId idempotency, throttling, 202 polling, token flavour."),
+      authType: z.enum(["app-only", "app+user"]).describe("Token flavour this call requires."),
+      method: z.string().describe("HTTP verb."),
+      path: z.string().describe("API-relative path with placeholders."),
+      docUrl: z.string().describe("Microsoft Learn page documenting this operation."),
+    }),
+    { suggests: true },
+  ),
+  annotations: OFFLINE,
   run(args, ctx) {
     const k = ctx.knowledge as Knowledge;
     const scenario = k.scenarios.find((s) => s.id === args.id);

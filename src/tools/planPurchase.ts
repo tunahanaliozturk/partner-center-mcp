@@ -2,6 +2,7 @@ import { z } from "zod";
 import type { Tool } from "../types.js";
 import type { Knowledge } from "../knowledge/schema.js";
 import { ok, toolError } from "../util/result.js";
+import { envelope, OFFLINE, PlanData } from "../util/schema.js";
 import { baseUrlFor } from "../knowledge/apis.js";
 
 // The ordered scenarios that make up an end-to-end New Commerce purchase, with
@@ -18,11 +19,25 @@ const CHAIN: { scenarioId: string; why: string }[] = [
 
 export const planPurchase: Tool = {
   name: "pc_plan_purchase",
-  description: "Return the ordered, end-to-end New Commerce purchase workflow (product -> SKU availability -> cart -> checkout -> subscriptions) with the exact REST scenario, method, path, and gotchas for each step.",
+  title: "Plan an NCE purchase",
+  description:
+    "Return the ordered end-to-end New Commerce purchase workflow — find the product, get a fresh SKU availability, build the cart, check out, resolve the provisioned subscriptions — with the exact operation, resolved URL, and key gotchas for each step. " +
+    "Use this to buy new subscriptions for a customer. To move existing subscriptions between partners use pc_plan_transfer, and to link the customer to your account first use pc_plan_csp_onboarding. " +
+    "Planning only: nothing is executed, no Partner Center credentials are used, and no network call is made — it is a lookup over the bundled scenario pack. " +
+    "Returns { goal, steps[] with order/scenarioId/method/path/url/authType/why/keyGotchas/docUrl, notes[] }. " +
+    "Pass any step's scenarioId to pc_generate_call for runnable code.",
   inputShape: {
-    customerId: z.string().optional(),
-    country: z.string().optional(),
+    customerId: z.string().optional().describe(
+      "Optional Partner Center customer tenant id (GUID, e.g. \"c7f6e4b1-3a2d-4c5e-9f80-1b2c3d4e5f60\"). " +
+      "Substituted for the {customer-id} placeholder in every step's path and url so the plan comes back ready to run. Omit to keep the placeholders.",
+    ),
+    country: z.string().optional().describe(
+      "Optional two-letter ISO 3166-1 country code for the customer's market, e.g. \"TR\", \"DE\", \"US\". " +
+      "Substituted for the {country} placeholder in the catalog steps, since product availability and pricing are market-specific. Omit to keep the placeholder.",
+    ),
   },
+  outputShape: envelope(PlanData),
+  annotations: OFFLINE,
   run(args, ctx) {
     const k = ctx.knowledge as Knowledge;
     const fill = (path: string) => {
