@@ -16,6 +16,8 @@ import { readSnapshot, writeSnapshot } from "../dist/docfacts/snapshot.js";
 import { checkDrift } from "../dist/docfacts/checks/drift.js";
 import { hasErrors } from "../dist/docfacts/findings.js";
 import { renderReport } from "../dist/docfacts/report.js";
+import { refreshTocHrefs } from "../dist/docfacts/toc.js";
+import { EXTRACTOR_VERSION } from "../dist/docfacts/types.js";
 
 const STALE_DAYS = Number(process.env.STALE_DAYS ?? 180);
 const update = process.env.UPDATE_SNAPSHOT === "1" || process.argv.includes("--update");
@@ -30,6 +32,13 @@ const urls = [...new Set([
 const fetched = await fetchAll(urls);
 const { findings, fresh } = checkDrift(fetched, snapshot, knowledge.scenarios, new Date(), STALE_DAYS);
 
+// The TOC is what coverage and retirement detection are computed from. Without
+// re-reading it here, `retired-page` could never fire again and a newly
+// documented endpoint could never surface as a gap -- only the manual
+// docfacts:refresh ever touched it.
+const toc = await refreshTocHrefs(snapshot.tocHrefs);
+findings.push(...toc.findings);
+
 const count = (severity) => findings.filter((f) => f.severity === severity).length;
 const report = renderReport("Documentation freshness report", findings, [
   `Checked **${urls.length}** doc URLs across ${knowledge.scenarios.length} scenarios and ${knowledge.errors.length} errors.`,
@@ -43,7 +52,15 @@ if (process.env.GITHUB_STEP_SUMMARY) writeFileSync(process.env.GITHUB_STEP_SUMMA
 console.log(report);
 
 if (update) {
-  writeSnapshot({ ...snapshot, pages: { ...snapshot.pages, ...fresh } });
+  // extractorVersion must track the parser that produced the merged records.
+  // Spreading the old snapshot kept the OLD header after a parser bump, which
+  // would have made the header a lie and defeated the re-baseline gate.
+  writeSnapshot({
+    ...snapshot,
+    extractorVersion: EXTRACTOR_VERSION,
+    tocHrefs: toc.hrefs,
+    pages: { ...snapshot.pages, ...fresh },
+  });
   console.log("snapshot updated.");
 }
 

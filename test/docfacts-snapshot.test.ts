@@ -51,3 +51,25 @@ test("readSnapshot rejects a malformed file with an actionable message", () => {
 test("readSnapshot explains how to create a missing snapshot", () => {
   expect(() => readSnapshot(join(dir(), "absent.json"))).toThrow(/docfacts:refresh/);
 });
+
+// EXTRACTOR_VERSION was written into every record and the snapshot header and
+// read by nothing, so a parser change silently produced a snapshot-wide diff
+// that looked like doc drift. The gate turns it into one deliberate re-baseline.
+test("readSnapshot refuses a snapshot built by a different extractor version", () => {
+  const path = join(dir(), "doc-facts.json");
+  const snap = emptySnapshot("2026-07");
+  snap.pages["https://learn.microsoft.com/a"] = facts("https://learn.microsoft.com/a");
+  writeSnapshot(snap, path);
+  const raw = JSON.parse(readFileSync(path, "utf8"));
+  raw.extractorVersion = EXTRACTOR_VERSION - 1;
+  writeFileSync(path, JSON.stringify(raw));
+
+  expect(() => readSnapshot(path)).toThrow(new RegExp(`v${EXTRACTOR_VERSION - 1}`));
+  expect(() => readSnapshot(path)).toThrow(/docfacts:refresh/);
+});
+
+test("readSnapshot accepts a snapshot at the current extractor version", () => {
+  const path = join(dir(), "doc-facts.json");
+  writeSnapshot(emptySnapshot("2026-07"), path);
+  expect(readSnapshot(path).extractorVersion).toBe(EXTRACTOR_VERSION);
+});

@@ -1,5 +1,5 @@
 import { test, expect } from "vitest";
-import { parseTocHrefs, tocHrefToUrl } from "../src/docfacts/toc.js";
+import { parseTocHrefs, refreshTocHrefs, tocHrefToUrl } from "../src/docfacts/toc.js";
 import { checkCoverage } from "../src/docfacts/checks/coverage.js";
 import { emptySnapshot } from "../src/docfacts/snapshot.js";
 import { EXTRACTOR_VERSION, type DocFacts, type Snapshot } from "../src/docfacts/types.js";
@@ -41,6 +41,30 @@ test("parseTocHrefs tolerates a shape it does not recognize", () => {
 
 test("tocHrefToUrl builds the canonical Learn URL", () => {
   expect(tocHrefToUrl("developer/create-a-customer")).toBe(covered);
+});
+
+// check-docs re-reads the TOC weekly so retirement detection and coverage do
+// not freeze. The failure modes must not corrupt the snapshot: an empty list
+// would mark every scenario's page retired at once.
+test("refreshTocHrefs returns the fresh list when the fetch succeeds", async () => {
+  const r = await refreshTocHrefs(["developer/old"], async () => ["developer/a", "developer/b"]);
+  expect(r.hrefs).toEqual(["developer/a", "developer/b"]);
+  expect(r.findings).toEqual([]);
+});
+
+test("refreshTocHrefs carries the previous list forward and reports a failed fetch", async () => {
+  const r = await refreshTocHrefs(["developer/old"], async () => { throw new Error("503"); });
+  expect(r.hrefs).toEqual(["developer/old"]);
+  expect(r.findings).toHaveLength(1);
+  expect(r.findings[0]?.kind).toBe("toc-unreadable");
+  expect(r.findings[0]?.severity).toBe("warning");
+  expect(r.findings[0]?.message).toContain("503");
+});
+
+test("refreshTocHrefs refuses to replace the list with an empty one", async () => {
+  const r = await refreshTocHrefs(["developer/old"], async () => []);
+  expect(r.hrefs).toEqual(["developer/old"]);
+  expect(r.findings[0]?.kind).toBe("toc-unreadable");
 });
 
 function snapshot(): Snapshot {
