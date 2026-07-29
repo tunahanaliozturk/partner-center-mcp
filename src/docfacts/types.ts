@@ -5,7 +5,7 @@ import { z } from "zod";
  * so the version turns that churn into one deliberate re-baseline instead of
  * a few hundred phantom drift findings.
  */
-export const EXTRACTOR_VERSION = 1;
+export const EXTRACTOR_VERSION = 2;
 
 export const DocFactsSchema = z.object({
   url: z.string().url(),
@@ -19,6 +19,7 @@ export const DocFactsSchema = z.object({
   updatedAt: z.union([z.string(), z.null()]),
   title: z.union([z.string(), z.null()]),
   requestSyntax: z.union([z.object({ method: z.string(), uri: z.string() }), z.null()]),
+  requestSyntaxes: z.array(z.object({ method: z.string(), uri: z.string() })),
   headerNames: z.array(z.string()),
   bodyFields: z.array(z.object({ name: z.string(), type: z.string() })),
   isEndpointPage: z.boolean(),

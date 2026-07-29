@@ -14,6 +14,7 @@ function facts(url: string): DocFacts {
     sourceSha: "a".repeat(40), sourcePath: "partner-center/developer/x.md",
     msDate: "2024-03-20T00:00:00Z", updatedAt: "2025-03-12T22:01:00Z", title: "X",
     requestSyntax: { method: "GET", uri: "/v1/customers" },
+    requestSyntaxes: [{ method: "GET", uri: "/v1/customers" }],
     headerNames: [], bodyFields: [], isEndpointPage: true,
     extractionError: null, extractorVersion: EXTRACTOR_VERSION,
   };

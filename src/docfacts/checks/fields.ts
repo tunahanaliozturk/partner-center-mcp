@@ -49,19 +49,37 @@ export function checkFields(snapshot: Snapshot, scenarios: Scenario[]): Finding[
       });
       continue;
     }
-    if (scenario.method !== facts.requestSyntax.method) {
-      findings.push({
-        kind: "field-mismatch", severity: "error", ref: scenario.id,
-        message: `method is ${scenario.method} but the docs say ${facts.requestSyntax.method}.`,
-        detail: facts.url,
-      });
-    }
-    if (!pathsMatch(scenario.path, facts.requestSyntax.uri)) {
-      findings.push({
-        kind: "field-mismatch", severity: "error", ref: scenario.id,
-        message: `path is ${scenario.path} but the docs say ${facts.requestSyntax.uri}.`,
-        detail: facts.url,
-      });
+    const matches = (entry: { method: string; uri: string }) =>
+      scenario.method === entry.method && pathsMatch(scenario.path, entry.uri);
+
+    if (!facts.requestSyntaxes.some(matches)) {
+      // No documented syntax matches. Pick the entry that is the closest fit
+      // so the finding stays actionable instead of listing every candidate:
+      // prefer a path match (report the method difference), then a method
+      // match (report the path difference), then just the first entry.
+      const pathMatch = facts.requestSyntaxes.find((e) => pathsMatch(scenario.path, e.uri));
+      const methodMatch = facts.requestSyntaxes.find((e) => e.method === scenario.method);
+      const closest = pathMatch ?? methodMatch ?? facts.requestSyntaxes[0];
+      if (closest) {
+        const ambiguity = facts.requestSyntaxes.length > 1
+          ? ` (the page documents ${facts.requestSyntaxes.length} candidate request syntaxes; none matched)`
+          : "";
+        const detail = `${facts.url}${ambiguity}`;
+        if (scenario.method !== closest.method) {
+          findings.push({
+            kind: "field-mismatch", severity: "error", ref: scenario.id,
+            message: `method is ${scenario.method} but the docs say ${closest.method}.`,
+            detail,
+          });
+        }
+        if (!pathsMatch(scenario.path, closest.uri)) {
+          findings.push({
+            kind: "field-mismatch", severity: "error", ref: scenario.id,
+            message: `path is ${scenario.path} but the docs say ${closest.uri}.`,
+            detail,
+          });
+        }
+      }
     }
     const declared = new Set(scenario.headers.map((h) => h.name.toLowerCase()));
     const undeclared = facts.headerNames.filter((name) => !declared.has(name.toLowerCase()));

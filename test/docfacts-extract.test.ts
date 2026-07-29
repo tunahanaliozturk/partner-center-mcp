@@ -97,3 +97,110 @@ test("a Graph page with a non-route code block under http-request yields no requ
   const facts = extractDocFacts(url, url, html);
   expect(facts.requestSyntax).toBeNull();
 });
+
+// A Partner Center doc page can document more than one endpoint (e.g.
+// transition-a-new-commerce-subscription: an eligibility GET and a transition
+// POST). Learn de-duplicates repeated heading ids as request-syntax,
+// request-syntax-1, request-syntax-2, ... so the extractor walks all of them.
+test("a Partner Center page with two request-syntax sections yields both entries, in order", () => {
+  const url = "https://learn.microsoft.com/partner-center/developer/example-multi";
+  const html = `
+    <meta name="gitcommit" content="https://github.com/MicrosoftDocs/partner-center-pr/blob/0000000000000000000000000000000000000000/path.md">
+    <meta name="document_id" content="00000000-0000-0000-0000-000000000000">
+    <h1>Example</h1>
+    <h4 id="request-syntax">Request syntax</h4>
+    <table><thead><tr><th>Method</th><th>Request URI</th></tr></thead>
+    <tbody><tr><td>GET</td><td>{baseURL}/v1/customers/{customer-id}/transitionEligibilities HTTP/1.1</td></tr></tbody></table>
+    <h4 id="request-syntax-1">Request syntax</h4>
+    <table><thead><tr><th>Method</th><th>Request URI</th></tr></thead>
+    <tbody><tr><td>POST</td><td>{baseURL}/v1/customers/{customer-id}/transitions HTTP/1.1</td></tr></tbody></table>
+  `;
+  const facts = extractDocFacts(url, url, html);
+  expect(facts.requestSyntaxes).toEqual([
+    { method: "GET", uri: "/v1/customers/{customer-id}/transitionEligibilities" },
+    { method: "POST", uri: "/v1/customers/{customer-id}/transitions" },
+  ]);
+  expect(facts.requestSyntax).toEqual(facts.requestSyntaxes[0]);
+});
+
+test("a Graph page with two http-request sections yields both entries", () => {
+  const url = "https://learn.microsoft.com/graph/api/example-multi";
+  const html = `
+    <meta name="gitcommit" content="https://github.com/microsoftgraph/microsoft-graph-docs/blob/0000000000000000000000000000000000000000/path.md">
+    <meta name="document_id" content="00000000-0000-0000-0000-000000000000">
+    <h1>Example</h1>
+    <h2 id="http-request">HTTP request</h2>
+    <pre><code class="lang-http">GET /users/{id}</code></pre>
+    <h2 id="http-request-1">HTTP request</h2>
+    <pre><code class="lang-http">DELETE /users/{id}</code></pre>
+  `;
+  const facts = extractDocFacts(url, url, html);
+  expect(facts.requestSyntaxes).toEqual([
+    { method: "GET", uri: "/users/{id}" },
+    { method: "DELETE", uri: "/users/{id}" },
+  ]);
+});
+
+test("a page with a single request-syntax section yields a one-element requestSyntaxes equal to requestSyntax", () => {
+  const url = "https://learn.microsoft.com/partner-center/developer/example-single";
+  const html = `
+    <meta name="gitcommit" content="https://github.com/MicrosoftDocs/partner-center-pr/blob/0000000000000000000000000000000000000000/path.md">
+    <meta name="document_id" content="00000000-0000-0000-0000-000000000000">
+    <h1>Example</h1>
+    <h3 id="request-syntax">Request syntax</h3>
+    <table><thead><tr><th>Method</th><th>Request URI</th></tr></thead>
+    <tbody><tr><td>GET</td><td>{baseURL}/v1/customers HTTP/1.1</td></tr></tbody></table>
+  `;
+  const facts = extractDocFacts(url, url, html);
+  expect(facts.requestSyntaxes).toEqual([{ method: "GET", uri: "/v1/customers" }]);
+  expect(facts.requestSyntaxes).toEqual([facts.requestSyntax]);
+});
+
+test("the real pc-endpoint fixture still yields exactly one entry, unchanged for ordinary pages", () => {
+  const facts = extractDocFacts(PC_URL, PC_FINAL, fixture("pc-endpoint.html"));
+  expect(facts.requestSyntaxes).toEqual([{ method: "POST", uri: "/v1/customers" }]);
+});
+
+test("a malformed second request-syntax section does not truncate the walk of later sections", () => {
+  const url = "https://learn.microsoft.com/partner-center/developer/example-gap";
+  const html = `
+    <meta name="gitcommit" content="https://github.com/MicrosoftDocs/partner-center-pr/blob/0000000000000000000000000000000000000000/path.md">
+    <meta name="document_id" content="00000000-0000-0000-0000-000000000000">
+    <h1>Example</h1>
+    <h3 id="request-syntax">Request syntax</h3>
+    <table><thead><tr><th>Method</th><th>Request URI</th></tr></thead>
+    <tbody><tr><td>GET</td><td>{baseURL}/v1/one HTTP/1.1</td></tr></tbody></table>
+    <h3 id="request-syntax-1">Request syntax</h3>
+    <p>No table here, just prose describing the request in words instead.</p>
+    <h3 id="request-syntax-2">Request syntax</h3>
+    <table><thead><tr><th>Method</th><th>Request URI</th></tr></thead>
+    <tbody><tr><td>DELETE</td><td>{baseURL}/v1/three HTTP/1.1</td></tr></tbody></table>
+  `;
+  const facts = extractDocFacts(url, url, html);
+  expect(facts.requestSyntaxes).toEqual([
+    { method: "GET", uri: "/v1/one" },
+    { method: "DELETE", uri: "/v1/three" },
+  ]);
+});
+
+// Regression for the stray ">" in get-fraud-events's extracted URI. The real
+// page's Request syntax cell is `<a ...><em>{baseURL}</em></a>/v1/fraudEvents&gt;`
+// — a literal ">" character baked into the source markdown right after the
+// path, which HTML-escapes to `&gt;` and then decodes right back to ">" by
+// the time normalizeUri sees it. Reproduce the actual markup shape, not the
+// already-broken string.
+test("a stray '>' character trailing the request URI in the source markup does not leak into the extracted uri", () => {
+  const url = "https://learn.microsoft.com/partner-center/developer/get-fraud-events";
+  const html = `
+    <meta name="gitcommit" content="https://github.com/MicrosoftDocs/partner-center-pr/blob/0000000000000000000000000000000000000000/path.md">
+    <meta name="document_id" content="00000000-0000-0000-0000-000000000000">
+    <h1>Azure fraud notification - Get fraud events</h1>
+    <h3 id="request-syntax">Request syntax</h3>
+    <table>
+    <thead><tr><th>Method</th><th>Request URI</th></tr></thead>
+    <tbody><tr><td><strong>GET</strong></td><td><a href="partner-center-rest-urls" data-linktype="relative-path"><em>{baseURL}</em></a>/v1/fraudEvents&gt;</td></tr></tbody>
+    </table>
+  `;
+  const facts = extractDocFacts(url, url, html);
+  expect(facts.requestSyntax).toEqual({ method: "GET", uri: "/v1/fraudEvents" });
+});

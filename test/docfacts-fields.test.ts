@@ -7,12 +7,16 @@ import type { Scenario } from "../src/knowledge/schema.js";
 const URL_A = "https://learn.microsoft.com/partner-center/developer/a";
 
 function facts(over: Partial<DocFacts> = {}): DocFacts {
+  const requestSyntax = over.requestSyntax !== undefined
+    ? over.requestSyntax
+    : { method: "GET", uri: "/v1/customers/{customer-id}/subscriptions" };
   return {
     url: URL_A, finalUrl: URL_A, template: "partner-center",
     documentId: "d1", sourceRepo: "MicrosoftDocs/partner-center-pr",
     sourceSha: "a".repeat(40), sourcePath: "p.md",
     msDate: null, updatedAt: null, title: "A",
-    requestSyntax: { method: "GET", uri: "/v1/customers/{customer-id}/subscriptions" },
+    requestSyntax,
+    requestSyntaxes: requestSyntax ? [requestSyntax] : [],
     headerNames: [], bodyFields: [], isEndpointPage: true,
     extractionError: null, extractorVersion: EXTRACTOR_VERSION, ...over,
   };
@@ -85,4 +89,32 @@ test("a header the scenario declares but the docs don't tabulate is not flagged"
     scenario({ headers: [{ name: "X-Extra", required: false }] }),
   ]);
   expect(findings).toEqual([]);
+});
+
+// A doc page can document more than one endpoint (e.g.
+// transition-a-new-commerce-subscription): an eligibility GET and a
+// transition POST. A scenario should match against any documented syntax,
+// not just the first (canonical) one.
+const twoSyntaxes = facts({
+  requestSyntax: { method: "GET", uri: "/v1/customers/{customer-id}/transitionEligibilities" },
+  requestSyntaxes: [
+    { method: "GET", uri: "/v1/customers/{customer-id}/transitionEligibilities" },
+    { method: "POST", uri: "/v1/customers/{customer-id}/transitions" },
+  ],
+});
+
+test("a scenario matching the second of two documented syntaxes produces no findings", () => {
+  const findings = checkFields(snapshotWith(twoSyntaxes), [
+    scenario({ method: "POST", path: "/v1/customers/{customer-id}/transitions" }),
+  ]);
+  expect(findings).toEqual([]);
+});
+
+test("a scenario matching neither of two documented syntaxes reports how many candidates were considered", () => {
+  const findings = checkFields(snapshotWith(twoSyntaxes), [
+    scenario({ method: "DELETE", path: "/v1/customers/{customer-id}/cancel" }),
+  ]);
+  const errors = findings.filter((f) => f.severity === "error");
+  expect(errors.length).toBeGreaterThan(0);
+  expect(errors.every((f) => f.detail?.includes("2 candidate"))).toBe(true);
 });
