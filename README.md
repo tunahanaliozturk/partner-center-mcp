@@ -1,4 +1,5 @@
 # partner-center-mcp
+[![partner-center-mcp MCP server](https://glama.ai/mcp/servers/tunahanaliozturk/partner-center-mcp/badges/card.svg)](https://glama.ai/mcp/servers/tunahanaliozturk/partner-center-mcp)
 
 An MCP server that helps you build against the **Partner Center REST API**: scenario
 discovery, ready-to-run REST examples, current authentication guidance, an auth deprecation
