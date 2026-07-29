@@ -2,8 +2,14 @@ import type { Scenario } from "../../knowledge/schema.js";
 import type { Finding } from "../findings.js";
 import type { Snapshot } from "../types.js";
 
+// Strip a leading scheme+host (e.g. "https://api.partner.microsoft.com") so
+// an absolute doc URI segments the same way as the pack's relative path.
+function stripOrigin(path: string): string {
+  return path.replace(/^[a-z][a-z0-9+.-]*:\/\/[^/]+/i, "");
+}
+
 function segments(path: string): string[] {
-  return (path.split("?")[0] ?? "").split("/").filter((s) => s !== "");
+  return (stripOrigin(path).split("?")[0] ?? "").split("/").filter((s) => s !== "");
 }
 
 /**
@@ -11,6 +17,10 @@ function segments(path: string): string[] {
  * spelling (`{customer-id}` vs `{customer_id}`) often enough that comparing
  * them would only produce noise. Literal segments and segment count are
  * compared strictly, which is where a genuinely changed route shows up.
+ *
+ * Either side may be an absolute URL (the referrals doc states its URI with
+ * scheme+host); `segments` strips that before comparing, so this remains a
+ * pure path/segment comparison and does not implicitly normalize versions.
  */
 export function pathsMatch(scenarioPath: string, docUri: string): boolean {
   const left = segments(scenarioPath);

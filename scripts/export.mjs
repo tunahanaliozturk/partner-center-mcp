@@ -1,8 +1,9 @@
 // Generate an OpenAPI 3.0 spec and a Postman v2.1 collection from the scenario pack.
 // Writes to generated/. Run: npm run export
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { baseUrlFor } from "../dist/knowledge/apis.js";
 
-const COMMERCIAL = "https://api.partnercenter.microsoft.com";
+const COMMERCIAL = baseUrlFor(undefined);
 const root = new URL("../", import.meta.url);
 const scenarios = JSON.parse(readFileSync(new URL("data/scenarios.json", root), "utf8")).scenarios;
 const version = JSON.parse(readFileSync(new URL("package.json", root), "utf8")).version;
@@ -27,7 +28,7 @@ const openapi = {
   paths: {},
 };
 for (const s of scenarios) {
-  if (s.path.startsWith("http")) continue; // graph/partner hosts are in the Postman collection only
+  if (s.api && s.api !== "partner-center") continue; // graph/partner hosts are in the Postman collection only
   const key = pathOnly(s.path);
   openapi.paths[key] ??= {};
   const params = [
@@ -54,7 +55,7 @@ for (const s of scenarios) {
 // ---- Postman v2.1 (all scenarios, grouped by area) ----
 const folders = {};
 for (const s of scenarios) {
-  const url = s.path.startsWith("http") ? s.path : COMMERCIAL + s.path;
+  const url = baseUrlFor(s.api) + s.path;
   const u = new URL(url);
   folders[s.area] ??= { name: s.area, item: [] };
   folders[s.area].item.push({

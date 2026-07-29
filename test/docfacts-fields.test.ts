@@ -45,6 +45,12 @@ test("pathsMatch treats placeholders as wildcards but compares literals", () => 
   expect(pathsMatch("/v1/customers?size=2", "/v1/customers")).toBe(true);
 });
 
+test("pathsMatch strips a leading scheme+host from either side before comparing", () => {
+  expect(pathsMatch("/v1.0/engagements/referrals", "https://api.partner.microsoft.com/v1.0/engagements/referrals")).toBe(true);
+  expect(pathsMatch("https://api.partner.microsoft.com/v1.0/engagements/referrals", "/v1.0/engagements/referrals")).toBe(true);
+  expect(pathsMatch("/v1.0/engagements/referrals", "https://api.partner.microsoft.com/v1.0/engagements/leads")).toBe(false);
+});
+
 test("a matching scenario produces no findings", () => {
   expect(checkFields(snapshotWith(facts()), [scenario()])).toEqual([]);
 });

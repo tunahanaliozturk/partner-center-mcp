@@ -43,6 +43,17 @@ test("pc_build_request reports missing params", async () => {
   expect(r.missingParams).toContain("customer-id");
 });
 
+test("pc_build_request routes a Graph scenario to the Graph host with a Graph token", async () => {
+  const r = (await buildRequest.run({ id: "get-gdap-relationships" }, ctx)).data as any;
+  expect(r.url).toBe("https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships");
+  expect(r.headers.Authorization).toBe("Bearer <graph-access-token>");
+});
+
+test("pc_build_request for an ordinary Partner Center scenario is unchanged", async () => {
+  const r = (await buildRequest.run({ id: "create-cart", params: { "customer-id": "abc" } }, ctx)).data as any;
+  expect(r.url).toBe("https://api.partnercenter.microsoft.com/v1/customers/abc/carts");
+});
+
 test("pc_decode_error decodes a pasted error JSON and finds the correlation id", async () => {
   const r = (await decodeError.run({ error: '{"code":"900420","description":"bad audience","correlationId":"aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"}' }, ctx)).data as any;
   expect(r.parsed.code).toBe("900420");

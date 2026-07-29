@@ -54,6 +54,24 @@ test("pc_validate_request warns on a write without MS-RequestId", async () => {
   expect(d.findings.some((f: any) => /MS-RequestId/i.test(f.message))).toBe(true);
 });
 
+test("pc_validate_request matches a Graph scenario from a full Graph URL", async () => {
+  const r = await validateRequest.run(
+    { method: "GET", url: "https://graph.microsoft.com/v1.0/tenantRelationships/delegatedAdminRelationships", headers: { Authorization: "Bearer x" } },
+    ctx,
+  );
+  const d = r.data as any;
+  expect(d.matched?.id).toBe("get-gdap-relationships");
+});
+
+test("pc_validate_request matches a Graph scenario from its bare (relative) path", async () => {
+  const r = await validateRequest.run(
+    { method: "GET", url: "/tenantRelationships/delegatedAdminRelationships", headers: { Authorization: "Bearer x" } },
+    ctx,
+  );
+  const d = r.data as any;
+  expect(d.matched?.id).toBe("get-gdap-relationships");
+});
+
 test("pc_plan_purchase returns the ordered NCE chain", async () => {
   const r = await planPurchase.run({ customerId: "abc", country: "US" }, ctx);
   const d = r.data as any;
