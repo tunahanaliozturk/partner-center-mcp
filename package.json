@@ -46,6 +46,7 @@
     "check-docs:update": "node scripts/check-docs.mjs --update",
     "check-pack": "node scripts/check-pack.mjs",
     "docfacts:refresh": "node scripts/docfacts-refresh.mjs",
+    "read-doc": "node scripts/read-doc.mjs",
     "lint": "biome check --error-on-warnings .",
     "lint:fix": "biome check --error-on-warnings --write .",
     "eval": "node scripts/eval.mjs",
