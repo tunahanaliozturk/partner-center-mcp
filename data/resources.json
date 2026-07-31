@@ -19,15 +19,19 @@
       "fields": [
         { "name": "id", "type": "string (guid)" },
         { "name": "offerId", "type": "string" },
-        { "name": "friendlyName", "type": "string" },
+        { "name": "friendlyName", "type": "string", "note": "the \"nickname\" shown in Partner Center; PATCH this field to rename" },
         { "name": "quantity", "type": "int", "note": "seat count" },
         { "name": "status", "type": "string", "note": "see subscriptionStatus enum" },
         { "name": "billingCycle", "type": "string", "note": "see billingCycle enum" },
         { "name": "termDuration", "type": "string", "note": "ISO 8601 (NCE)" },
         { "name": "autoRenewEnabled", "type": "boolean" },
         { "name": "parentSubscriptionId", "type": "string", "note": "present for add-ons" },
-        { "name": "cancellationAllowedUntilDate", "type": "date", "note": "NCE cancellation window" },
-        { "name": "commitmentEndDate", "type": "date" }
+        { "name": "cancellationAllowedUntilDate", "type": "date", "note": "AUTHORITATIVE deadline for cancelling and for reducing seats. Read it off the subscription; never hardcode a window length - Microsoft has changed it." },
+        { "name": "commitmentEndDate", "type": "date" },
+        { "name": "refundOptions", "type": "RefundOption[]", "note": "read-only; the refund available if the subscription is cancelled now" },
+        { "name": "scheduledNextTermInstructions", "type": "object", "note": "product { billingCycle, termDuration, quantity } plus customTermEndDate; applied when the next term starts, and only while autoRenewEnabled is true" },
+        { "name": "hasPurchasableAddons", "type": "boolean", "note": "whether add-ons can be bought against this subscription" },
+        { "name": "suspensionReasons", "type": "string[]", "note": "read-only; why the subscription was suspended. A Microsoft-set reason cannot be cleared by reactivating." }
       ],
       "docUrl": "https://learn.microsoft.com/partner-center/developer/subscription-resources"
     },
@@ -69,6 +73,41 @@
         { "name": "provisioningContext", "type": "object", "note": "required for some offers (e.g. scope/duration)" }
       ],
       "docUrl": "https://learn.microsoft.com/partner-center/developer/create-a-cart"
+    },
+    "NewCommerceMigrationSchedule": {
+      "description": "A scheduled legacy-to-NCE migration (response of create/get migration schedule).",
+      "fields": [
+        { "name": "id", "type": "string (guid)", "note": "schedule id; use it on get, update and cancel" },
+        { "name": "currentSubscriptionId", "type": "string (guid)", "note": "the legacy subscription that will be migrated" },
+        { "name": "quantity", "type": "int" },
+        { "name": "billingCycle", "type": "string", "note": "see billingCycle enum" },
+        { "name": "termDuration", "type": "string", "note": "ISO 8601, e.g. P1M / P1Y" },
+        { "name": "purchaseFullTerm", "type": "boolean" },
+        { "name": "customTermEndDate", "type": "date", "note": "co-terminate the migrated subscription with an existing end date" },
+        { "name": "targetDate", "type": "date", "note": "required unless migrateOnRenewal is true" },
+        { "name": "migrateOnRenewal", "type": "boolean", "note": "required unless targetDate is set; run the migration at the legacy term's renewal instead of a fixed date" },
+        { "name": "addOnMigrations", "type": "array", "note": "FLAT list of add-ons, each with its own currentSubscriptionId/quantity/billingCycle/termDuration" }
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/schedule-a-new-commerce-migration"
+    },
+    "Conversion": {
+      "description": "A legacy trial-to-paid conversion offer or its result.",
+      "fields": [
+        { "name": "offerId", "type": "string", "note": "the trial offer being converted from" },
+        { "name": "targetOfferId", "type": "string", "note": "the paid offer being converted to" },
+        { "name": "quantity", "type": "int", "note": "defaults to the trial's seat count; set it to buy a different number" },
+        { "name": "billingCycle", "type": "string", "note": "see billingCycle enum" }
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/convert-a-trial-subscription-to-paid"
+    },
+    "SupportContact": {
+      "description": "The partner named as support contact on a subscription.",
+      "fields": [
+        { "name": "supportTenantId", "type": "string (guid)", "note": "tenant of the partner taking support" },
+        { "name": "supportMpnId", "type": "string" },
+        { "name": "name", "type": "string" }
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-subscription-s-support-contact"
     }
   }
 }

@@ -57,8 +57,9 @@
         { "value": "active" },
         { "value": "suspended", "note": "set to suspend; set active to reactivate" },
         { "value": "deleted", "note": "NCE cancellation within the cancellation window" },
-        { "value": "expired" },
+        { "value": "expired", "note": "term ended with autorenew off" },
         { "value": "pending", "note": "provisioning in progress" },
+        { "value": "disabled" },
         { "value": "none" }
       ],
       "docUrl": "https://learn.microsoft.com/partner-center/developer/update-a-subscription-by-id"
@@ -91,12 +92,23 @@
       ]
     },
     "provisioningStatus": {
-      "description": "Async provisioning result on orders/subscriptions.",
+      "description": "Async provisioning result on orders/subscriptions. A 2xx from checkout means accepted, not provisioned - poll until this is success.",
       "values": [
         { "value": "success" },
-        { "value": "pending" },
-        { "value": "failed" }
-      ]
+        { "value": "pending", "note": "still provisioning; poll again" },
+        { "value": "failed", "note": "provisioning failed; the order has to be re-placed" }
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-subscription-provisioning-status"
+    },
+    "migrationEventType": {
+      "description": "eventName values on the new commerce migration events feed - the audit trail of what a migration actually did.",
+      "values": [
+        { "value": "MigrationStarted" },
+        { "value": "NewCommerceSubscriptionCreated", "note": "the NCE subscription exists but is not yet provisioned" },
+        { "value": "NewCommerceSubscriptionProvisioned" },
+        { "value": "MigrationCompleted", "note": "terminal; the legacy subscription is done" }
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-migration-events"
     },
     "partnerRelationshipType": {
       "description": "relationship_type query value for GET /v1/relationships (two-tier CSP partner relationships).",
