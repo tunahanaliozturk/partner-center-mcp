@@ -3016,6 +3016,130 @@
       ],
       "docUrl": "https://learn.microsoft.com/partner-center/developer/cancel-an-order-from-the-integration-sandbox",
       "lastVerified": "2026-07-31"
+    },
+    {
+      "id": "create-scheduled-changes",
+      "area": "subscriptions",
+      "title": "Schedule changes that apply at the next term (renewal)",
+      "method": "PATCH",
+      "path": "/v1/customers/{customer-id}/subscriptions/{subscription-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "Subscription",
+      "requestFields": [
+        { "name": "(full Subscription resource)", "type": "Subscription", "required": true, "note": "GET the subscription, mutate, then PATCH the whole object back" },
+        { "name": "autoRenewEnabled", "type": "boolean", "required": true, "note": "must be true or the scheduled instructions never run" },
+        { "name": "scheduledNextTermInstructions", "type": "object", "required": false, "note": "the classic shape: product { productId, skuId, availabilityId, billingCycle, termDuration } + quantity + customTermEndDate" },
+        { "name": "scheduledActions", "type": "array", "required": false, "note": "the newer shape: [{ scheduledType: \"TermEnd\", actionType: \"RenewToNewTerm\", instructions: { product, quantity, customTermEndDate } }]. Also expresses cancel-at-term-end." },
+        { "name": "scheduledNextTermInstructions.product.availabilityId", "type": "string", "required": false, "note": "for end-of-sale-with-conversions offers, derive it from the catalogItemId returned by transitionEligibilities" }
+      ],
+      "responseShape": "Subscription",
+      "examples": {
+        "curl": "curl -X PATCH -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d @subscription.json \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}\"",
+        "csharp": "var req = new HttpRequestMessage(HttpMethod.Patch, $\"/v1/customers/{customerId}/subscriptions/{subscriptionId}\") { Content = content };\nvar res = await http.SendAsync(req);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/subscriptions/${subscriptionId}`, { method: \"PATCH\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "Term duration, billing cycle and seat count cannot be changed mid-term; this endpoint schedules them for the NEXT term. For an immediate move use create-subscription-transition.",
+        "autoRenewEnabled must be true, or the scheduled instructions are never applied.",
+        "Send scheduledActions OR scheduledNextTermInstructions, not both - if both are present only scheduledActions is honoured.",
+        "For end-of-sale-with-conversions offers, get the target from get-subscription-transition-eligibilities with eligibilityType=scheduled; GET availabilities returns an empty list when every term is end-of-sale."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/create-scheduled-changes",
+      "lastVerified": "2026-07-31"
+    },
+    {
+      "id": "update-subscription-autorenew",
+      "area": "subscriptions",
+      "title": "Turn autorenew on or off",
+      "method": "PATCH",
+      "path": "/v1/customers/{customer-id}/subscriptions/{subscription-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "Subscription",
+      "requestFields": [
+        { "name": "(full Subscription resource)", "type": "Subscription", "required": true, "note": "GET the subscription, mutate, then PATCH the whole object back" },
+        { "name": "autoRenewEnabled", "type": "boolean", "required": true, "note": "false means the subscription expires at the end of the current term" }
+      ],
+      "responseShape": "Subscription",
+      "examples": {
+        "curl": "curl -X PATCH -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d '{\"autoRenewEnabled\":false}' \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}\"",
+        "csharp": "var req = new HttpRequestMessage(HttpMethod.Patch, $\"/v1/customers/{customerId}/subscriptions/{subscriptionId}\") { Content = content };\nvar res = await http.SendAsync(req);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/subscriptions/${subscriptionId}`, { method: \"PATCH\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body: JSON.stringify({ autoRenewEnabled: false }) });"
+      },
+      "gotchas": [
+        "This is a full-resource PATCH, so autoRenewEnabled must be present on EVERY subscription PATCH - leave it out of an unrelated update and it silently resets to false, and the subscription quietly expires at term end.",
+        "Turning autorenew off is not a cancellation: the subscription runs to the end of its term and is billed for it. To stop billing use cancel-subscription inside the cancellation window.",
+        "Scheduled next-term instructions only run while this is true (see create-scheduled-changes)."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/update-autorenew-for-an-azure-marketplace-subscription",
+      "lastVerified": "2026-07-31"
+    },
+    {
+      "id": "update-software-billing-frequency",
+      "area": "subscriptions",
+      "title": "Change the billing frequency of a software subscription",
+      "method": "PATCH",
+      "path": "/v1/customers/{customer-id}/subscriptions/{subscription-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "Subscription",
+      "requestFields": [
+        { "name": "(full Subscription resource)", "type": "Subscription", "required": true, "note": "GET the subscription, mutate, then PATCH the whole object back" },
+        { "name": "autoRenewEnabled", "type": "boolean", "required": true, "note": "must be true for the scheduled change to run" },
+        { "name": "scheduledNextTermInstructions.product.billingCycle", "type": "string", "required": true, "note": "the new frequency; see the billingCycle enum" },
+        { "name": "scheduledNextTermInstructions.product.termDuration", "type": "string", "required": false, "note": "ISO 8601, e.g. P1Y" }
+      ],
+      "responseShape": "Subscription",
+      "examples": {
+        "curl": "curl -X PATCH -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d @subscription.json \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}\"",
+        "csharp": "var req = new HttpRequestMessage(HttpMethod.Patch, $\"/v1/customers/{customerId}/subscriptions/{subscriptionId}\") { Content = content };\nvar res = await http.SendAsync(req);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/subscriptions/${subscriptionId}`, { method: \"PATCH\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "Software subscriptions only - seat-based online services use create-scheduled-changes.",
+        "The change is a SCHEDULED change: it takes effect at the next term, not immediately.",
+        "For legacy (non-NCE) subscriptions the billing cycle is changed on the order instead - see update-order."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/manage-billing-frequency-software-subs",
+      "lastVerified": "2026-07-31"
+    },
+    {
+      "id": "get-custom-term-end-dates",
+      "area": "subscriptions",
+      "title": "Get the custom term end dates available for co-termination",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/subscriptions/customTermEndDates?term_duration={term-duration}&term_start_date={term-start-date}&target_coterm_subscription_id={subscription-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" },
+        { "name": "MS-ContinuationToken", "required": false, "note": "echo the token returned in the response header to page past 300 records" }
+      ],
+      "requestShape": null,
+      "responseShape": "custom term end date collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/customTermEndDates?term_duration=P1Y\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/subscriptions/customTermEndDates?term_duration=P1Y\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/subscriptions/customTermEndDates?term_duration=P1Y`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "term_duration is required; supported values are P1M, P1Y and P3Y. term_start_date cannot be in the past.",
+        "The returned dates are the values you may pass as customTermEndDate when purchasing or scheduling - do not invent one.",
+        "Monthly (P1M) results cannot always be used for alignment: they do not work against a subscription ending on the 28th, 29th or 30th unless that is the last day of the month.",
+        "A maximum of 300 records comes back per page; continue with the token returned in the response header."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/custom-term-end-dates",
+      "lastVerified": "2026-07-31"
     }
   ]
 }

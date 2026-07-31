@@ -23,3 +23,19 @@ test("seat reduction states the window constraint", () => {
   const gotchas = byId.get("change-subscription-quantity")!.gotchas.join(" ");
   expect(gotchas).toContain("cancellationAllowedUntilDate");
 });
+
+test("batch B: renewal-time changes are addressable", () => {
+  for (const id of [
+    "create-scheduled-changes", "update-subscription-autorenew",
+    "get-custom-term-end-dates", "update-software-billing-frequency",
+  ]) {
+    expect(byId.has(id), id).toBe(true);
+  }
+});
+
+test("scheduled changes state the autorenew precondition and both instruction shapes", () => {
+  const s = byId.get("create-scheduled-changes")!;
+  expect(s.gotchas.join(" ")).toContain("autoRenewEnabled");
+  const fields = s.requestFields?.map((f) => f.name) ?? [];
+  expect(fields).toEqual(expect.arrayContaining(["scheduledNextTermInstructions", "scheduledActions"]));
+});
