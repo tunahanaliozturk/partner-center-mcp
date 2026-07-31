@@ -3310,6 +3310,243 @@
       ],
       "docUrl": "https://learn.microsoft.com/partner-center/developer/get-product-upgrade-status",
       "lastVerified": "2026-07-31"
+    },
+    {
+      "id": "get-subscription-addons",
+      "area": "subscriptions",
+      "title": "Get the add-ons bought against a subscription",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/subscriptions/{subscription-id}/addons",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "Subscription collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}/addons\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/subscriptions/{subscriptionId}/addons\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/subscriptions/${subscriptionId}/addons`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Returns the add-on subscriptions attached to this base subscription; each carries parentSubscriptionId pointing back at it.",
+        "Whether more add-ons can be bought is on the BASE subscription's hasPurchasableAddons field, not in this response.",
+        "Add-ons appear in list-customer-subscriptions too - filter on parentSubscriptionId to tell them apart from standalone subscriptions."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-add-ons-for-a-subscription",
+      "lastVerified": "2026-07-31"
+    },
+    {
+      "id": "purchase-addon",
+      "area": "orders",
+      "title": "Purchase an add-on for an existing subscription",
+      "method": "PATCH",
+      "path": "/v1/customers/{customer-id}/orders/{order-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "Order",
+      "requestFields": [
+        { "name": "referenceCustomerId", "type": "string (guid)", "required": true, "note": "the customer id" },
+        { "name": "lineItems", "type": "OrderLineItem[]", "required": true, "note": "one line item describing the add-on" },
+        { "name": "lineItems[].lineItemNumber", "type": "int", "required": true, "note": "starts at 0" },
+        { "name": "lineItems[].offerId", "type": "string", "required": true, "note": "the add-on offer" },
+        { "name": "lineItems[].parentSubscriptionId", "type": "string (guid)", "required": true, "note": "the base subscription the add-on attaches to" },
+        { "name": "lineItems[].quantity", "type": "int", "required": false },
+        { "name": "id", "type": "string", "required": false, "note": "the order id being updated" }
+      ],
+      "responseShape": "Order",
+      "examples": {
+        "curl": "curl -X PATCH -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d @addon-order.json \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/orders/{order-id}\"",
+        "csharp": "var req = new HttpRequestMessage(HttpMethod.Patch, $\"/v1/customers/{customerId}/orders/{orderId}\") { Content = content };\nvar res = await http.SendAsync(req);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/orders/${orderId}`, { method: \"PATCH\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "An add-on is bought by PATCHing the BASE SUBSCRIPTION'S ORDER, not by placing a new order: read the base subscription first, take its orderId, and send a line item carrying parentSubscriptionId.",
+        "The base subscription must have hasPurchasableAddons true, otherwise the offer is rejected.",
+        "For a fresh purchase that includes add-ons up front use create-cart-with-addons instead."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/purchase-an-add-on-to-a-subscription",
+      "lastVerified": "2026-07-31"
+    },
+    {
+      "id": "create-cart-with-addons",
+      "area": "orders",
+      "title": "Create a cart that includes add-ons",
+      "method": "POST",
+      "path": "/v1/customers/{customer-id}/carts",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "Cart",
+      "requestFields": [
+        { "name": "lineItems", "type": "CartLineItem[]", "required": true, "note": "the base item plus its add-ons" },
+        { "name": "lineItems[].catalogItemId", "type": "string", "required": true, "note": "productId:skuId:availabilityId" },
+        { "name": "lineItems[].quantity", "type": "int", "required": true, "note": "licenses or instances" },
+        { "name": "lineItems[].friendlyName", "type": "string", "required": false },
+        { "name": "lineItems[].addonItems", "type": "CartLineItem[]", "required": false, "note": "add-ons nested under the base line item they attach to" }
+      ],
+      "responseShape": "Cart",
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d @cart.json \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/carts\"",
+        "csharp": "var res = await http.PostAsync($\"/v1/customers/{customerId}/carts\", content);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/carts`, { method: \"POST\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "Same endpoint as create-cart; what differs is that add-ons are nested under the base line item instead of listed as siblings.",
+        "Creating the cart reserves nothing - checkout-cart is what places the order.",
+        "To add an add-on to an ALREADY purchased subscription use purchase-addon instead."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/create-a-cart-with-add-ons",
+      "lastVerified": "2026-07-31"
+    },
+    {
+      "id": "create-order",
+      "area": "orders",
+      "title": "Create an order directly (without a cart)",
+      "method": "POST",
+      "path": "/v1/customers/{customer-id}/orders",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "Order",
+      "requestFields": [
+        { "name": "lineItems", "type": "OrderLineItem[]", "required": true, "note": "the offers being purchased, with quantity" },
+        { "name": "lineItems[].lineItemNumber", "type": "int", "required": true, "note": "starts at 0" },
+        { "name": "lineItems[].offerId", "type": "string", "required": true },
+        { "name": "lineItems[].quantity", "type": "int", "required": true },
+        { "name": "referenceCustomerId", "type": "string (guid)", "required": false, "note": "the customer id" },
+        { "name": "billingCycle", "type": "string", "required": false, "note": "BillingCycleType member; defaults to Monthly or OneTime at creation" }
+      ],
+      "responseShape": "Order",
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d @order.json \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/orders\"",
+        "csharp": "var res = await http.PostAsync($\"/v1/customers/{customerId}/orders\", content);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/orders`, { method: \"POST\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "For New Commerce prefer create-cart + checkout-cart: the cart validates and prices the purchase before it is placed, this route does not.",
+        "id, status, currencyCode and creationDate are read-only - they come back on the response, do not send them.",
+        "A 2xx here means the order was accepted, not provisioned: poll get-order-provisioning-status."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/create-an-order",
+      "lastVerified": "2026-07-31"
+    },
+    {
+      "id": "update-cart",
+      "area": "orders",
+      "title": "Update a cart before checkout",
+      "method": "PUT",
+      "path": "/v1/customers/{customer-id}/carts/{cart-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "Cart",
+      "requestFields": [
+        { "name": "(full Cart resource)", "type": "Cart", "required": true, "note": "PUT replaces the cart - send every line item you want to keep, not just the changed one" },
+        { "name": "lineItems", "type": "CartLineItem[]", "required": true },
+        { "name": "id", "type": "string", "required": false, "note": "the cart id" }
+      ],
+      "responseShape": "Cart",
+      "examples": {
+        "curl": "curl -X PUT -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d @cart.json \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/carts/{cart-id}\"",
+        "csharp": "var res = await http.PutAsync($\"/v1/customers/{customerId}/carts/{cartId}\", content);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/carts/${cartId}`, { method: \"PUT\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "PUT, not PATCH: the body replaces the cart, so omitting a line item removes it.",
+        "Carts expire - check expirationTimeStamp before updating an old one.",
+        "Only valid before checkout; after checkout-cart the purchase is an order and changes go through the order or subscription."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/update-a-cart",
+      "lastVerified": "2026-07-31"
+    },
+    {
+      "id": "get-order-provisioning-status",
+      "area": "orders",
+      "title": "Get an order's provisioning status",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/orders/{order-id}/provisioningstatus",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "OrderLineItemProvisioningStatus collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/orders/{order-id}/provisioningstatus\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/orders/{orderId}/provisioningstatus\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/orders/${orderId}/provisioningstatus`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "A 2xx from checkout-cart or create-order means ACCEPTED, not provisioned. Poll here until status is success before telling a customer their licenses exist.",
+        "Status is reported per line item, so a partially provisioned order is normal - check every line item.",
+        "See the provisioningStatus enum for the values (success | pending | failed)."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-order-provisioning-status",
+      "lastVerified": "2026-07-31"
+    },
+    {
+      "id": "get-subscription-provisioning-status",
+      "area": "subscriptions",
+      "title": "Get a subscription's provisioning status",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/subscriptions/{subscription-id}/provisioningstatus",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "SubscriptionProvisioningStatus",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}/provisioningstatus\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/subscriptions/{subscriptionId}/provisioningstatus\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/subscriptions/${subscriptionId}/provisioningstatus`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Use this to confirm that a write actually landed - a quantity change or cancellation is accepted asynchronously, so re-reading the subscription alone can show stale values.",
+        "It reports the provisioning of the subscription, not its lifecycle state; status on the Subscription resource is the lifecycle state.",
+        "Values are success | pending | failed (see the provisioningStatus enum)."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-subscription-provisioning-status",
+      "lastVerified": "2026-07-31"
+    },
+    {
+      "id": "get-order-activation-link",
+      "area": "orders",
+      "title": "Get the activation link for an order line item",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/orders/{order-id}/lineitems/{line-item-number}/activationlinks",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "activation link collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/orders/{order-id}/lineitems/0/activationlinks\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/orders/{orderId}/lineitems/{lineItemNumber}/activationlinks\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/orders/${orderId}/lineitems/${lineItemNumber}/activationlinks`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Only products that require activation (Microsoft Marketplace SaaS and similar) return a link; an empty result for a seat-based offer is expected, not an error.",
+        "line-item-number is the LineItemNumber from the order, starting at 0 - it is not the subscription id.",
+        "The customer has to open the link to finish activation; the purchase is not usable until they do."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-activation-link-by-order-line-item",
+      "lastVerified": "2026-07-31"
     }
   ]
 }

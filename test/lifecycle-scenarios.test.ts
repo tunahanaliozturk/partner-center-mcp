@@ -53,3 +53,24 @@ test("the legacy upgrade path is distinguished from the NCE transition path", ()
   expect(byId.get("get-subscription-upgrades")!.gotchas.join(" ")).toMatch(/legacy/i);
   expect(byId.get("get-subscription-transitions")!.gotchas.join(" ")).toContain("transitionEligibilities");
 });
+
+test("batch D: the order lifecycle continues past checkout", () => {
+  for (const id of [
+    "get-subscription-addons", "purchase-addon", "create-cart-with-addons", "create-order",
+    "update-cart", "get-order-provisioning-status", "get-subscription-provisioning-status",
+    "get-order-activation-link",
+  ]) {
+    expect(byId.has(id), id).toBe(true);
+  }
+});
+
+test("provisioning-status scenarios are GETs that read, never write", () => {
+  expect(byId.get("get-order-provisioning-status")!.method).toBe("GET");
+  expect(byId.get("get-subscription-provisioning-status")!.method).toBe("GET");
+});
+
+test("the add-on purchase explains that it updates the base subscription's order", () => {
+  const s = byId.get("purchase-addon")!;
+  expect(s.method).toBe("PATCH");
+  expect(s.gotchas.join(" ")).toContain("parentSubscriptionId");
+});
