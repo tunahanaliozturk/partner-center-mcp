@@ -34,7 +34,7 @@ flowchart LR
   end
   LLM -->|"MCP protocol"| T{"Transport<br/>stdio · HTTP"}
   T --> S["partner-center-mcp"]
-  S --> Tools["23 tools<br/>list/get scenario · generate_call<br/>validate_request · plan_purchase<br/>check_auth · lookup_error · diagnose · …"]
+  S --> Tools["26 tools<br/>list/get scenario · generate_call<br/>validate_request · plan_purchase<br/>explain_lifecycle · lookup_error · diagnose · …"]
   S --> RP["Resources & Prompts<br/>pc://… · migrate / diagnose / plan"]
   Tools --> KP[("Knowledge pack<br/>data/*.json")]
   KP -. "zod-validated at load" .-> Tools
@@ -110,6 +110,9 @@ PORT=3000 npx -p partner-center-mcp partner-center-mcp-http
 | `pc_auth_guidance` | Current auth guidance for app-only / app+user, per national cloud, with GDAP + MFA notes. |
 | `pc_check_auth` | Lint an auth/client snippet for retired patterns (graph.windows.net, ADAL, archived SDK, AzureAD PS). |
 | `pc_build_request` | Build a ready-to-send request: fills path placeholders, generates `MS-RequestId`/`MS-CorrelationId`, and a body skeleton from the scenario's fields. |
+| `pc_explain_lifecycle` | What you can do to a subscription in its current state: legal operations, the field each precondition reads, and the errors a failed precondition returns. |
+| `pc_plan_subscription_change` | Ordered call sequence for one lifecycle change: seats up/down, upgrade, cancel, renewal changes, suspend, reactivate, migrate, transfer. |
+| `pc_plan_order_lifecycle` | Ordered call sequence from cart to *provisioned* subscriptions, with the cancellation and add-on branches. |
 | `pc_plan_transfer` | Ordered billing-ownership transfer workflow (create → poll → verify). |
 | `pc_plan_gdap_onboarding` | Ordered GDAP onboarding workflow (create → approve → verify) over Microsoft Graph. |
 | `pc_plan_csp_onboarding` | Ordered CSP customer onboarding (account linking): invite → verify relationship → confirm agreement → transact. |
@@ -120,14 +123,14 @@ PORT=3000 npx -p partner-center-mcp partner-center-mcp-http
 | `pc_decode_error` | Paste a raw error response → decoded code, likely scenarios, and the correlation id for support. |
 | `pc_diagnose` | Map a symptom to likely causes, fixes, and relevant scenarios. |
 | `pc_get_enums` | Look up enum values (billingCycle, termDuration, targetView, transitionType, status, …). |
-| `pc_get_resource` | Field dictionary for resources (Customer, Subscription, Order, Invoice, …). |
+| `pc_get_resource` | Field dictionary for resources (Customer, Subscription, Order, Invoice, migration schedules, …). |
 | `pc_whats_new` | Deprecations & deadlines (MFA enforcement, graph.windows.net, v1→v2 reconciliation, …). |
 | `pc_search_docs` | Fetch live Microsoft Learn excerpts — the fallback when the curated pack has no answer. |
-| `pc_get_reference` | Base URLs, headers, versioning, sandbox, rate limits, national-cloud differences. |
+| `pc_get_reference` | Base URLs, headers, versioning, sandbox, rate limits, national-cloud differences, and webhook-driven lifecycle notification. |
 
 Every tool ships full metadata for the calling agent: a `title`, a description that says
 when to use it *and* which sibling tool to prefer instead, a description on every input
-parameter, a declared `outputSchema`, and MCP behaviour annotations. All 23 are
+parameter, a declared `outputSchema`, and MCP behaviour annotations. All 26 are
 `readOnlyHint: true` / `destructiveHint: false` — this server holds no credentials and
 calls no Partner Center endpoint, it only reads the bundled knowledge pack. The two
 exceptions to `idempotentHint`/`openWorldHint` are `pc_search_docs` (and
@@ -140,14 +143,22 @@ on failure — returned as `structuredContent` and validated against each tool's
 
 ## Coverage
 
-Scenarios span **customers**, **subscriptions** (incl. New Commerce migration), **orders &
-carts**, **catalog/products**, **licenses**, **invoicing/billing**, **utilities** (address &
-domain validation), **audit**, **support**, **security/MFA**, **analytics**, and **profiles** —
-each with a verified `docUrl` and `lastVerified` date. National clouds covered: commercial,
+Scenarios span **customers**, **subscriptions** (the whole lifecycle: seats up and down,
+upgrade, cancel, renewal changes, suspend/reactivate, add-ons, New Commerce migration and
+transfer), **orders & carts** (through to provisioning status), **catalog/products**,
+**licenses**, **invoicing/billing**, **utilities** (address & domain validation), **audit**,
+**support**, **security/MFA**, **analytics**, and **profiles** — each with a verified `docUrl`
+and `lastVerified` date.
+
+Lifecycle changes carry their *preconditions*, not just their endpoints: `pc_explain_lifecycle`
+returns the state machine — which operation is legal from which state, the field to read off the
+live subscription before attempting it (`cancellationAllowedUntilDate`, `autoRenewEnabled`,
+`suspensionReasons`), and the error a failed precondition returns. National clouds covered: commercial,
 21Vianet (China), and US Gov.
 
 The pack is also exposed as MCP **resources** (`pc://scenarios`, `pc://errors`, `pc://auth`,
-`pc://reference`, `pc://sdk-map`, `pc://enums`, `pc://deprecations`, `pc://resources`, and
+`pc://reference`, `pc://sdk-map`, `pc://enums`, `pc://deprecations`, `pc://resources`,
+`pc://lifecycle`, and
 `pc://scenario/{id}`) and three **prompts** (`migrate-sdk`, `diagnose-issue`, `plan-purchase`)
 for hosts that surface them.
 

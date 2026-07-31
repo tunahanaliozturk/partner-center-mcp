@@ -46,6 +46,7 @@ function registerResources(server: McpServer, ctx: ToolContext): void {
     { slug: "enums", title: "Partner Center enum values", get: () => k().enums },
     { slug: "deprecations", title: "Deprecations & deadlines", get: () => k().deprecations },
     { slug: "resources", title: "Resource field dictionary", get: () => k().resources },
+    { slug: "lifecycle", title: "Subscription lifecycle state machine", get: () => k().lifecycle },
   ];
   for (const c of collections) {
     server.registerResource(

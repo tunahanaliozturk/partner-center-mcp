@@ -26,6 +26,10 @@
     { "name": "search honours topK", "tool": "pc_search_docs", "input": { "query": "customers", "topK": 1 }, "assert": [{ "path": "excerpts.length", "equals": 1 }] },
     { "name": "csp onboarding starts at the relationship request", "tool": "pc_plan_csp_onboarding", "input": {}, "contains": ["get-reseller-relationship-url", "create-agreement"], "assert": [{ "path": "steps.0.order", "equals": 1 }] },
     { "name": "user onboarding creates before it licenses", "tool": "pc_plan_user_onboarding", "input": {}, "contains": ["create-user", "assign-licenses"], "assert": [{ "path": "steps.0.scenarioId", "equals": "get-subscribed-skus" }] },
-    { "name": "user offboarding reads licenses before deleting", "tool": "pc_plan_user_offboarding", "input": {}, "contains": ["get-user-licenses", "delete-user"], "assert": [{ "path": "steps.0.scenarioId", "equals": "get-user-licenses" }] }
+    { "name": "user offboarding reads licenses before deleting", "tool": "pc_plan_user_offboarding", "input": {}, "contains": ["get-user-licenses", "delete-user"], "assert": [{ "path": "steps.0.scenarioId", "equals": "get-user-licenses" }] },
+    { "name": "lifecycle machine covers every operation", "tool": "pc_explain_lifecycle", "input": {}, "contains": ["decrease-seats", "cancel", "renew-change"], "assert": [{ "path": "operations.length", "equals": 9 }] },
+    { "name": "seat reduction is guarded by the cancellation window", "tool": "pc_explain_lifecycle", "input": { "operation": "decrease-seats" }, "contains": ["cancellationAllowedUntilDate"], "assert": [{ "path": "operations.0.guard.field", "equals": "cancellationAllowedUntilDate" }] },
+    { "name": "cancellation plan reads the subscription first", "tool": "pc_plan_subscription_change", "input": { "operation": "cancel" }, "contains": ["cancel-subscription", "cancellationAllowedUntilDate"], "assert": [{ "path": "steps.0.scenarioId", "equals": "get-subscription-by-id" }] },
+    { "name": "order lifecycle plan polls provisioning", "tool": "pc_plan_order_lifecycle", "input": {}, "contains": ["get-order-provisioning-status", "get-subscription-provisioning-status"], "assert": [{ "path": "steps.0.scenarioId", "equals": "create-cart" }] }
   ]
 }
