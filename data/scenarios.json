@@ -550,8 +550,9 @@
         "Omitted properties carry forward the legacy subscription's values.",
         "Base subscriptions migrate together with all active add-ons as a bundle; if any add-on is ineligible the whole bundle fails.",
         "addOnMigrations must be a FLAT list, not nested.",
-        "Validate eligibility first with the validate-a-new-commerce-migration API.",
-        "To schedule rather than run immediately, POST to .../migrations/newcommerce/schedules."
+        "Call validate-migration first - it reports eligibility and the exact reasons this POST would otherwise fail with.",
+        "Migration is asynchronous: poll get-migration with the returned migration id, and use get-migration-events for the step-by-step trail.",
+        "To schedule rather than run immediately, use create-migration-schedule."
       ],
       "docUrl": "https://learn.microsoft.com/partner-center/developer/create-migration",
       "lastVerified": "2026-06-21"
@@ -3546,6 +3547,240 @@
         "The customer has to open the link to finish activation; the purchase is not usable until they do."
       ],
       "docUrl": "https://learn.microsoft.com/partner-center/developer/get-activation-link-by-order-line-item",
+      "lastVerified": "2026-07-31"
+    },
+    {
+      "id": "validate-migration",
+      "area": "subscriptions",
+      "title": "Validate a legacy subscription for New Commerce migration",
+      "method": "POST",
+      "path": "/v1/customers/{customer-id}/migrations/newcommerce/validate",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "NewCommerceMigration",
+      "requestFields": [
+        { "name": "currentSubscriptionId", "type": "string (guid)", "required": true, "note": "the legacy subscription to validate" },
+        { "name": "termDuration", "type": "string", "required": false, "note": "validate against a different term than the legacy one" },
+        { "name": "billingCycle", "type": "string", "required": false }
+      ],
+      "responseShape": "{ isEligible: boolean, errors: [] }",
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d '{\"currentSubscriptionId\":\"{subscription-id}\"}' \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/migrations/newcommerce/validate\"",
+        "csharp": "var res = await http.PostAsync($\"/v1/customers/{customerId}/migrations/newcommerce/validate\", content);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/migrations/newcommerce/validate`, { method: \"POST\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "Run this before every migrate-to-new-commerce; it returns isEligible plus the specific reasons a subscription cannot migrate.",
+        "It does NOT tell you whether the subscription is eligible for New Commerce promotions - that is a separate question.",
+        "Validating with termDuration/billingCycle set checks the migration you actually intend, not just the like-for-like one."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/validate-subscription-for-migration",
+      "lastVerified": "2026-07-31"
+    },
+    {
+      "id": "get-migration",
+      "area": "subscriptions",
+      "title": "Get a New Commerce migration by ID",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/migrations/newcommerce/{migration-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "NewCommerceMigration",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/migrations/newcommerce/{migration-id}\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/migrations/newcommerce/{migrationId}\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/migrations/newcommerce/${migrationId}`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "migration-id comes from the response of migrate-to-new-commerce; migration is asynchronous, so poll here instead of assuming the POST finished it.",
+        "The response carries the resulting New Commerce subscription id once the migration completes.",
+        "For the step-by-step trail (including failures) use get-migration-events."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-new-commerce-migration",
+      "lastVerified": "2026-07-31"
+    },
+    {
+      "id": "query-migrations",
+      "area": "subscriptions",
+      "title": "Query New Commerce migrations across customers",
+      "method": "GET",
+      "path": "/v1/migrations/newcommerce?CustomerTenantId={customer-id}&CurrentSubscriptionId={subscription-id}&ExternalReferenceId={external-reference-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" },
+        { "name": "MS-ContinuationToken", "required": false, "note": "echo the token from the response header to page past 300 records" }
+      ],
+      "requestShape": null,
+      "responseShape": "NewCommerceMigration collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/migrations/newcommerce?CustomerTenantId={customer-id}\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/migrations/newcommerce?CustomerTenantId={customerId}\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/migrations/newcommerce?CustomerTenantId=${customerId}`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Partner-wide route: there is no {customer-id} path segment, the customer travels as a query string.",
+        "At least one of CustomerTenantId, CurrentSubscriptionId or ExternalReferenceId is required; passing several is allowed.",
+        "ExternalReferenceId is the migration BATCH id - it is how you follow a bulk migration.",
+        "A maximum of 300 records comes back per page; continue with the token in the response header."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/query-migrated-subscriptions",
+      "lastVerified": "2026-07-31"
+    },
+    {
+      "id": "get-migration-events",
+      "area": "subscriptions",
+      "title": "Get the event trail of a New Commerce migration",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/migrations/newcommerce/events?MigrationId={migration-id}&CurrentSubscriptionId={subscription-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "migration event collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/migrations/newcommerce/events?MigrationId={migration-id}\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/migrations/newcommerce/events?MigrationId={migrationId}\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/migrations/newcommerce/events?MigrationId=${migrationId}`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "At least one of MigrationId or CurrentSubscriptionId is required.",
+        "This is the audit trail of what a migration actually did - the only way to see how far a migration got after the fact.",
+        "eventName values are in the migrationEventType enum; MigrationCompleted is the terminal one."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-migration-events",
+      "lastVerified": "2026-07-31"
+    },
+    {
+      "id": "create-migration-schedule",
+      "area": "subscriptions",
+      "title": "Schedule a New Commerce migration for later",
+      "method": "POST",
+      "path": "/v1/customers/{customer-id}/migrations/newcommerce/schedules",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "NewCommerceMigrationSchedule",
+      "requestFields": [
+        { "name": "currentSubscriptionId", "type": "string (guid)", "required": true, "note": "the legacy subscription to migrate" },
+        { "name": "targetDate", "type": "date", "required": false, "note": "required unless migrateOnRenewal is true" },
+        { "name": "migrateOnRenewal", "type": "boolean", "required": false, "note": "required unless targetDate is set; migrates at the legacy term's renewal" },
+        { "name": "quantity", "type": "int", "required": false },
+        { "name": "billingCycle", "type": "string", "required": false },
+        { "name": "termDuration", "type": "string", "required": false, "note": "ISO 8601, e.g. P1M / P1Y" },
+        { "name": "purchaseFullTerm", "type": "boolean", "required": false },
+        { "name": "customTermEndDate", "type": "date", "required": false, "note": "co-terminate with an existing subscription; values come from get-custom-term-end-dates" },
+        { "name": "addOnMigrations", "type": "array", "required": false, "note": "FLAT list of add-ons, not nested" }
+      ],
+      "responseShape": "NewCommerceMigrationSchedule",
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d @schedule.json \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/migrations/newcommerce/schedules\"",
+        "csharp": "var res = await http.PostAsync($\"/v1/customers/{customerId}/migrations/newcommerce/schedules\", content);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/migrations/newcommerce/schedules`, { method: \"POST\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "Exactly one of targetDate or migrateOnRenewal drives the timing: set targetDate for a fixed date, or migrateOnRenewal true to run at the legacy renewal.",
+        "Scheduling does not validate later - run validate-migration first, because the schedule fails silently at run time if the subscription became ineligible.",
+        "addOnMigrations is a FLAT array of add-on subscriptions, each with its own term and billing cycle."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/schedule-a-new-commerce-migration",
+      "lastVerified": "2026-07-31"
+    },
+    {
+      "id": "get-migration-schedule",
+      "area": "subscriptions",
+      "title": "Get a New Commerce migration schedule",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/migrations/newcommerce/schedules/{schedule-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "NewCommerceMigrationSchedule",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/migrations/newcommerce/schedules/{schedule-id}\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/migrations/newcommerce/schedules/{scheduleId}\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/migrations/newcommerce/schedules/${scheduleId}`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "schedule-id is the id returned by create-migration-schedule, not the migration id.",
+        "The same page documents a partner-wide variant, GET /v1/migrations/newcommerce/schedules?CustomerTenantId={customer-id}, for listing every schedule.",
+        "A schedule that already ran is found through get-migration / get-migration-events, not here."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-new-commerce-migration-schedule",
+      "lastVerified": "2026-07-31"
+    },
+    {
+      "id": "update-migration-schedule",
+      "area": "subscriptions",
+      "title": "Update a New Commerce migration schedule",
+      "method": "PUT",
+      "path": "/v1/customers/{customer-id}/migrations/newcommerce/schedules/{schedule-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "NewCommerceMigrationSchedule",
+      "requestFields": [
+        { "name": "(full NewCommerceMigrationSchedule resource)", "type": "NewCommerceMigrationSchedule", "required": true, "note": "PUT replaces the schedule - GET it, mutate, send it all back" },
+        { "name": "targetDate", "type": "date", "required": false, "note": "move the migration to a different date" },
+        { "name": "migrateOnRenewal", "type": "boolean", "required": false },
+        { "name": "quantity", "type": "int", "required": false },
+        { "name": "billingCycle", "type": "string", "required": false },
+        { "name": "termDuration", "type": "string", "required": false }
+      ],
+      "responseShape": "NewCommerceMigrationSchedule",
+      "examples": {
+        "curl": "curl -X PUT -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d @schedule.json \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/migrations/newcommerce/schedules/{schedule-id}\"",
+        "csharp": "var res = await http.PutAsync($\"/v1/customers/{customerId}/migrations/newcommerce/schedules/{scheduleId}\", content);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/migrations/newcommerce/schedules/${scheduleId}`, { method: \"PUT\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "PUT, not PATCH: the body replaces the schedule, so send every field you want to keep.",
+        "Only a schedule that has not run yet can be updated; after it runs, the migration is a fact - see get-migration.",
+        "To stop a schedule entirely use cancel-migration-schedule."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/update-a-new-commerce-migration-schedule",
+      "lastVerified": "2026-07-31"
+    },
+    {
+      "id": "cancel-migration-schedule",
+      "area": "subscriptions",
+      "title": "Cancel a New Commerce migration schedule",
+      "method": "POST",
+      "path": "/v1/customers/{customer-id}/migrations/newcommerce/schedules/{schedule-id}/cancel",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": null,
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/migrations/newcommerce/schedules/{schedule-id}/cancel\"",
+        "csharp": "var res = await http.PostAsync($\"/v1/customers/{customerId}/migrations/newcommerce/schedules/{scheduleId}/cancel\", null);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/migrations/newcommerce/schedules/${scheduleId}/cancel`, { method: \"POST\", headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "A POST to a /cancel sub-route, NOT a DELETE on the schedule - sending DELETE returns 404.",
+        "Cancels the scheduled migration only; a migration that already ran cannot be undone this way.",
+        "Cancelling the schedule leaves the legacy subscription exactly as it was."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/cancel-a-new-commerce-migration-schedule",
       "lastVerified": "2026-07-31"
     }
   ]

@@ -74,3 +74,23 @@ test("the add-on purchase explains that it updates the base subscription's order
   expect(s.method).toBe("PATCH");
   expect(s.gotchas.join(" ")).toContain("parentSubscriptionId");
 });
+
+test("batch E: migration is a lifecycle, not a single POST", () => {
+  for (const id of [
+    "validate-migration", "get-migration", "query-migrations", "get-migration-events",
+    "create-migration-schedule", "get-migration-schedule", "update-migration-schedule",
+    "cancel-migration-schedule",
+  ]) {
+    expect(byId.has(id), id).toBe(true);
+  }
+});
+
+test("migrate-to-new-commerce points at validation before migrating", () => {
+  expect(byId.get("migrate-to-new-commerce")!.gotchas.join(" ")).toContain("validate-migration");
+});
+
+test("cancelling a migration schedule is a POST to /cancel, not a DELETE", () => {
+  const s = byId.get("cancel-migration-schedule")!;
+  expect(s.method).toBe("POST");
+  expect(s.path).toMatch(/\/cancel$/);
+});
