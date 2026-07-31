@@ -413,7 +413,16 @@
               }
             }
           }
-        }
+        },
+        "x-variants": [
+          {
+            "operationId": "create-cart-with-addons",
+            "summary": "Create a cart that includes add-ons",
+            "externalDocs": {
+              "url": "https://learn.microsoft.com/partner-center/developer/create-a-cart-with-add-ons"
+            }
+          }
+        ]
       }
     },
     "/v1/customers/{customer-id}/carts/{cart-id}/checkout": {
@@ -534,7 +543,30 @@
               }
             }
           }
-        }
+        },
+        "x-variants": [
+          {
+            "operationId": "cancel-software-purchase",
+            "summary": "Cancel a software subscription or perpetual software purchase",
+            "externalDocs": {
+              "url": "https://learn.microsoft.com/partner-center/developer/cancel-software-purchases"
+            }
+          },
+          {
+            "operationId": "cancel-order-sandbox",
+            "summary": "Cancel an order in the integration sandbox",
+            "externalDocs": {
+              "url": "https://learn.microsoft.com/partner-center/developer/cancel-an-order-from-the-integration-sandbox"
+            }
+          },
+          {
+            "operationId": "purchase-addon",
+            "summary": "Purchase an add-on for an existing subscription",
+            "externalDocs": {
+              "url": "https://learn.microsoft.com/partner-center/developer/purchase-an-add-on-to-a-subscription"
+            }
+          }
+        ]
       }
     },
     "/v1/customers/{customer-id}/orders": {
@@ -568,26 +600,16 @@
         "externalDocs": {
           "url": "https://learn.microsoft.com/partner-center/developer/get-all-of-a-customer-s-orders"
         }
-      }
-    },
-    "/v1/customers/{customer-id}/subscriptions": {
-      "get": {
-        "operationId": "get-subscriptions-by-order",
-        "summary": "Get a list of subscriptions by order",
-        "description": "Note the underscore: order_id, not orderId.\nReturns a collection even when the order produced a single subscription.\nUp to 15-minute delay after order submission before subscriptions appear.\nSupports both app-only and app+user.",
+      },
+      "post": {
+        "operationId": "create-order",
+        "summary": "Create an order directly (without a cart)",
+        "description": "For New Commerce prefer create-cart + checkout-cart: the cart validates and prices the purchase before it is placed, this route does not.\nid, status, currencyCode and creationDate are read-only - they come back on the response, do not send them.\nA 2xx here means the order was accepted, not provisioned: poll get-order-provisioning-status.",
         "parameters": [
           {
             "name": "customer-id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "order_id",
-            "in": "query",
-            "required": false,
             "schema": {
               "type": "string"
             }
@@ -599,8 +621,63 @@
           }
         },
         "externalDocs": {
-          "url": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-subscriptions-by-order"
+          "url": "https://learn.microsoft.com/partner-center/developer/create-an-order"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "lineItems": {
+                    "type": "string"
+                  },
+                  "referenceCustomerId": {
+                    "type": "string"
+                  },
+                  "billingCycle": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
         }
+      }
+    },
+    "/v1/customers/{customer-id}/subscriptions": {
+      "get": {
+        "operationId": "list-customer-subscriptions",
+        "summary": "List a customer's subscriptions",
+        "description": "Supports both app-only and app+user.\ncustomer-tenant-id is the customer's Microsoft (Entra) tenant GUID.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-all-of-a-customer-s-subscriptions"
+        },
+        "x-variants": [
+          {
+            "operationId": "get-subscriptions-by-order",
+            "summary": "Get a list of subscriptions by order",
+            "externalDocs": {
+              "url": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-subscriptions-by-order"
+            }
+          }
+        ]
       }
     },
     "/v1/customers/{customer-id}/subscriptions/{subscription-id}": {
@@ -685,14 +762,72 @@
               }
             }
           }
-        }
+        },
+        "x-variants": [
+          {
+            "operationId": "change-subscription-quantity",
+            "summary": "Change the seat count of a subscription",
+            "externalDocs": {
+              "url": "https://learn.microsoft.com/partner-center/developer/change-the-quantity-of-a-subscription"
+            }
+          },
+          {
+            "operationId": "cancel-subscription",
+            "summary": "Cancel a new commerce or Marketplace subscription",
+            "externalDocs": {
+              "url": "https://learn.microsoft.com/partner-center/developer/cancel-an-azure-marketplace-subscription"
+            }
+          },
+          {
+            "operationId": "suspend-subscription",
+            "summary": "Suspend a subscription",
+            "externalDocs": {
+              "url": "https://learn.microsoft.com/partner-center/developer/suspend-a-subscription"
+            }
+          },
+          {
+            "operationId": "reactivate-subscription",
+            "summary": "Reactivate a suspended subscription",
+            "externalDocs": {
+              "url": "https://learn.microsoft.com/partner-center/developer/reactivate-a-suspended-a-subscription"
+            }
+          },
+          {
+            "operationId": "create-scheduled-changes",
+            "summary": "Schedule changes that apply at the next term (renewal)",
+            "externalDocs": {
+              "url": "https://learn.microsoft.com/partner-center/developer/create-scheduled-changes"
+            }
+          },
+          {
+            "operationId": "update-subscription-autorenew",
+            "summary": "Turn autorenew on or off",
+            "externalDocs": {
+              "url": "https://learn.microsoft.com/partner-center/developer/update-autorenew-for-an-azure-marketplace-subscription"
+            }
+          },
+          {
+            "operationId": "update-software-billing-frequency",
+            "summary": "Change the billing frequency of a software subscription",
+            "externalDocs": {
+              "url": "https://learn.microsoft.com/partner-center/developer/manage-billing-frequency-software-subs"
+            }
+          },
+          {
+            "operationId": "update-subscription-nickname",
+            "summary": "Rename a subscription (nickname)",
+            "externalDocs": {
+              "url": "https://learn.microsoft.com/partner-center/developer/update-the-nickname-for-a-subscription"
+            }
+          }
+        ]
       }
     },
     "/v1/customers/{customer-id}/migrations/newcommerce": {
       "post": {
         "operationId": "migrate-to-new-commerce",
         "summary": "Migrate a legacy subscription to New Commerce (NCE)",
-        "description": "Only currentSubscriptionId is required; termDuration, billingCycle, purchaseFullTerm, quantity, customTermEndDate are optional and let you change terms during migration.\nOmitted properties carry forward the legacy subscription's values.\nBase subscriptions migrate together with all active add-ons as a bundle; if any add-on is ineligible the whole bundle fails.\naddOnMigrations must be a FLAT list, not nested.\nValidate eligibility first with the validate-a-new-commerce-migration API.\nTo schedule rather than run immediately, POST to .../migrations/newcommerce/schedules.",
+        "description": "Only currentSubscriptionId is required; termDuration, billingCycle, purchaseFullTerm, quantity, customTermEndDate are optional and let you change terms during migration.\nOmitted properties carry forward the legacy subscription's values.\nBase subscriptions migrate together with all active add-ons as a bundle; if any add-on is ineligible the whole bundle fails.\naddOnMigrations must be a FLAT list, not nested.\nCall validate-migration first - it reports eligibility and the exact reasons this POST would otherwise fail with.\nMigration is asynchronous: poll get-migration with the returned migration id, and use get-migration-events for the step-by-step trail.\nTo schedule rather than run immediately, use create-migration-schedule.",
         "parameters": [
           {
             "name": "customer-id",
@@ -1128,6 +1263,38 @@
               }
             }
           }
+        },
+        "x-variants": [
+          {
+            "operationId": "create-legacy-transfer",
+            "summary": "Create a transfer for legacy subscriptions",
+            "externalDocs": {
+              "url": "https://learn.microsoft.com/partner-center/developer/create-a-transfer-legacy"
+            }
+          }
+        ]
+      },
+      "get": {
+        "operationId": "list-customer-transfers",
+        "summary": "List a customer's transfers",
+        "description": "Shows transfers from both sides - the ones this partner created as target and the ones awaiting its response as source; read status to tell them apart.\nA pending transfer is the thing that blocks other lifecycle writes on the affected subscriptions; check here before diagnosing a mysterious rejection.\nFor one transfer's detail use get-transfer.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-all-of-a-customer-s-transfers"
         }
       }
     },
@@ -1161,6 +1328,95 @@
         },
         "externalDocs": {
           "url": "https://learn.microsoft.com/partner-center/developer/get-transfer-by-id"
+        }
+      },
+      "patch": {
+        "operationId": "reject-transfer",
+        "summary": "Reject a transfer",
+        "description": "Called by the SOURCE partner; the accepting counterpart is accept-transfer, which is a POST to a different route.\nSame URI as update-transfer - what differs is the status value in the body.\nRejecting leaves the subscriptions with the current partner unchanged.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "transfer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/reject-a-transfer"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-variants": [
+          {
+            "operationId": "update-transfer",
+            "summary": "Update or cancel a pending transfer",
+            "externalDocs": {
+              "url": "https://learn.microsoft.com/partner-center/developer/update-a-transfer"
+            }
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "withdraw-transfer",
+        "summary": "Withdraw a transfer",
+        "description": "The only DELETE in the transfer lifecycle; accept is a POST and reject/cancel are PATCHes on the same resource.\nOnly the partner that created the transfer can withdraw it, and only while it is still pending.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "transfer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/withdraw-a-transfer"
         }
       }
     },
@@ -1419,6 +1675,37 @@
               }
             }
           }
+        }
+      },
+      "get": {
+        "operationId": "get-subscription-transitions",
+        "summary": "Get the transition history of a subscription (NCE)",
+        "description": "Returns transition HISTORY and status, not eligibility - eligibility comes from transitionEligibilities (get-subscription-transition-eligibilities).\nPoll this after create-subscription-transition to see whether the transition completed; the optional operation-id query narrows it to one transition.\nDistinct from the legacy /upgrades route (get-subscription-upgrades).",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "subscription-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-transitions"
         }
       }
     },
@@ -2806,6 +3093,914 @@
         },
         "externalDocs": {
           "url": "https://learn.microsoft.com/partner-center/developer/remove-customer-user-from-a-role"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/subscriptions/customTermEndDates": {
+      "get": {
+        "operationId": "get-custom-term-end-dates",
+        "summary": "Get the custom term end dates available for co-termination",
+        "description": "term_duration is required; supported values are P1M, P1Y and P3Y. term_start_date cannot be in the past.\nThe returned dates are the values you may pass as customTermEndDate when purchasing or scheduling - do not invent one.\nMonthly (P1M) results cannot always be used for alignment: they do not work against a subscription ending on the 28th, 29th or 30th unless that is the last day of the month.\nA maximum of 300 records comes back per page; continue with the token returned in the response header.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "term_duration",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "term_start_date",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "target_coterm_subscription_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/custom-term-end-dates"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/subscriptions/{subscription-id}/upgrades": {
+      "get": {
+        "operationId": "get-subscription-upgrades",
+        "summary": "Get the upgrades available for a legacy subscription",
+        "description": "This is the LEGACY upgrade path. New Commerce subscriptions use get-subscription-transition-eligibilities followed by create-subscription-transition instead.\nThe same page documents POST on the target subscription's /upgrades route to perform the upgrade; the GET only lists what is possible.\nAn empty list means no upgrade path exists for that offer - it is not an error.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "subscription-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/transition-a-subscription"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/subscriptions/{subscription-id}/conversions": {
+      "get": {
+        "operationId": "get-trial-conversion-offers",
+        "summary": "Get the paid offers a trial subscription can convert into",
+        "description": "Legacy trials only; a New Commerce trial converts through the transition API (get-subscription-transition-eligibilities + create-subscription-transition).\nEach returned offer carries a default quantity equal to the trial's seat count - override it on the POST if the customer wants a different number.\nThe subscription id must be the TRIAL subscription.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "subscription-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-trial-conversion-offers"
+        }
+      },
+      "post": {
+        "operationId": "convert-trial-subscription",
+        "summary": "Convert a trial subscription to paid",
+        "description": "Take offerId and targetOfferId from get-trial-conversion-offers rather than composing them yourself.\nLegacy trials only - New Commerce trials convert via create-subscription-transition.\nConverting does not create a second subscription: the trial becomes the paid subscription, so the subscription id stays the same.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "subscription-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/convert-a-trial-subscription-to-paid"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "offerId": {
+                    "type": "string"
+                  },
+                  "targetOfferId": {
+                    "type": "string"
+                  },
+                  "orderId": {
+                    "type": "string"
+                  },
+                  "quantity": {
+                    "type": "string"
+                  },
+                  "billingCycle": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/productUpgrades/eligibility": {
+      "post": {
+        "operationId": "get-product-upgrade-eligibility",
+        "summary": "Check eligibility for an Azure plan product upgrade",
+        "description": "A POST, not a GET, and it lives on the partner-wide /v1/productUpgrades route - the customer travels in the body, not the path.\nRun it before create-azure-plan-upgrade; the response says why an upgrade is blocked.\nThis is the Azure-plan upgrade, unrelated to seat-based transitions.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-eligibility-for-product-upgrade"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "customerId": {
+                    "type": "string"
+                  },
+                  "productFamily": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/productUpgrades/{upgrade-id}/status": {
+      "post": {
+        "operationId": "get-product-upgrade-status",
+        "summary": "Get the status of a product upgrade",
+        "description": "A POST even though it only reads status, and it still needs the ProductUpgradeRequest body.\nupgrade-id comes from the response of create-azure-plan-upgrade; an Azure plan upgrade is asynchronous, so poll here rather than assuming the POST finished the work.",
+        "parameters": [
+          {
+            "name": "upgrade-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-product-upgrade-status"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "customerId": {
+                    "type": "string"
+                  },
+                  "productFamily": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/subscriptions/{subscription-id}/addons": {
+      "get": {
+        "operationId": "get-subscription-addons",
+        "summary": "Get the add-ons bought against a subscription",
+        "description": "Returns the add-on subscriptions attached to this base subscription; each carries parentSubscriptionId pointing back at it.\nWhether more add-ons can be bought is on the BASE subscription's hasPurchasableAddons field, not in this response.\nAdd-ons appear in list-customer-subscriptions too - filter on parentSubscriptionId to tell them apart from standalone subscriptions.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "subscription-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-add-ons-for-a-subscription"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/carts/{cart-id}": {
+      "put": {
+        "operationId": "update-cart",
+        "summary": "Update a cart before checkout",
+        "description": "PUT, not PATCH: the body replaces the cart, so omitting a line item removes it.\nCarts expire - check expirationTimeStamp before updating an old one.\nOnly valid before checkout; after checkout-cart the purchase is an order and changes go through the order or subscription.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cart-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/update-a-cart"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "lineItems": {
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/orders/{order-id}/provisioningstatus": {
+      "get": {
+        "operationId": "get-order-provisioning-status",
+        "summary": "Get an order's provisioning status",
+        "description": "A 2xx from checkout-cart or create-order means ACCEPTED, not provisioned. Poll here until status is success before telling a customer their licenses exist.\nStatus is reported per line item, so a partially provisioned order is normal - check every line item.\nSee the provisioningStatus enum for the values (success | pending | failed).",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-order-provisioning-status"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/subscriptions/{subscription-id}/provisioningstatus": {
+      "get": {
+        "operationId": "get-subscription-provisioning-status",
+        "summary": "Get a subscription's provisioning status",
+        "description": "Use this to confirm that a write actually landed - a quantity change or cancellation is accepted asynchronously, so re-reading the subscription alone can show stale values.\nIt reports the provisioning of the subscription, not its lifecycle state; status on the Subscription resource is the lifecycle state.\nValues are success | pending | failed (see the provisioningStatus enum).",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "subscription-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-subscription-provisioning-status"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/orders/{order-id}/lineitems/{line-item-number}/activationlinks": {
+      "get": {
+        "operationId": "get-order-activation-link",
+        "summary": "Get the activation link for an order line item",
+        "description": "Only products that require activation (Microsoft Marketplace SaaS and similar) return a link; an empty result for a seat-based offer is expected, not an error.\nline-item-number is the LineItemNumber from the order, starting at 0 - it is not the subscription id.\nThe customer has to open the link to finish activation; the purchase is not usable until they do.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "line-item-number",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-activation-link-by-order-line-item"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/migrations/newcommerce/validate": {
+      "post": {
+        "operationId": "validate-migration",
+        "summary": "Validate a legacy subscription for New Commerce migration",
+        "description": "Run this before every migrate-to-new-commerce; it returns isEligible plus the specific reasons a subscription cannot migrate.\nIt does NOT tell you whether the subscription is eligible for New Commerce promotions - that is a separate question.\nValidating with termDuration/billingCycle set checks the migration you actually intend, not just the like-for-like one.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/validate-subscription-for-migration"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "currentSubscriptionId": {
+                    "type": "string"
+                  },
+                  "termDuration": {
+                    "type": "string"
+                  },
+                  "billingCycle": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/migrations/newcommerce/{migration-id}": {
+      "get": {
+        "operationId": "get-migration",
+        "summary": "Get a New Commerce migration by ID",
+        "description": "migration-id comes from the response of migrate-to-new-commerce; migration is asynchronous, so poll here instead of assuming the POST finished it.\nThe response carries the resulting New Commerce subscription id once the migration completes.\nFor the step-by-step trail (including failures) use get-migration-events.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "migration-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-new-commerce-migration"
+        }
+      }
+    },
+    "/v1/migrations/newcommerce": {
+      "get": {
+        "operationId": "query-migrations",
+        "summary": "Query New Commerce migrations across customers",
+        "description": "Partner-wide route: there is no {customer-id} path segment, the customer travels as a query string.\nAt least one of CustomerTenantId, CurrentSubscriptionId or ExternalReferenceId is required; passing several is allowed.\nExternalReferenceId is the migration BATCH id - it is how you follow a bulk migration.\nA maximum of 300 records comes back per page; continue with the token in the response header.",
+        "parameters": [
+          {
+            "name": "CustomerTenantId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "CurrentSubscriptionId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ExternalReferenceId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/query-migrated-subscriptions"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/migrations/newcommerce/events": {
+      "get": {
+        "operationId": "get-migration-events",
+        "summary": "Get the event trail of a New Commerce migration",
+        "description": "At least one of MigrationId or CurrentSubscriptionId is required.\nThis is the audit trail of what a migration actually did - the only way to see how far a migration got after the fact.\neventName values are in the migrationEventType enum; MigrationCompleted is the terminal one.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "MigrationId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "CurrentSubscriptionId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-migration-events"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/migrations/newcommerce/schedules": {
+      "post": {
+        "operationId": "create-migration-schedule",
+        "summary": "Schedule a New Commerce migration for later",
+        "description": "Exactly one of targetDate or migrateOnRenewal drives the timing: set targetDate for a fixed date, or migrateOnRenewal true to run at the legacy renewal.\nScheduling does not validate later - run validate-migration first, because the schedule fails silently at run time if the subscription became ineligible.\naddOnMigrations is a FLAT array of add-on subscriptions, each with its own term and billing cycle.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/schedule-a-new-commerce-migration"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "currentSubscriptionId": {
+                    "type": "string"
+                  },
+                  "targetDate": {
+                    "type": "string"
+                  },
+                  "migrateOnRenewal": {
+                    "type": "string"
+                  },
+                  "quantity": {
+                    "type": "string"
+                  },
+                  "billingCycle": {
+                    "type": "string"
+                  },
+                  "termDuration": {
+                    "type": "string"
+                  },
+                  "purchaseFullTerm": {
+                    "type": "string"
+                  },
+                  "customTermEndDate": {
+                    "type": "string"
+                  },
+                  "addOnMigrations": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/migrations/newcommerce/schedules/{schedule-id}": {
+      "get": {
+        "operationId": "get-migration-schedule",
+        "summary": "Get a New Commerce migration schedule",
+        "description": "schedule-id is the id returned by create-migration-schedule, not the migration id.\nThe same page documents a partner-wide variant, GET /v1/migrations/newcommerce/schedules?CustomerTenantId={customer-id}, for listing every schedule.\nA schedule that already ran is found through get-migration / get-migration-events, not here.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "schedule-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-a-new-commerce-migration-schedule"
+        }
+      },
+      "put": {
+        "operationId": "update-migration-schedule",
+        "summary": "Update a New Commerce migration schedule",
+        "description": "PUT, not PATCH: the body replaces the schedule, so send every field you want to keep.\nOnly a schedule that has not run yet can be updated; after it runs, the migration is a fact - see get-migration.\nTo stop a schedule entirely use cancel-migration-schedule.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "schedule-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/update-a-new-commerce-migration-schedule"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "targetDate": {
+                    "type": "string"
+                  },
+                  "migrateOnRenewal": {
+                    "type": "string"
+                  },
+                  "quantity": {
+                    "type": "string"
+                  },
+                  "billingCycle": {
+                    "type": "string"
+                  },
+                  "termDuration": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/migrations/newcommerce/schedules/{schedule-id}/cancel": {
+      "post": {
+        "operationId": "cancel-migration-schedule",
+        "summary": "Cancel a New Commerce migration schedule",
+        "description": "A POST to a /cancel sub-route, NOT a DELETE on the schedule - sending DELETE returns 404.\nCancels the scheduled migration only; a migration that already ran cannot be undone this way.\nCancelling the schedule leaves the legacy subscription exactly as it was.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "schedule-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/cancel-a-new-commerce-migration-schedule"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/transfers/{transfer-id}/accept": {
+      "post": {
+        "operationId": "accept-transfer",
+        "summary": "Accept a transfer",
+        "description": "Called by the SOURCE partner on a transfer the target partner created with create-transfer / create-legacy-transfer.\nAccepting is what actually moves billing ownership; poll get-transfer until the status leaves InProgress.\nTo decline instead use reject-transfer (a PATCH with status \"reject\").",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "transfer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/accept-a-transfer"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/subscriptions/{subscription-id}/supportcontact": {
+      "get": {
+        "operationId": "get-subscription-support-contact",
+        "summary": "Get a subscription's support contact",
+        "description": "Support contact is per SUBSCRIPTION, not per customer - two subscriptions of one customer can be supported by different partners.\nIn indirect (two-tier) CSP this is how you tell whether the reseller or the provider owns support for a subscription.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "subscription-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-a-subscription-s-support-contact"
+        }
+      },
+      "put": {
+        "operationId": "update-subscription-support-contact",
+        "summary": "Set a subscription's support contact",
+        "description": "PUT, not PATCH - the body replaces the whole support contact.\nThe target partner must already have a relationship with the customer, otherwise the call is rejected.\nSet per subscription, so moving support for a customer means iterating their subscriptions.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "subscription-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/update-a-subscription-s-support-contact"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "supportTenantId": {
+                    "type": "string"
+                  },
+                  "supportMpnId": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }

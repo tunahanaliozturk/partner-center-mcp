@@ -2290,6 +2290,304 @@
             },
             "description": "Billing-cycle change here is for LEGACY subscriptions only; for NCE use update-subscription instead.\nOut of scope: trials, monthly/Azure offers, inactive or online-services license-based subscriptions.\nTo cancel an order, PATCH the same path with status 'cancelled' (documented for the sandbox).\n\nDocs: https://learn.microsoft.com/partner-center/developer/change-the-billing-cycle"
           }
+        },
+        {
+          "name": "Cancel a software subscription or perpetual software purchase",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/orders/{order-id}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "orders",
+                "%7Border-id%7D"
+              ],
+              "query": []
+            },
+            "description": "Software subscriptions and perpetual software cancel at the ORDER, not through the subscription PATCH - cancel-subscription does not apply to them.\nOnly accepted while the purchase is still inside its cancellation window, counted from the purchase date; self-service, no support ticket needed.\nA cancelled line item comes back with quantity 0. If other line items survive, the ORDER's status stays \"completed\", not \"cancelled\" - assert on the line item, not the order.\n\nDocs: https://learn.microsoft.com/partner-center/developer/cancel-software-purchases"
+          }
+        },
+        {
+          "name": "Cancel an order in the integration sandbox",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/orders/{order-id}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "orders",
+                "%7Border-id%7D"
+              ],
+              "query": []
+            },
+            "description": "Integration sandbox (TIP) only - this is a test-account cleanup path, not a production cancellation. In production use cancel-subscription or cancel-software-purchase.\nSame URI as cancel-software-purchase; what differs is the account it is legal in.\n\nDocs: https://learn.microsoft.com/partner-center/developer/cancel-an-order-from-the-integration-sandbox"
+          }
+        },
+        {
+          "name": "Purchase an add-on for an existing subscription",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/orders/{order-id}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "orders",
+                "%7Border-id%7D"
+              ],
+              "query": []
+            },
+            "description": "An add-on is bought by PATCHing the BASE SUBSCRIPTION'S ORDER, not by placing a new order: read the base subscription first, take its orderId, and send a line item carrying parentSubscriptionId.\nThe base subscription must have hasPurchasableAddons true, otherwise the offer is rejected.\nFor a fresh purchase that includes add-ons up front use create-cart-with-addons instead.\n\nDocs: https://learn.microsoft.com/partner-center/developer/purchase-an-add-on-to-a-subscription"
+          }
+        },
+        {
+          "name": "Create a cart that includes add-ons",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/carts",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "carts"
+              ],
+              "query": []
+            },
+            "description": "Same endpoint as create-cart; what differs is that add-ons are nested under the base line item instead of listed as siblings.\nCreating the cart reserves nothing - checkout-cart is what places the order.\nTo add an add-on to an ALREADY purchased subscription use purchase-addon instead.\n\nDocs: https://learn.microsoft.com/partner-center/developer/create-a-cart-with-add-ons"
+          }
+        },
+        {
+          "name": "Create an order directly (without a cart)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/orders",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "orders"
+              ],
+              "query": []
+            },
+            "description": "For New Commerce prefer create-cart + checkout-cart: the cart validates and prices the purchase before it is placed, this route does not.\nid, status, currencyCode and creationDate are read-only - they come back on the response, do not send them.\nA 2xx here means the order was accepted, not provisioned: poll get-order-provisioning-status.\n\nDocs: https://learn.microsoft.com/partner-center/developer/create-an-order"
+          }
+        },
+        {
+          "name": "Update a cart before checkout",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/carts/{cart-id}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "carts",
+                "%7Bcart-id%7D"
+              ],
+              "query": []
+            },
+            "description": "PUT, not PATCH: the body replaces the cart, so omitting a line item removes it.\nCarts expire - check expirationTimeStamp before updating an old one.\nOnly valid before checkout; after checkout-cart the purchase is an order and changes go through the order or subscription.\n\nDocs: https://learn.microsoft.com/partner-center/developer/update-a-cart"
+          }
+        },
+        {
+          "name": "Get an order's provisioning status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/orders/{order-id}/provisioningstatus",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "orders",
+                "%7Border-id%7D",
+                "provisioningstatus"
+              ],
+              "query": []
+            },
+            "description": "A 2xx from checkout-cart or create-order means ACCEPTED, not provisioned. Poll here until status is success before telling a customer their licenses exist.\nStatus is reported per line item, so a partially provisioned order is normal - check every line item.\nSee the provisioningStatus enum for the values (success | pending | failed).\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-order-provisioning-status"
+          }
+        },
+        {
+          "name": "Get the activation link for an order line item",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/orders/{order-id}/lineitems/{line-item-number}/activationlinks",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "orders",
+                "%7Border-id%7D",
+                "lineitems",
+                "%7Bline-item-number%7D",
+                "activationlinks"
+              ],
+              "query": []
+            },
+            "description": "Only products that require activation (Microsoft Marketplace SaaS and similar) return a link; an empty result for a seat-based offer is expected, not an error.\nline-item-number is the LineItemNumber from the order, starting at 0 - it is not the subscription id.\nThe customer has to open the link to finish activation; the purchase is not usable until they do.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-activation-link-by-order-line-item"
+          }
         }
       ]
     },
@@ -3136,7 +3434,7 @@
               ],
               "query": []
             },
-            "description": "Only currentSubscriptionId is required; termDuration, billingCycle, purchaseFullTerm, quantity, customTermEndDate are optional and let you change terms during migration.\nOmitted properties carry forward the legacy subscription's values.\nBase subscriptions migrate together with all active add-ons as a bundle; if any add-on is ineligible the whole bundle fails.\naddOnMigrations must be a FLAT list, not nested.\nValidate eligibility first with the validate-a-new-commerce-migration API.\nTo schedule rather than run immediately, POST to .../migrations/newcommerce/schedules.\n\nDocs: https://learn.microsoft.com/partner-center/developer/create-migration"
+            "description": "Only currentSubscriptionId is required; termDuration, billingCycle, purchaseFullTerm, quantity, customTermEndDate are optional and let you change terms during migration.\nOmitted properties carry forward the legacy subscription's values.\nBase subscriptions migrate together with all active add-ons as a bundle; if any add-on is ineligible the whole bundle fails.\naddOnMigrations must be a FLAT list, not nested.\nCall validate-migration first - it reports eligibility and the exact reasons this POST would otherwise fail with.\nMigration is asynchronous: poll get-migration with the returned migration id, and use get-migration-events for the step-by-step trail.\nTo schedule rather than run immediately, use create-migration-schedule.\n\nDocs: https://learn.microsoft.com/partner-center/developer/create-migration"
           }
         },
         {
@@ -3444,6 +3742,1285 @@
               "query": []
             },
             "description": "status is one of 'registered', 'registering', or 'notregistered'; poll after register-subscription until it reads 'registered'.\nThis is the URL returned in the Location header of register-subscription; you can call it directly with the same {subscription-id}.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-subscription-registration-status"
+          }
+        },
+        {
+          "name": "Change the seat count of a subscription",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "subscriptions",
+                "%7Bsubscription-id%7D"
+              ],
+              "query": []
+            },
+            "description": "Increases are accepted at any point in the term and are prorated; DECREASES are only accepted while the subscription's cancellationAllowedUntilDate is still in the future.\nquantity is the new total, not the number of seats being added.\nSeat reduction is not supported at all while the subscription is suspended - the response's refundableQuantity is null in that state.\nThis is a full-resource PATCH: omitting autoRenewEnabled silently resets it to false.\n\nDocs: https://learn.microsoft.com/partner-center/developer/change-the-quantity-of-a-subscription"
+          }
+        },
+        {
+          "name": "Cancel a new commerce or Marketplace subscription",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "subscriptions",
+                "%7Bsubscription-id%7D"
+              ],
+              "query": []
+            },
+            "description": "Only accepted while the subscription's cancellationAllowedUntilDate is in the future - read that field off the subscription, never assume a fixed window length.\nCancellation is a full-resource PATCH with status \"deleted\"; there is no DELETE verb for a subscription.\nThe refund you get is described by the subscription's refundOptions; check it before cancelling.\nSoftware subscriptions and perpetual software cancel at the ORDER, not here - use cancel-software-purchase.\n\nDocs: https://learn.microsoft.com/partner-center/developer/cancel-an-azure-marketplace-subscription"
+          }
+        },
+        {
+          "name": "Suspend a subscription",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "subscriptions",
+                "%7Bsubscription-id%7D"
+              ],
+              "query": []
+            },
+            "description": "Suspension stops the service for the customer; it is NOT a cancellation and does not end billing - only cancelling inside the cancellation window does that.\nSeat count cannot be changed while suspended: the response's refundableQuantity comes back null.\nReactivate with reactivate-subscription (status active); read suspensionReasons first, because a Microsoft-set reason is not cleared by the partner.\n\nDocs: https://learn.microsoft.com/partner-center/developer/suspend-a-subscription"
+          }
+        },
+        {
+          "name": "Reactivate a suspended subscription",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "subscriptions",
+                "%7Bsubscription-id%7D"
+              ],
+              "query": []
+            },
+            "description": "Only valid from the suspended state; a cancelled (deleted) subscription cannot be reactivated - it has to be repurchased.\nCheck suspensionReasons first: a subscription suspended by Microsoft (for example for non-payment or fraud) stays suspended until that underlying reason clears.\nThis is a full-resource PATCH: include autoRenewEnabled or it resets to false.\n\nDocs: https://learn.microsoft.com/partner-center/developer/reactivate-a-suspended-a-subscription"
+          }
+        },
+        {
+          "name": "Schedule changes that apply at the next term (renewal)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "subscriptions",
+                "%7Bsubscription-id%7D"
+              ],
+              "query": []
+            },
+            "description": "Term duration, billing cycle and seat count cannot be changed mid-term; this endpoint schedules them for the NEXT term. For an immediate move use create-subscription-transition.\nautoRenewEnabled must be true, or the scheduled instructions are never applied.\nSend scheduledActions OR scheduledNextTermInstructions, not both - if both are present only scheduledActions is honoured.\nFor end-of-sale-with-conversions offers, get the target from get-subscription-transition-eligibilities with eligibilityType=scheduled; GET availabilities returns an empty list when every term is end-of-sale.\n\nDocs: https://learn.microsoft.com/partner-center/developer/create-scheduled-changes"
+          }
+        },
+        {
+          "name": "Turn autorenew on or off",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "subscriptions",
+                "%7Bsubscription-id%7D"
+              ],
+              "query": []
+            },
+            "description": "This is a full-resource PATCH, so autoRenewEnabled must be present on EVERY subscription PATCH - leave it out of an unrelated update and it silently resets to false, and the subscription quietly expires at term end.\nTurning autorenew off is not a cancellation: the subscription runs to the end of its term and is billed for it. To stop billing use cancel-subscription inside the cancellation window.\nScheduled next-term instructions only run while this is true (see create-scheduled-changes).\n\nDocs: https://learn.microsoft.com/partner-center/developer/update-autorenew-for-an-azure-marketplace-subscription"
+          }
+        },
+        {
+          "name": "Change the billing frequency of a software subscription",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "subscriptions",
+                "%7Bsubscription-id%7D"
+              ],
+              "query": []
+            },
+            "description": "Software subscriptions only - seat-based online services use create-scheduled-changes.\nThe change is a SCHEDULED change: it takes effect at the next term, not immediately.\nFor legacy (non-NCE) subscriptions the billing cycle is changed on the order instead - see update-order.\n\nDocs: https://learn.microsoft.com/partner-center/developer/manage-billing-frequency-software-subs"
+          }
+        },
+        {
+          "name": "Get the custom term end dates available for co-termination",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              },
+              {
+                "key": "MS-ContinuationToken",
+                "value": "echo the token returned in the response header to page past 300 records",
+                "description": "echo the token returned in the response header to page past 300 records"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/customTermEndDates?term_duration={term-duration}&term_start_date={term-start-date}&target_coterm_subscription_id={subscription-id}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "subscriptions",
+                "customTermEndDates"
+              ],
+              "query": [
+                {
+                  "key": "term_duration",
+                  "value": "{term-duration}"
+                },
+                {
+                  "key": "term_start_date",
+                  "value": "{term-start-date}"
+                },
+                {
+                  "key": "target_coterm_subscription_id",
+                  "value": "{subscription-id}"
+                }
+              ]
+            },
+            "description": "term_duration is required; supported values are P1M, P1Y and P3Y. term_start_date cannot be in the past.\nThe returned dates are the values you may pass as customTermEndDate when purchasing or scheduling - do not invent one.\nMonthly (P1M) results cannot always be used for alignment: they do not work against a subscription ending on the 28th, 29th or 30th unless that is the last day of the month.\nA maximum of 300 records comes back per page; continue with the token returned in the response header.\n\nDocs: https://learn.microsoft.com/partner-center/developer/custom-term-end-dates"
+          }
+        },
+        {
+          "name": "Get the upgrades available for a legacy subscription",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}/upgrades",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "subscriptions",
+                "%7Bsubscription-id%7D",
+                "upgrades"
+              ],
+              "query": []
+            },
+            "description": "This is the LEGACY upgrade path. New Commerce subscriptions use get-subscription-transition-eligibilities followed by create-subscription-transition instead.\nThe same page documents POST on the target subscription's /upgrades route to perform the upgrade; the GET only lists what is possible.\nAn empty list means no upgrade path exists for that offer - it is not an error.\n\nDocs: https://learn.microsoft.com/partner-center/developer/transition-a-subscription"
+          }
+        },
+        {
+          "name": "Get the transition history of a subscription (NCE)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}/transitions",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "subscriptions",
+                "%7Bsubscription-id%7D",
+                "transitions"
+              ],
+              "query": []
+            },
+            "description": "Returns transition HISTORY and status, not eligibility - eligibility comes from transitionEligibilities (get-subscription-transition-eligibilities).\nPoll this after create-subscription-transition to see whether the transition completed; the optional operation-id query narrows it to one transition.\nDistinct from the legacy /upgrades route (get-subscription-upgrades).\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-transitions"
+          }
+        },
+        {
+          "name": "Get the paid offers a trial subscription can convert into",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}/conversions",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "subscriptions",
+                "%7Bsubscription-id%7D",
+                "conversions"
+              ],
+              "query": []
+            },
+            "description": "Legacy trials only; a New Commerce trial converts through the transition API (get-subscription-transition-eligibilities + create-subscription-transition).\nEach returned offer carries a default quantity equal to the trial's seat count - override it on the POST if the customer wants a different number.\nThe subscription id must be the TRIAL subscription.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-a-list-of-trial-conversion-offers"
+          }
+        },
+        {
+          "name": "Convert a trial subscription to paid",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}/conversions",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "subscriptions",
+                "%7Bsubscription-id%7D",
+                "conversions"
+              ],
+              "query": []
+            },
+            "description": "Take offerId and targetOfferId from get-trial-conversion-offers rather than composing them yourself.\nLegacy trials only - New Commerce trials convert via create-subscription-transition.\nConverting does not create a second subscription: the trial becomes the paid subscription, so the subscription id stays the same.\n\nDocs: https://learn.microsoft.com/partner-center/developer/convert-a-trial-subscription-to-paid"
+          }
+        },
+        {
+          "name": "Check eligibility for an Azure plan product upgrade",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/productUpgrades/eligibility",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "productUpgrades",
+                "eligibility"
+              ],
+              "query": []
+            },
+            "description": "A POST, not a GET, and it lives on the partner-wide /v1/productUpgrades route - the customer travels in the body, not the path.\nRun it before create-azure-plan-upgrade; the response says why an upgrade is blocked.\nThis is the Azure-plan upgrade, unrelated to seat-based transitions.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-eligibility-for-product-upgrade"
+          }
+        },
+        {
+          "name": "Get the status of a product upgrade",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/productUpgrades/{upgrade-id}/status",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "productUpgrades",
+                "%7Bupgrade-id%7D",
+                "status"
+              ],
+              "query": []
+            },
+            "description": "A POST even though it only reads status, and it still needs the ProductUpgradeRequest body.\nupgrade-id comes from the response of create-azure-plan-upgrade; an Azure plan upgrade is asynchronous, so poll here rather than assuming the POST finished the work.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-product-upgrade-status"
+          }
+        },
+        {
+          "name": "Get the add-ons bought against a subscription",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}/addons",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "subscriptions",
+                "%7Bsubscription-id%7D",
+                "addons"
+              ],
+              "query": []
+            },
+            "description": "Returns the add-on subscriptions attached to this base subscription; each carries parentSubscriptionId pointing back at it.\nWhether more add-ons can be bought is on the BASE subscription's hasPurchasableAddons field, not in this response.\nAdd-ons appear in list-customer-subscriptions too - filter on parentSubscriptionId to tell them apart from standalone subscriptions.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-a-list-of-add-ons-for-a-subscription"
+          }
+        },
+        {
+          "name": "Get a subscription's provisioning status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}/provisioningstatus",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "subscriptions",
+                "%7Bsubscription-id%7D",
+                "provisioningstatus"
+              ],
+              "query": []
+            },
+            "description": "Use this to confirm that a write actually landed - a quantity change or cancellation is accepted asynchronously, so re-reading the subscription alone can show stale values.\nIt reports the provisioning of the subscription, not its lifecycle state; status on the Subscription resource is the lifecycle state.\nValues are success | pending | failed (see the provisioningStatus enum).\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-subscription-provisioning-status"
+          }
+        },
+        {
+          "name": "Validate a legacy subscription for New Commerce migration",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/migrations/newcommerce/validate",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "migrations",
+                "newcommerce",
+                "validate"
+              ],
+              "query": []
+            },
+            "description": "Run this before every migrate-to-new-commerce; it returns isEligible plus the specific reasons a subscription cannot migrate.\nIt does NOT tell you whether the subscription is eligible for New Commerce promotions - that is a separate question.\nValidating with termDuration/billingCycle set checks the migration you actually intend, not just the like-for-like one.\n\nDocs: https://learn.microsoft.com/partner-center/developer/validate-subscription-for-migration"
+          }
+        },
+        {
+          "name": "Get a New Commerce migration by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/migrations/newcommerce/{migration-id}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "migrations",
+                "newcommerce",
+                "%7Bmigration-id%7D"
+              ],
+              "query": []
+            },
+            "description": "migration-id comes from the response of migrate-to-new-commerce; migration is asynchronous, so poll here instead of assuming the POST finished it.\nThe response carries the resulting New Commerce subscription id once the migration completes.\nFor the step-by-step trail (including failures) use get-migration-events.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-new-commerce-migration"
+          }
+        },
+        {
+          "name": "Query New Commerce migrations across customers",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              },
+              {
+                "key": "MS-ContinuationToken",
+                "value": "echo the token from the response header to page past 300 records",
+                "description": "echo the token from the response header to page past 300 records"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/migrations/newcommerce?CustomerTenantId={customer-id}&CurrentSubscriptionId={subscription-id}&ExternalReferenceId={external-reference-id}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "migrations",
+                "newcommerce"
+              ],
+              "query": [
+                {
+                  "key": "CustomerTenantId",
+                  "value": "{customer-id}"
+                },
+                {
+                  "key": "CurrentSubscriptionId",
+                  "value": "{subscription-id}"
+                },
+                {
+                  "key": "ExternalReferenceId",
+                  "value": "{external-reference-id}"
+                }
+              ]
+            },
+            "description": "Partner-wide route: there is no {customer-id} path segment, the customer travels as a query string.\nAt least one of CustomerTenantId, CurrentSubscriptionId or ExternalReferenceId is required; passing several is allowed.\nExternalReferenceId is the migration BATCH id - it is how you follow a bulk migration.\nA maximum of 300 records comes back per page; continue with the token in the response header.\n\nDocs: https://learn.microsoft.com/partner-center/developer/query-migrated-subscriptions"
+          }
+        },
+        {
+          "name": "Get the event trail of a New Commerce migration",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/migrations/newcommerce/events?MigrationId={migration-id}&CurrentSubscriptionId={subscription-id}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "migrations",
+                "newcommerce",
+                "events"
+              ],
+              "query": [
+                {
+                  "key": "MigrationId",
+                  "value": "{migration-id}"
+                },
+                {
+                  "key": "CurrentSubscriptionId",
+                  "value": "{subscription-id}"
+                }
+              ]
+            },
+            "description": "At least one of MigrationId or CurrentSubscriptionId is required.\nThis is the audit trail of what a migration actually did - the only way to see how far a migration got after the fact.\neventName values are in the migrationEventType enum; MigrationCompleted is the terminal one.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-migration-events"
+          }
+        },
+        {
+          "name": "Schedule a New Commerce migration for later",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/migrations/newcommerce/schedules",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "migrations",
+                "newcommerce",
+                "schedules"
+              ],
+              "query": []
+            },
+            "description": "Exactly one of targetDate or migrateOnRenewal drives the timing: set targetDate for a fixed date, or migrateOnRenewal true to run at the legacy renewal.\nScheduling does not validate later - run validate-migration first, because the schedule fails silently at run time if the subscription became ineligible.\naddOnMigrations is a FLAT array of add-on subscriptions, each with its own term and billing cycle.\n\nDocs: https://learn.microsoft.com/partner-center/developer/schedule-a-new-commerce-migration"
+          }
+        },
+        {
+          "name": "Get a New Commerce migration schedule",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/migrations/newcommerce/schedules/{schedule-id}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "migrations",
+                "newcommerce",
+                "schedules",
+                "%7Bschedule-id%7D"
+              ],
+              "query": []
+            },
+            "description": "schedule-id is the id returned by create-migration-schedule, not the migration id.\nThe same page documents a partner-wide variant, GET /v1/migrations/newcommerce/schedules?CustomerTenantId={customer-id}, for listing every schedule.\nA schedule that already ran is found through get-migration / get-migration-events, not here.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-a-new-commerce-migration-schedule"
+          }
+        },
+        {
+          "name": "Update a New Commerce migration schedule",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/migrations/newcommerce/schedules/{schedule-id}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "migrations",
+                "newcommerce",
+                "schedules",
+                "%7Bschedule-id%7D"
+              ],
+              "query": []
+            },
+            "description": "PUT, not PATCH: the body replaces the schedule, so send every field you want to keep.\nOnly a schedule that has not run yet can be updated; after it runs, the migration is a fact - see get-migration.\nTo stop a schedule entirely use cancel-migration-schedule.\n\nDocs: https://learn.microsoft.com/partner-center/developer/update-a-new-commerce-migration-schedule"
+          }
+        },
+        {
+          "name": "Cancel a New Commerce migration schedule",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/migrations/newcommerce/schedules/{schedule-id}/cancel",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "migrations",
+                "newcommerce",
+                "schedules",
+                "%7Bschedule-id%7D",
+                "cancel"
+              ],
+              "query": []
+            },
+            "description": "A POST to a /cancel sub-route, NOT a DELETE on the schedule - sending DELETE returns 404.\nCancels the scheduled migration only; a migration that already ran cannot be undone this way.\nCancelling the schedule leaves the legacy subscription exactly as it was.\n\nDocs: https://learn.microsoft.com/partner-center/developer/cancel-a-new-commerce-migration-schedule"
+          }
+        },
+        {
+          "name": "List a customer's transfers",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/transfers",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "transfers"
+              ],
+              "query": []
+            },
+            "description": "Shows transfers from both sides - the ones this partner created as target and the ones awaiting its response as source; read status to tell them apart.\nA pending transfer is the thing that blocks other lifecycle writes on the affected subscriptions; check here before diagnosing a mysterious rejection.\nFor one transfer's detail use get-transfer.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-all-of-a-customer-s-transfers"
+          }
+        },
+        {
+          "name": "Create a transfer for legacy subscriptions",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/transfers",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "transfers"
+              ],
+              "query": []
+            },
+            "description": "LEGACY subscriptions only. Microsoft's guidance is to migrate to New Commerce first; a New Commerce transfer goes through create-transfer with transferType 3.\nCreated by the TARGET (new) partner; the source partner then accepts or rejects it.\nSame URI as create-transfer - the transfer type in the body is what makes it legacy.\n\nDocs: https://learn.microsoft.com/partner-center/developer/create-a-transfer-legacy"
+          }
+        },
+        {
+          "name": "Accept a transfer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/transfers/{transfer-id}/accept",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "transfers",
+                "%7Btransfer-id%7D",
+                "accept"
+              ],
+              "query": []
+            },
+            "description": "Called by the SOURCE partner on a transfer the target partner created with create-transfer / create-legacy-transfer.\nAccepting is what actually moves billing ownership; poll get-transfer until the status leaves InProgress.\nTo decline instead use reject-transfer (a PATCH with status \"reject\").\n\nDocs: https://learn.microsoft.com/partner-center/developer/accept-a-transfer"
+          }
+        },
+        {
+          "name": "Reject a transfer",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/transfers/{transfer-id}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "transfers",
+                "%7Btransfer-id%7D"
+              ],
+              "query": []
+            },
+            "description": "Called by the SOURCE partner; the accepting counterpart is accept-transfer, which is a POST to a different route.\nSame URI as update-transfer - what differs is the status value in the body.\nRejecting leaves the subscriptions with the current partner unchanged.\n\nDocs: https://learn.microsoft.com/partner-center/developer/reject-a-transfer"
+          }
+        },
+        {
+          "name": "Update or cancel a pending transfer",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/transfers/{transfer-id}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "transfers",
+                "%7Btransfer-id%7D"
+              ],
+              "query": []
+            },
+            "description": "A transfer can only be cancelled while it is PENDING, and only by the target partner that created it.\nSame URI as reject-transfer; \"Cancel\" is the creating partner backing out, \"reject\" is the source partner declining.\nOnce a transfer completes it cannot be undone here - the subscriptions have to be transferred back.\n\nDocs: https://learn.microsoft.com/partner-center/developer/update-a-transfer"
+          }
+        },
+        {
+          "name": "Withdraw a transfer",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/transfers/{transfer-id}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "transfers",
+                "%7Btransfer-id%7D"
+              ],
+              "query": []
+            },
+            "description": "The only DELETE in the transfer lifecycle; accept is a POST and reject/cancel are PATCHes on the same resource.\nOnly the partner that created the transfer can withdraw it, and only while it is still pending.\n\nDocs: https://learn.microsoft.com/partner-center/developer/withdraw-a-transfer"
+          }
+        },
+        {
+          "name": "Rename a subscription (nickname)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "subscriptions",
+                "%7Bsubscription-id%7D"
+              ],
+              "query": []
+            },
+            "description": "The API field is friendlyName; \"nickname\" is only what the Partner Center UI calls it.\nCosmetic, but still a full-resource PATCH: include autoRenewEnabled or it resets to false.\nThe name is partner-facing disambiguation only - it does not change what the customer is billed for.\n\nDocs: https://learn.microsoft.com/partner-center/developer/update-the-nickname-for-a-subscription"
+          }
+        },
+        {
+          "name": "Get a subscription's support contact",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}/supportcontact",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "subscriptions",
+                "%7Bsubscription-id%7D",
+                "supportcontact"
+              ],
+              "query": []
+            },
+            "description": "Support contact is per SUBSCRIPTION, not per customer - two subscriptions of one customer can be supported by different partners.\nIn indirect (two-tier) CSP this is how you tell whether the reseller or the provider owns support for a subscription.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-a-subscription-s-support-contact"
+          }
+        },
+        {
+          "name": "Set a subscription's support contact",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}/supportcontact",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "subscriptions",
+                "%7Bsubscription-id%7D",
+                "supportcontact"
+              ],
+              "query": []
+            },
+            "description": "PUT, not PATCH - the body replaces the whole support contact.\nThe target partner must already have a relationship with the customer, otherwise the call is rejected.\nSet per subscription, so moving support for a customer means iterating their subscriptions.\n\nDocs: https://learn.microsoft.com/partner-center/developer/update-a-subscription-s-support-contact"
           }
         }
       ]

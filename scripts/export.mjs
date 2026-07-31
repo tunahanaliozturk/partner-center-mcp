@@ -49,7 +49,17 @@ for (const s of scenarios) {
       content: { "application/json": { schema: { type: "object", properties: Object.fromEntries(topFields(s.requestFields).map((n) => [n, { type: "string" }])) } } },
     };
   }
-  openapi.paths[key][s.method.toLowerCase()] = op;
+  const verb = s.method.toLowerCase();
+  const existing = openapi.paths[key][verb];
+  if (existing) {
+    // OpenAPI allows one operation per path+method, but the pack deliberately
+    // holds several intents on one URI - cancel, suspend, reactivate, quantity,
+    // autorenew, scheduled changes and rename are all PATCH on the
+    // subscription. Keep the first and record the rest so nothing disappears.
+    (existing["x-variants"] ??= []).push({ operationId: s.id, summary: s.title, externalDocs: { url: s.docUrl } });
+  } else {
+    openapi.paths[key][verb] = op;
+  }
 }
 
 // ---- Postman v2.1 (all scenarios, grouped by area) ----
