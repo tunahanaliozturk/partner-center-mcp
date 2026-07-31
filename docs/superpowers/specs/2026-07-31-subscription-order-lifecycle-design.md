@@ -41,8 +41,9 @@ how a software purchase is cancelled (at the order, not the subscription).
 
 ## Scope
 
-In: subscription lifecycle, order lifecycle, add-ons, New Commerce migration lifecycle, transfer
-lifecycle, and webhook-based lifecycle notification.
+In: subscription lifecycle, order lifecycle, add-ons, New Commerce migration lifecycle, and
+transfer lifecycle. (Webhook-based notification was in scope when this spec was written; it was
+built and then cut on 2026-07-31 — see section 5.)
 
 Out, deliberately:
 
@@ -135,18 +136,18 @@ the authority and the pack says so rather than restating a number that will rot.
 `makeOperationPlanTool`, that binds a map of operation → chain and selects on the argument. The six
 existing plan tools are untouched.
 
-### 5. Webhooks
+### 5. Webhooks — dropped
 
-`developer/partner-center-webhooks` and `developer/partner-center-webhook-events` are conceptual
-pages: the snapshot marks them as carrying no request syntax. Modelling them as scenarios would
-force a second entry onto the accepted-skip list in `test/pack-ratchet.test.ts`, which exists
-precisely to stop that list from growing.
+**Status: cut on 2026-07-31 by the repository owner, after being built.** A `webhooks` block was
+added to `data/reference.json` and surfaced through `pc_get_reference`, then removed again: this
+pack documents the request/response surface of the REST API, and event delivery is a different
+concern that does not belong in it. The commit that removed it is the record; nothing in the pack
+references webhooks now.
 
-They are therefore added to `data/reference.json` as a `webhooks` block — the registration
-endpoints, the event types relevant to lifecycle (`subscription-updated`, `order-created`), and the
-signature-validation requirement — and surfaced through `pc_get_reference`. This is the answer to
-"how do I learn about lifecycle changes without polling", which for a license manager matters as
-much as any single endpoint.
+The original reasoning is kept here only to explain why webhooks were never scenarios in the first
+place: `developer/partner-center-webhooks` and `developer/partner-center-webhook-events` are
+conceptual pages carrying no request syntax, so modelling them as scenarios would have forced a
+second entry onto the accepted-skip list in `test/pack-ratchet.test.ts`.
 
 ## Testing
 

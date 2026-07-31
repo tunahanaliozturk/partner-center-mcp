@@ -126,7 +126,7 @@ PORT=3000 npx -p partner-center-mcp partner-center-mcp-http
 | `pc_get_resource` | Field dictionary for resources (Customer, Subscription, Order, Invoice, migration schedules, …). |
 | `pc_whats_new` | Deprecations & deadlines (MFA enforcement, graph.windows.net, v1→v2 reconciliation, …). |
 | `pc_search_docs` | Fetch live Microsoft Learn excerpts — the fallback when the curated pack has no answer. |
-| `pc_get_reference` | Base URLs, headers, versioning, sandbox, rate limits, national-cloud differences, and webhook-driven lifecycle notification. |
+| `pc_get_reference` | Base URLs, headers, versioning, sandbox, rate limits, national-cloud differences. |
 
 Every tool ships full metadata for the calling agent: a `title`, a description that says
 when to use it *and* which sibling tool to prefer instead, a description on every input

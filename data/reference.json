@@ -17,28 +17,5 @@
   "versioning": "Resource paths are prefixed with /v1. The generatetoken (secure app model) API uses /v3. Pricing and Referrals APIs live on a separate host, https://api.partner.microsoft.com.",
   "sandbox": "Use your integration sandbox (TIP) account and its tokens while developing so you do not incur real charges. Sandbox customers created with an invalid address cannot be deleted.",
   "rateLimits": "Honor HTTP 429 responses and the Retry-After header; back off and retry. Long-running write operations may return HTTP 202 with a Location header - poll that URL for completion. Some collection endpoints (e.g. utilization) return 204 with Retry-After when data isn't ready yet.",
-  "webhooks": {
-    "registration": "Partner Center posts a signed event to a URL you register, which is the alternative to polling subscriptions for lifecycle changes. The registration API lives on its own route shape: GET /webhooks/v1/registration/events lists the events you may subscribe to, POST /webhooks/v1/registration creates a registration, GET /webhooks/v1/registration reads the current one, PUT /webhooks/v1/registration updates it, and POST /webhooks/v1/registration/validationEvents sends a test event. Note the ordering - it is /webhooks/v1/..., not /v1/webhooks/....",
-    "latency": "There is a delay of UP TO 48 HOURS between a subscription changing and the subscription-updated event firing. Webhooks are therefore an eventual-consistency signal, not a confirmation: after your own write, confirm with get-subscription-provisioning-status rather than waiting for an event.",
-    "validation": "Every delivery is signed. Verify the signature against the registered certificate with the stated hash algorithm (for example SHA256) before trusting the payload. By default the signature token arrives in the Authorization header; set SignatureTokenToMsSignatureHeader true on the registration to receive it in x-ms-signature instead. Register for test-created and use the validationEvents endpoint to prove your endpoint receives events (throttled to 2 requests per minute; event data is purged after seven days).",
-    "events": [
-      { "name": "subscription-updated", "purpose": "A subscription changed: quantity, status, autorenew, or an applied scheduled change. Up to 48 hours late." },
-      { "name": "subscription-renewed", "purpose": "A subscription renewed into its next term." },
-      { "name": "subscription-active", "purpose": "A subscription became active." },
-      { "name": "subscription-pending", "purpose": "A subscription entered the pending state." },
-      { "name": "new-commerce-migration-created", "purpose": "A legacy-to-NCE migration was started." },
-      { "name": "new-commerce-migration-completed", "purpose": "A migration finished; the NCE subscription is in place." },
-      { "name": "new-commerce-migration-failed", "purpose": "A migration failed - read get-migration-events for the reason." },
-      { "name": "create-new-commerce-migration-schedule", "purpose": "A migration was scheduled for later." },
-      { "name": "new-commerce-migration-schedule-failed", "purpose": "A scheduled migration failed when it ran." },
-      { "name": "create-transfer", "purpose": "A transfer of billing ownership was created against one of your customers." },
-      { "name": "update-transfer", "purpose": "A pending transfer changed." },
-      { "name": "complete-transfer", "purpose": "A transfer completed; ownership has moved." },
-      { "name": "expire-transfer", "purpose": "A pending transfer expired without a response." },
-      { "name": "transfer-failed", "purpose": "A transfer failed." },
-      { "name": "test-created", "purpose": "The self-onboarding test event; register for it to validate your endpoint." }
-    ],
-    "docUrl": "https://learn.microsoft.com/partner-center/developer/partner-center-webhooks"
-  },
   "nationalClouds": "Pick the base URL AND login authority for the customer's cloud; tokens are not portable across clouds. Commercial: base https://api.partnercenter.microsoft.com, authority https://login.microsoftonline.com. US Gov: same base URL as commercial (https://api.partnercenter.microsoft.com) but authority https://login.microsoftonline.us. China (21Vianet): base https://partner.partnercenterapi.microsoftonline.cn, authority https://login.partner.microsoftonline.cn. Pricing & Referrals APIs live on a separate host for all clouds: https://api.partner.microsoft.com. Some resources are not available in every cloud - e.g. the Agreements (MCA confirmation) resource is public-cloud only, and GDAP is unavailable in China."
 }

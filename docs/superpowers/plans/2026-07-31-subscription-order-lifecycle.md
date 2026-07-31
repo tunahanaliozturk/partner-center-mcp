@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Carry the full Partner Center subscription and order lifecycle in the knowledge pack — 41 new scenarios, a lifecycle state machine, two plan tools, and webhook reference facts — so a license manager can be built against the pack without reading Microsoft Learn.
+**Goal:** Carry the full Partner Center subscription and order lifecycle in the knowledge pack — 41 new scenarios, a lifecycle state machine and two plan tools (Task 13's webhook facts were later cut) — so a license manager can be built against the pack without reading Microsoft Learn.
 
 **Architecture:** Data first, tools second. Scenarios are authored into `data/scenarios.json` in six batches, each verified against its own Microsoft Learn page by the existing `checkFields` machinery and each ratcheting `test/pack-ratchet.test.ts` upward. Only after the data lands do the three new tools (`pc_explain_lifecycle`, `pc_plan_subscription_change`, `pc_plan_order_lifecycle`) get built on top of it. Nothing calls Partner Center at runtime; every tool stays `OFFLINE`.
 
@@ -1239,7 +1239,11 @@ git commit -m "feat(tools): plan subscription changes and the order lifecycle"
 
 ---
 
-### Task 13: Webhook reference facts
+### Task 13: Webhook reference facts — DONE, THEN REVERTED
+
+> Built as written, then cut on 2026-07-31 at the repository owner's request: the pack documents the
+> REST request/response surface only, and event delivery is out of that scope. The steps below are
+> kept as the record of what was done and undone; do not re-run them.
 
 **Files:**
 - Modify: `data/reference.json`
