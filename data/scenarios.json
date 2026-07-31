@@ -2834,6 +2834,188 @@
       ],
       "docUrl": "https://learn.microsoft.com/graph/api/group-assignlicense?view=graph-rest-1.0",
       "lastVerified": "2026-06-28"
+    },
+    {
+      "id": "change-subscription-quantity",
+      "area": "subscriptions",
+      "title": "Change the seat count of a subscription",
+      "method": "PATCH",
+      "path": "/v1/customers/{customer-id}/subscriptions/{subscription-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "Subscription",
+      "requestFields": [
+        { "name": "(full Subscription resource)", "type": "Subscription", "required": true, "note": "GET the subscription, mutate, then PATCH the whole object back" },
+        { "name": "quantity", "type": "int", "required": true, "note": "the new total seat count, not a delta" }
+      ],
+      "responseShape": "Subscription",
+      "examples": {
+        "curl": "curl -X PATCH -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d @subscription.json \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}\"",
+        "csharp": "var req = new HttpRequestMessage(HttpMethod.Patch, $\"/v1/customers/{customerId}/subscriptions/{subscriptionId}\") { Content = content };\nvar res = await http.SendAsync(req);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/subscriptions/${subscriptionId}`, { method: \"PATCH\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "Increases are accepted at any point in the term and are prorated; DECREASES are only accepted while the subscription's cancellationAllowedUntilDate is still in the future.",
+        "quantity is the new total, not the number of seats being added.",
+        "Seat reduction is not supported at all while the subscription is suspended - the response's refundableQuantity is null in that state.",
+        "This is a full-resource PATCH: omitting autoRenewEnabled silently resets it to false."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/change-the-quantity-of-a-subscription",
+      "lastVerified": "2026-07-31"
+    },
+    {
+      "id": "cancel-subscription",
+      "area": "subscriptions",
+      "title": "Cancel a new commerce or Marketplace subscription",
+      "method": "PATCH",
+      "path": "/v1/customers/{customer-id}/subscriptions/{subscription-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "Subscription",
+      "requestFields": [
+        { "name": "(full Subscription resource)", "type": "Subscription", "required": true, "note": "GET the subscription, mutate, then PATCH the whole object back" },
+        { "name": "status", "type": "string", "required": true, "note": "set to \"deleted\" to cancel; active | suspended | deleted are the accepted values" }
+      ],
+      "responseShape": "Subscription",
+      "examples": {
+        "curl": "curl -X PATCH -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d '{\"Status\":\"deleted\"}' \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}\"",
+        "csharp": "var req = new HttpRequestMessage(HttpMethod.Patch, $\"/v1/customers/{customerId}/subscriptions/{subscriptionId}\") { Content = content };\nvar res = await http.SendAsync(req);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/subscriptions/${subscriptionId}`, { method: \"PATCH\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body: JSON.stringify({ Status: \"deleted\" }) });"
+      },
+      "gotchas": [
+        "Only accepted while the subscription's cancellationAllowedUntilDate is in the future - read that field off the subscription, never assume a fixed window length.",
+        "Cancellation is a full-resource PATCH with status \"deleted\"; there is no DELETE verb for a subscription.",
+        "The refund you get is described by the subscription's refundOptions; check it before cancelling.",
+        "Software subscriptions and perpetual software cancel at the ORDER, not here - use cancel-software-purchase."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/cancel-an-azure-marketplace-subscription",
+      "lastVerified": "2026-07-31"
+    },
+    {
+      "id": "suspend-subscription",
+      "area": "subscriptions",
+      "title": "Suspend a subscription",
+      "method": "PATCH",
+      "path": "/v1/customers/{customer-id}/subscriptions/{subscription-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "Subscription",
+      "requestFields": [
+        { "name": "(full Subscription resource)", "type": "Subscription", "required": true, "note": "GET the subscription, mutate, then PATCH the whole object back" },
+        { "name": "status", "type": "string", "required": true, "note": "set to \"suspended\"" }
+      ],
+      "responseShape": "Subscription",
+      "examples": {
+        "curl": "curl -X PATCH -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d '{\"Status\":\"suspended\"}' \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}\"",
+        "csharp": "var req = new HttpRequestMessage(HttpMethod.Patch, $\"/v1/customers/{customerId}/subscriptions/{subscriptionId}\") { Content = content };\nvar res = await http.SendAsync(req);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/subscriptions/${subscriptionId}`, { method: \"PATCH\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body: JSON.stringify({ Status: \"suspended\" }) });"
+      },
+      "gotchas": [
+        "Suspension stops the service for the customer; it is NOT a cancellation and does not end billing - only cancelling inside the cancellation window does that.",
+        "Seat count cannot be changed while suspended: the response's refundableQuantity comes back null.",
+        "Reactivate with reactivate-subscription (status active); read suspensionReasons first, because a Microsoft-set reason is not cleared by the partner."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/suspend-a-subscription",
+      "lastVerified": "2026-07-31"
+    },
+    {
+      "id": "reactivate-subscription",
+      "area": "subscriptions",
+      "title": "Reactivate a suspended subscription",
+      "method": "PATCH",
+      "path": "/v1/customers/{customer-id}/subscriptions/{subscription-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "Subscription",
+      "requestFields": [
+        { "name": "(full Subscription resource)", "type": "Subscription", "required": true, "note": "GET the subscription, mutate, then PATCH the whole object back" },
+        { "name": "status", "type": "string", "required": true, "note": "set to \"active\"" }
+      ],
+      "responseShape": "Subscription",
+      "examples": {
+        "curl": "curl -X PATCH -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d '{\"Status\":\"active\"}' \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}\"",
+        "csharp": "var req = new HttpRequestMessage(HttpMethod.Patch, $\"/v1/customers/{customerId}/subscriptions/{subscriptionId}\") { Content = content };\nvar res = await http.SendAsync(req);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/subscriptions/${subscriptionId}`, { method: \"PATCH\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body: JSON.stringify({ Status: \"active\" }) });"
+      },
+      "gotchas": [
+        "Only valid from the suspended state; a cancelled (deleted) subscription cannot be reactivated - it has to be repurchased.",
+        "Check suspensionReasons first: a subscription suspended by Microsoft (for example for non-payment or fraud) stays suspended until that underlying reason clears.",
+        "This is a full-resource PATCH: include autoRenewEnabled or it resets to false."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/reactivate-a-suspended-a-subscription",
+      "lastVerified": "2026-07-31"
+    },
+    {
+      "id": "cancel-software-purchase",
+      "area": "orders",
+      "title": "Cancel a software subscription or perpetual software purchase",
+      "method": "PATCH",
+      "path": "/v1/customers/{customer-id}/orders/{order-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "Order",
+      "requestFields": [
+        { "name": "id", "type": "string", "required": true, "note": "the order id being cancelled" },
+        { "name": "status", "type": "string", "required": true, "note": "set to \"cancelled\"" },
+        { "name": "lineItems", "type": "OrderLineItem[]", "required": false, "note": "optional; list only the line items to cancel (lineItemNumber + offerId). Omit to cancel the whole order." }
+      ],
+      "responseShape": "Order",
+      "examples": {
+        "curl": "curl -X PATCH -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d '{\"id\":\"{order-id}\",\"status\":\"cancelled\"}' \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/orders/{order-id}\"",
+        "csharp": "var req = new HttpRequestMessage(HttpMethod.Patch, $\"/v1/customers/{customerId}/orders/{orderId}\") { Content = content };\nvar res = await http.SendAsync(req);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/orders/${orderId}`, { method: \"PATCH\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body: JSON.stringify({ id: orderId, status: \"cancelled\" }) });"
+      },
+      "gotchas": [
+        "Software subscriptions and perpetual software cancel at the ORDER, not through the subscription PATCH - cancel-subscription does not apply to them.",
+        "Only accepted while the purchase is still inside its cancellation window, counted from the purchase date; self-service, no support ticket needed.",
+        "A cancelled line item comes back with quantity 0. If other line items survive, the ORDER's status stays \"completed\", not \"cancelled\" - assert on the line item, not the order."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/cancel-software-purchases",
+      "lastVerified": "2026-07-31"
+    },
+    {
+      "id": "cancel-order-sandbox",
+      "area": "orders",
+      "title": "Cancel an order in the integration sandbox",
+      "method": "PATCH",
+      "path": "/v1/customers/{customer-id}/orders/{order-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "Order",
+      "requestFields": [
+        { "name": "id", "type": "string", "required": true, "note": "the order id being cancelled" },
+        { "name": "status", "type": "string", "required": true, "note": "set to \"cancelled\"" }
+      ],
+      "responseShape": "Order",
+      "examples": {
+        "curl": "curl -X PATCH -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d '{\"id\":\"{order-id}\",\"status\":\"cancelled\"}' \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/orders/{order-id}\"",
+        "csharp": "var req = new HttpRequestMessage(HttpMethod.Patch, $\"/v1/customers/{customerId}/orders/{orderId}\") { Content = content };\nvar res = await http.SendAsync(req);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/orders/${orderId}`, { method: \"PATCH\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body: JSON.stringify({ id: orderId, status: \"cancelled\" }) });"
+      },
+      "gotchas": [
+        "Integration sandbox (TIP) only - this is a test-account cleanup path, not a production cancellation. In production use cancel-subscription or cancel-software-purchase.",
+        "Same URI as cancel-software-purchase; what differs is the account it is legal in."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/cancel-an-order-from-the-integration-sandbox",
+      "lastVerified": "2026-07-31"
     }
   ]
 }
