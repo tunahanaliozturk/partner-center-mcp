@@ -68,6 +68,8 @@ const HAPPY: Record<string, Record<string, unknown>> = {
   pc_build_request: { id: "get-invoices" },
   pc_decode_error: { error: "{\"code\":\"900400\"}" },
   pc_plan_transfer: {},
+  pc_plan_subscription_change: { operation: "cancel" },
+  pc_plan_order_lifecycle: {},
   pc_plan_gdap_onboarding: {},
   pc_plan_reconciliation: {},
   pc_plan_csp_onboarding: {},
