@@ -3782,6 +3782,261 @@
       ],
       "docUrl": "https://learn.microsoft.com/partner-center/developer/cancel-a-new-commerce-migration-schedule",
       "lastVerified": "2026-07-31"
+    },
+    {
+      "id": "list-customer-transfers",
+      "area": "subscriptions",
+      "title": "List a customer's transfers",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/transfers",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "TransferEntity collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/transfers\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/transfers\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/transfers`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Shows transfers from both sides - the ones this partner created as target and the ones awaiting its response as source; read status to tell them apart.",
+        "A pending transfer is the thing that blocks other lifecycle writes on the affected subscriptions; check here before diagnosing a mysterious rejection.",
+        "For one transfer's detail use get-transfer."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-all-of-a-customer-s-transfers",
+      "lastVerified": "2026-07-31"
+    },
+    {
+      "id": "create-legacy-transfer",
+      "area": "subscriptions",
+      "title": "Create a transfer for legacy subscriptions",
+      "method": "POST",
+      "path": "/v1/customers/{customer-id}/transfers",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "TransferEntity",
+      "requestFields": [
+        { "name": "lineItems", "type": "TransferLineItem[]", "required": true, "note": "the legacy subscriptions being transferred" },
+        { "name": "customerName", "type": "string", "required": false },
+        { "name": "partnerTenantId", "type": "string (guid)", "required": false, "note": "the source partner" },
+        { "name": "transferType", "type": "string", "required": false, "note": "legacy transfer; New Commerce uses transferType 3 - see create-transfer" }
+      ],
+      "responseShape": "TransferEntity",
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d @transfer.json \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/transfers\"",
+        "csharp": "var res = await http.PostAsync($\"/v1/customers/{customerId}/transfers\", content);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/transfers`, { method: \"POST\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "LEGACY subscriptions only. Microsoft's guidance is to migrate to New Commerce first; a New Commerce transfer goes through create-transfer with transferType 3.",
+        "Created by the TARGET (new) partner; the source partner then accepts or rejects it.",
+        "Same URI as create-transfer - the transfer type in the body is what makes it legacy."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/create-a-transfer-legacy",
+      "lastVerified": "2026-07-31"
+    },
+    {
+      "id": "accept-transfer",
+      "area": "subscriptions",
+      "title": "Accept a transfer",
+      "method": "POST",
+      "path": "/v1/customers/{customer-id}/transfers/{transfer-id}/accept",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "TransferEntity",
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/transfers/{transfer-id}/accept\"",
+        "csharp": "var res = await http.PostAsync($\"/v1/customers/{customerId}/transfers/{transferId}/accept\", null);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/transfers/${transferId}/accept`, { method: \"POST\", headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Called by the SOURCE partner on a transfer the target partner created with create-transfer / create-legacy-transfer.",
+        "Accepting is what actually moves billing ownership; poll get-transfer until the status leaves InProgress.",
+        "To decline instead use reject-transfer (a PATCH with status \"reject\")."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/accept-a-transfer",
+      "lastVerified": "2026-07-31"
+    },
+    {
+      "id": "reject-transfer",
+      "area": "subscriptions",
+      "title": "Reject a transfer",
+      "method": "PATCH",
+      "path": "/v1/customers/{customer-id}/transfers/{transfer-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "TransferEntity",
+      "requestFields": [
+        { "name": "id", "type": "string (guid)", "required": false, "note": "the transfer id" },
+        { "name": "status", "type": "string", "required": true, "note": "set to \"reject\"" }
+      ],
+      "responseShape": "TransferEntity",
+      "examples": {
+        "curl": "curl -X PATCH -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d '{\"id\":\"{transfer-id}\",\"status\":\"reject\"}' \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/transfers/{transfer-id}\"",
+        "csharp": "var req = new HttpRequestMessage(HttpMethod.Patch, $\"/v1/customers/{customerId}/transfers/{transferId}\") { Content = content };\nvar res = await http.SendAsync(req);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/transfers/${transferId}`, { method: \"PATCH\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body: JSON.stringify({ id: transferId, status: \"reject\" }) });"
+      },
+      "gotchas": [
+        "Called by the SOURCE partner; the accepting counterpart is accept-transfer, which is a POST to a different route.",
+        "Same URI as update-transfer - what differs is the status value in the body.",
+        "Rejecting leaves the subscriptions with the current partner unchanged."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/reject-a-transfer",
+      "lastVerified": "2026-07-31"
+    },
+    {
+      "id": "update-transfer",
+      "area": "subscriptions",
+      "title": "Update or cancel a pending transfer",
+      "method": "PATCH",
+      "path": "/v1/customers/{customer-id}/transfers/{transfer-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "TransferEntity",
+      "requestFields": [
+        { "name": "id", "type": "string (guid)", "required": false, "note": "the transfer id" },
+        { "name": "status", "type": "string", "required": true, "note": "\"Cancel\" to cancel a pending transfer" }
+      ],
+      "responseShape": "TransferEntity",
+      "examples": {
+        "curl": "curl -X PATCH -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d '{\"id\":\"{transfer-id}\",\"status\":\"Cancel\"}' \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/transfers/{transfer-id}\"",
+        "csharp": "var req = new HttpRequestMessage(HttpMethod.Patch, $\"/v1/customers/{customerId}/transfers/{transferId}\") { Content = content };\nvar res = await http.SendAsync(req);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/transfers/${transferId}`, { method: \"PATCH\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body: JSON.stringify({ id: transferId, status: \"Cancel\" }) });"
+      },
+      "gotchas": [
+        "A transfer can only be cancelled while it is PENDING, and only by the target partner that created it.",
+        "Same URI as reject-transfer; \"Cancel\" is the creating partner backing out, \"reject\" is the source partner declining.",
+        "Once a transfer completes it cannot be undone here - the subscriptions have to be transferred back."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/update-a-transfer",
+      "lastVerified": "2026-07-31"
+    },
+    {
+      "id": "withdraw-transfer",
+      "area": "subscriptions",
+      "title": "Withdraw a transfer",
+      "method": "DELETE",
+      "path": "/v1/customers/{customer-id}/transfers/{transfer-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": null,
+      "examples": {
+        "curl": "curl -X DELETE -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/transfers/{transfer-id}\"",
+        "csharp": "var res = await http.DeleteAsync($\"/v1/customers/{customerId}/transfers/{transferId}\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/transfers/${transferId}`, { method: \"DELETE\", headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "The only DELETE in the transfer lifecycle; accept is a POST and reject/cancel are PATCHes on the same resource.",
+        "Only the partner that created the transfer can withdraw it, and only while it is still pending."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/withdraw-a-transfer",
+      "lastVerified": "2026-07-31"
+    },
+    {
+      "id": "update-subscription-nickname",
+      "area": "subscriptions",
+      "title": "Rename a subscription (nickname)",
+      "method": "PATCH",
+      "path": "/v1/customers/{customer-id}/subscriptions/{subscription-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "Subscription",
+      "requestFields": [
+        { "name": "(full Subscription resource)", "type": "Subscription", "required": true, "note": "GET the subscription, mutate, then PATCH the whole object back" },
+        { "name": "friendlyName", "type": "string", "required": true, "note": "the field Partner Center calls the subscription nickname" }
+      ],
+      "responseShape": "Subscription",
+      "examples": {
+        "curl": "curl -X PATCH -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d @subscription.json \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}\"",
+        "csharp": "var req = new HttpRequestMessage(HttpMethod.Patch, $\"/v1/customers/{customerId}/subscriptions/{subscriptionId}\") { Content = content };\nvar res = await http.SendAsync(req);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/subscriptions/${subscriptionId}`, { method: \"PATCH\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "The API field is friendlyName; \"nickname\" is only what the Partner Center UI calls it.",
+        "Cosmetic, but still a full-resource PATCH: include autoRenewEnabled or it resets to false.",
+        "The name is partner-facing disambiguation only - it does not change what the customer is billed for."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/update-the-nickname-for-a-subscription",
+      "lastVerified": "2026-07-31"
+    },
+    {
+      "id": "get-subscription-support-contact",
+      "area": "subscriptions",
+      "title": "Get a subscription's support contact",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/subscriptions/{subscription-id}/supportcontact",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "SupportContact",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}/supportcontact\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/subscriptions/{subscriptionId}/supportcontact\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/subscriptions/${subscriptionId}/supportcontact`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Support contact is per SUBSCRIPTION, not per customer - two subscriptions of one customer can be supported by different partners.",
+        "In indirect (two-tier) CSP this is how you tell whether the reseller or the provider owns support for a subscription."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-subscription-s-support-contact",
+      "lastVerified": "2026-07-31"
+    },
+    {
+      "id": "update-subscription-support-contact",
+      "area": "subscriptions",
+      "title": "Set a subscription's support contact",
+      "method": "PUT",
+      "path": "/v1/customers/{customer-id}/subscriptions/{subscription-id}/supportcontact",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "SupportContact",
+      "requestFields": [
+        { "name": "supportTenantId", "type": "string (guid)", "required": true, "note": "tenant of the partner taking over support" },
+        { "name": "supportMpnId", "type": "string", "required": true, "note": "that partner's MPN id" },
+        { "name": "name", "type": "string", "required": false }
+      ],
+      "responseShape": "SupportContact",
+      "examples": {
+        "curl": "curl -X PUT -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d '{\"supportTenantId\":\"...\",\"supportMpnId\":\"...\"}' \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}/supportcontact\"",
+        "csharp": "var res = await http.PutAsync($\"/v1/customers/{customerId}/subscriptions/{subscriptionId}/supportcontact\", content);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/subscriptions/${subscriptionId}/supportcontact`, { method: \"PUT\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "PUT, not PATCH - the body replaces the whole support contact.",
+        "The target partner must already have a relationship with the customer, otherwise the call is rejected.",
+        "Set per subscription, so moving support for a customer means iterating their subscriptions."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/update-a-subscription-s-support-contact",
+      "lastVerified": "2026-07-31"
     }
   ]
 }

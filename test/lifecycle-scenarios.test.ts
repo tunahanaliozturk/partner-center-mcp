@@ -94,3 +94,22 @@ test("cancelling a migration schedule is a POST to /cancel, not a DELETE", () =>
   expect(s.method).toBe("POST");
   expect(s.path).toMatch(/\/cancel$/);
 });
+
+test("batch F: the transfer lifecycle is complete on both sides", () => {
+  for (const id of [
+    "accept-transfer", "reject-transfer", "withdraw-transfer", "update-transfer",
+    "list-customer-transfers", "create-legacy-transfer", "update-subscription-nickname",
+    "get-subscription-support-contact", "update-subscription-support-contact",
+  ]) {
+    expect(byId.has(id), id).toBe(true);
+  }
+});
+
+test("the legacy transfer entry says which side of the transfer calls it", () => {
+  expect(byId.get("create-legacy-transfer")!.gotchas.join(" ")).toMatch(/legacy/i);
+});
+
+test("renaming a subscription writes friendlyName, the field the docs call the nickname", () => {
+  const fields = byId.get("update-subscription-nickname")!.requestFields?.map((f) => f.name) ?? [];
+  expect(fields).toEqual(expect.arrayContaining(["friendlyName"]));
+});

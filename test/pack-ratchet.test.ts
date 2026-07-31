@@ -38,6 +38,6 @@ test("every scenario but the known conceptual-page skip is verified against the 
   expect(noSyntax.map((f) => f.ref)).toEqual(["get-invoice-billed-lineitems"]);
 
   const skipped = unreadable.length + noSyntax.length + unverified.length;
-  expect(knowledge.scenarios.length).toBe(128);
-  expect(knowledge.scenarios.length - skipped).toBe(127);
+  expect(knowledge.scenarios.length).toBe(137);
+  expect(knowledge.scenarios.length - skipped).toBe(136);
 });
