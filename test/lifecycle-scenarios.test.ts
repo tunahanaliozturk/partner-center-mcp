@@ -39,3 +39,17 @@ test("scheduled changes state the autorenew precondition and both instruction sh
   const fields = s.requestFields?.map((f) => f.name) ?? [];
   expect(fields).toEqual(expect.arrayContaining(["scheduledNextTermInstructions", "scheduledActions"]));
 });
+
+test("batch C: upgrade and conversion paths are addressable", () => {
+  for (const id of [
+    "get-subscription-upgrades", "get-subscription-transitions", "convert-trial-subscription",
+    "get-trial-conversion-offers", "get-product-upgrade-eligibility", "get-product-upgrade-status",
+  ]) {
+    expect(byId.has(id), id).toBe(true);
+  }
+});
+
+test("the legacy upgrade path is distinguished from the NCE transition path", () => {
+  expect(byId.get("get-subscription-upgrades")!.gotchas.join(" ")).toMatch(/legacy/i);
+  expect(byId.get("get-subscription-transitions")!.gotchas.join(" ")).toContain("transitionEligibilities");
+});

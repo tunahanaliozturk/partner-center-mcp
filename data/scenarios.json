@@ -3140,6 +3140,176 @@
       ],
       "docUrl": "https://learn.microsoft.com/partner-center/developer/custom-term-end-dates",
       "lastVerified": "2026-07-31"
+    },
+    {
+      "id": "get-subscription-upgrades",
+      "area": "subscriptions",
+      "title": "Get the upgrades available for a legacy subscription",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/subscriptions/{subscription-id}/upgrades",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "Upgrade collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}/upgrades\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/subscriptions/{subscriptionId}/upgrades\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/subscriptions/${subscriptionId}/upgrades`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "This is the LEGACY upgrade path. New Commerce subscriptions use get-subscription-transition-eligibilities followed by create-subscription-transition instead.",
+        "The same page documents POST on the target subscription's /upgrades route to perform the upgrade; the GET only lists what is possible.",
+        "An empty list means no upgrade path exists for that offer - it is not an error."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/transition-a-subscription",
+      "lastVerified": "2026-07-31"
+    },
+    {
+      "id": "get-subscription-transitions",
+      "area": "subscriptions",
+      "title": "Get the transition history of a subscription (NCE)",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/subscriptions/{subscription-id}/transitions",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "Transition collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}/transitions\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/subscriptions/{subscriptionId}/transitions\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/subscriptions/${subscriptionId}/transitions`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Returns transition HISTORY and status, not eligibility - eligibility comes from transitionEligibilities (get-subscription-transition-eligibilities).",
+        "Poll this after create-subscription-transition to see whether the transition completed; the optional operation-id query narrows it to one transition.",
+        "Distinct from the legacy /upgrades route (get-subscription-upgrades)."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-transitions",
+      "lastVerified": "2026-07-31"
+    },
+    {
+      "id": "get-trial-conversion-offers",
+      "area": "subscriptions",
+      "title": "Get the paid offers a trial subscription can convert into",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/subscriptions/{subscription-id}/conversions",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "Conversion collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}/conversions\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/subscriptions/{subscriptionId}/conversions\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/subscriptions/${subscriptionId}/conversions`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Legacy trials only; a New Commerce trial converts through the transition API (get-subscription-transition-eligibilities + create-subscription-transition).",
+        "Each returned offer carries a default quantity equal to the trial's seat count - override it on the POST if the customer wants a different number.",
+        "The subscription id must be the TRIAL subscription."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-trial-conversion-offers",
+      "lastVerified": "2026-07-31"
+    },
+    {
+      "id": "convert-trial-subscription",
+      "area": "subscriptions",
+      "title": "Convert a trial subscription to paid",
+      "method": "POST",
+      "path": "/v1/customers/{customer-id}/subscriptions/{subscription-id}/conversions",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "Conversion",
+      "requestFields": [
+        { "name": "offerId", "type": "string", "required": true, "note": "the trial offer, from get-trial-conversion-offers" },
+        { "name": "targetOfferId", "type": "string", "required": true, "note": "the paid offer to convert into" },
+        { "name": "orderId", "type": "string", "required": false, "note": "the trial's order id" },
+        { "name": "quantity", "type": "int", "required": false, "note": "defaults to the trial's seat count" },
+        { "name": "billingCycle", "type": "string", "required": false, "note": "see the billingCycle enum" }
+      ],
+      "responseShape": "ConversionResult",
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d '{\"OfferId\":\"...\",\"TargetOfferId\":\"...\",\"Quantity\":25}' \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}/conversions\"",
+        "csharp": "var res = await http.PostAsync($\"/v1/customers/{customerId}/subscriptions/{subscriptionId}/conversions\", content);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/subscriptions/${subscriptionId}/conversions`, { method: \"POST\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "Take offerId and targetOfferId from get-trial-conversion-offers rather than composing them yourself.",
+        "Legacy trials only - New Commerce trials convert via create-subscription-transition.",
+        "Converting does not create a second subscription: the trial becomes the paid subscription, so the subscription id stays the same."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/convert-a-trial-subscription-to-paid",
+      "lastVerified": "2026-07-31"
+    },
+    {
+      "id": "get-product-upgrade-eligibility",
+      "area": "subscriptions",
+      "title": "Check eligibility for an Azure plan product upgrade",
+      "method": "POST",
+      "path": "/v1/productUpgrades/eligibility",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "ProductUpgradeRequest",
+      "requestFields": [
+        { "name": "customerId", "type": "string (guid)", "required": true, "note": "the customer being checked" },
+        { "name": "productFamily", "type": "string", "required": true, "note": "e.g. \"azure\"" }
+      ],
+      "responseShape": "ProductUpgradesEligibility",
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d '{\"customerId\":\"{customer-id}\",\"productFamily\":\"azure\"}' \"https://api.partnercenter.microsoft.com/v1/productUpgrades/eligibility\"",
+        "csharp": "var res = await http.PostAsync(\"/v1/productUpgrades/eligibility\", content);",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/productUpgrades/eligibility\", { method: \"POST\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "A POST, not a GET, and it lives on the partner-wide /v1/productUpgrades route - the customer travels in the body, not the path.",
+        "Run it before create-azure-plan-upgrade; the response says why an upgrade is blocked.",
+        "This is the Azure-plan upgrade, unrelated to seat-based transitions."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-eligibility-for-product-upgrade",
+      "lastVerified": "2026-07-31"
+    },
+    {
+      "id": "get-product-upgrade-status",
+      "area": "subscriptions",
+      "title": "Get the status of a product upgrade",
+      "method": "POST",
+      "path": "/v1/productUpgrades/{upgrade-id}/status",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "ProductUpgradeRequest",
+      "requestFields": [
+        { "name": "customerId", "type": "string (guid)", "required": true, "note": "the customer the upgrade belongs to" },
+        { "name": "productFamily", "type": "string", "required": true, "note": "e.g. \"azure\"" }
+      ],
+      "responseShape": "ProductUpgradeStatus",
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d '{\"customerId\":\"{customer-id}\",\"productFamily\":\"azure\"}' \"https://api.partnercenter.microsoft.com/v1/productUpgrades/{upgrade-id}/status\"",
+        "csharp": "var res = await http.PostAsync($\"/v1/productUpgrades/{upgradeId}/status\", content);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/productUpgrades/${upgradeId}/status`, { method: \"POST\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "A POST even though it only reads status, and it still needs the ProductUpgradeRequest body.",
+        "upgrade-id comes from the response of create-azure-plan-upgrade; an Azure plan upgrade is asynchronous, so poll here rather than assuming the POST finished the work."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-product-upgrade-status",
+      "lastVerified": "2026-07-31"
     }
   ]
 }
