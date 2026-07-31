@@ -56,7 +56,8 @@ for (const s of scenarios) {
     // holds several intents on one URI - cancel, suspend, reactivate, quantity,
     // autorenew, scheduled changes and rename are all PATCH on the
     // subscription. Keep the first and record the rest so nothing disappears.
-    (existing["x-variants"] ??= []).push({ operationId: s.id, summary: s.title, externalDocs: { url: s.docUrl } });
+    existing["x-variants"] ??= [];
+    existing["x-variants"].push({ operationId: s.id, summary: s.title, externalDocs: { url: s.docUrl } });
   } else {
     openapi.paths[key][verb] = op;
   }

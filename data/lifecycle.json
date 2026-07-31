@@ -1,0 +1,156 @@
+{
+  "version": "2026-07",
+  "states": ["active", "suspended", "deleted", "expired"],
+  "operations": [
+    {
+      "operation": "increase-seats",
+      "title": "Add seats to a subscription",
+      "fromStates": ["active"],
+      "toState": "active",
+      "scenarioId": "change-subscription-quantity",
+      "guard": null,
+      "errorCodes": ["2001", "2002", "800027"],
+      "notes": [
+        "Accepted at any point in the term and prorated - unlike a decrease, there is no window.",
+        "quantity is the new TOTAL seat count, not a delta.",
+        "Rejected while the subscription is suspended (2001)."
+      ]
+    },
+    {
+      "operation": "decrease-seats",
+      "title": "Remove seats from a subscription",
+      "fromStates": ["active"],
+      "toState": "active",
+      "scenarioId": "change-subscription-quantity",
+      "guard": {
+        "field": "cancellationAllowedUntilDate",
+        "condition": "must still be in the future; read it off the live subscription before attempting the change"
+      },
+      "errorCodes": ["800090", "2001", "800027"],
+      "notes": [
+        "The single most common lifecycle mistake: seat reduction is bounded by the same deadline as cancellation, while seat increase is not.",
+        "Past the deadline, schedule the smaller seat count for the next term with create-scheduled-changes.",
+        "Not supported at all while suspended - the subscription's refundableQuantity comes back null in that state."
+      ]
+    },
+    {
+      "operation": "upgrade",
+      "title": "Move to a different offer (NCE transition)",
+      "fromStates": ["active"],
+      "toState": "active",
+      "scenarioId": "create-subscription-transition",
+      "guard": {
+        "field": "transitionEligibilities",
+        "condition": "the target must appear in get-subscription-transition-eligibilities; use the catalogItemId it returns as toCatalogItemId"
+      },
+      "errorCodes": [],
+      "notes": [
+        "New Commerce path. Legacy subscriptions use the /upgrades route instead - see get-subscription-upgrades.",
+        "eligibilityType=immediate transitions now; eligibilityType=scheduled targets the next term.",
+        "transitionType decides whether assigned user licenses move with the subscription.",
+        "Poll get-subscription-transitions afterwards - a transition is asynchronous."
+      ]
+    },
+    {
+      "operation": "cancel",
+      "title": "Cancel a subscription",
+      "fromStates": ["active", "suspended"],
+      "toState": "deleted",
+      "scenarioId": "cancel-subscription",
+      "guard": {
+        "field": "cancellationAllowedUntilDate",
+        "condition": "must still be in the future; the refund on offer is described by refundOptions"
+      },
+      "errorCodes": ["900117", "900213", "800063", "900279"],
+      "notes": [
+        "A full-resource PATCH with status \"deleted\" - there is no DELETE verb for a subscription.",
+        "Past the deadline the only lever left is turning autorenew off, which lets the subscription expire at term end while still billing the current term.",
+        "Software subscriptions and perpetual software cancel at the ORDER instead - see cancel-software-purchase.",
+        "Suspending is NOT cancelling: it stops service without stopping billing."
+      ]
+    },
+    {
+      "operation": "renew-change",
+      "title": "Change what the subscription renews into",
+      "fromStates": ["active"],
+      "toState": "active",
+      "scenarioId": "create-scheduled-changes",
+      "guard": {
+        "field": "autoRenewEnabled",
+        "condition": "must be true, otherwise the scheduled instructions are never applied"
+      },
+      "errorCodes": ["2054", "800093"],
+      "notes": [
+        "Term duration, billing cycle and seat count cannot change mid-term; this is how they change at the next term.",
+        "Send scheduledActions OR scheduledNextTermInstructions, never both - if both are present only scheduledActions is honoured.",
+        "For an immediate move to a different offer use the upgrade operation instead.",
+        "For legacy subscriptions the billing cycle changes on the ORDER (update-order), not here (2054)."
+      ]
+    },
+    {
+      "operation": "suspend",
+      "title": "Suspend a subscription",
+      "fromStates": ["active"],
+      "toState": "suspended",
+      "scenarioId": "suspend-subscription",
+      "guard": null,
+      "errorCodes": [],
+      "notes": [
+        "Stops service for the customer but does NOT stop billing - only cancelling inside the cancellation window does that.",
+        "Seat count cannot be changed while suspended.",
+        "Reversible with the reactivate operation."
+      ]
+    },
+    {
+      "operation": "reactivate",
+      "title": "Reactivate a suspended subscription",
+      "fromStates": ["suspended"],
+      "toState": "active",
+      "scenarioId": "reactivate-subscription",
+      "guard": {
+        "field": "suspensionReasons",
+        "condition": "must not contain a Microsoft-set reason; a subscription suspended by Microsoft stays suspended until that reason clears"
+      },
+      "errorCodes": ["800091"],
+      "notes": [
+        "Only valid from suspended. A cancelled (deleted) subscription cannot be reactivated - it has to be repurchased.",
+        "Reactivation restores service; the subscription was billed throughout the suspension."
+      ]
+    },
+    {
+      "operation": "migrate",
+      "title": "Migrate a legacy subscription to New Commerce",
+      "fromStates": ["active"],
+      "toState": "active",
+      "scenarioId": "migrate-to-new-commerce",
+      "guard": {
+        "field": "isEligible",
+        "condition": "validate-migration must return isEligible true for this subscription"
+      },
+      "errorCodes": ["900215", "900217", "900219"],
+      "notes": [
+        "Base subscriptions migrate together with all active add-ons as a bundle; if any add-on is ineligible the whole bundle fails.",
+        "Asynchronous: poll get-migration, and use get-migration-events for the step-by-step trail.",
+        "To run it later rather than now use create-migration-schedule, which can also trigger at the legacy term's renewal."
+      ]
+    },
+    {
+      "operation": "transfer",
+      "title": "Move billing ownership to another partner",
+      "fromStates": ["active"],
+      "toState": "active",
+      "scenarioId": "create-transfer",
+      "guard": {
+        "field": "relationshipToPartner",
+        "condition": "the customer must already have a reseller relationship with the target partner"
+      },
+      "errorCodes": ["900400", "900131", "900145"],
+      "notes": [
+        "Created by the TARGET (new) partner; the source partner then accepts (accept-transfer) or rejects (reject-transfer).",
+        "The creating partner can back out with update-transfer status \"Cancel\" or withdraw-transfer while it is still pending.",
+        "New Commerce uses transferType 3; legacy subscriptions go through create-legacy-transfer.",
+        "A pending transfer blocks other lifecycle writes on the affected subscriptions - check list-customer-transfers when a write is rejected for no obvious reason."
+      ]
+    }
+  ]
+}

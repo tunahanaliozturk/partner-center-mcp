@@ -39,7 +39,7 @@ test("the lifecycle rejections are decodable and point at the guard field", () =
   // The cancellation-window rejections must send the reader to the field that
   // decides the answer, not to a remembered number of days.
   for (const code of ["900117", "900213"]) {
-    expect(byCode.get(code)!.remediation, code).toContain("cancellationAllowedUntilDate");
+    expect(byCode.get(code)?.remediation, code).toContain("cancellationAllowedUntilDate");
   }
   for (const e of k.errors) {
     for (const id of e.relatedScenarios ?? []) {

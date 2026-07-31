@@ -104,6 +104,33 @@ export const ResourcesSchema = z.object({
   })),
 });
 
+/**
+ * The subscription lifecycle as a state machine. The scenario pack answers
+ * "what is the endpoint"; this answers "what can I do to this subscription
+ * right now, and what decides that" - the question a license manager actually
+ * asks. Guards are stated as a field to READ off the live subscription rather
+ * than as a duration, because Microsoft has changed the cancellation window
+ * before and a number baked in here would quietly rot.
+ */
+export const LifecycleSchema = z.object({
+  version: z.string(),
+  states: z.array(z.string()).describe("Every state a subscription can be in."),
+  operations: z.array(z.object({
+    operation: z.string().describe("Stable operation name, e.g. \"decrease-seats\"."),
+    title: z.string().describe("Human-readable name of the operation."),
+    fromStates: z.array(z.string()).describe("States the operation is legal from."),
+    toState: z.string().describe("State the subscription is in once it succeeds."),
+    scenarioId: z.string().describe("Scenario that performs it; pass to pc_get_scenario or pc_generate_call."),
+    guard: z.union([z.object({
+      field: z.string().describe("Field to read off the live subscription before attempting the operation."),
+      condition: z.string().describe("Condition that must hold for the operation to be accepted."),
+    }), z.null()]).describe("Precondition to evaluate against the live subscription, or null when unconditional."),
+    errorCodes: z.array(z.string()).describe("Error codes returned when the guard fails; decode them with pc_lookup_error."),
+    notes: z.array(z.string()).describe("Constraints worth knowing before calling."),
+  })),
+});
+
+export type LifecycleData = z.infer<typeof LifecycleSchema>;
 export type Scenario = z.infer<typeof ScenarioSchema>;
 export type ErrorEntry = z.infer<typeof ErrorEntrySchema>;
 export type AuthData = z.infer<typeof AuthSchema>;
@@ -122,4 +149,5 @@ export interface Knowledge {
   enums: EnumsData;
   deprecations: DeprecationItem[];
   resources: ResourcesData;
+  lifecycle: LifecycleData;
 }

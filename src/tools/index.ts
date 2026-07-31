@@ -14,6 +14,7 @@ import { planPurchase } from "./planPurchase.js";
 import { getEnums } from "./getEnums.js";
 import { whatsNew } from "./whatsNew.js";
 import { getResource } from "./getResource.js";
+import { explainLifecycle } from "./explainLifecycle.js";
 import { buildRequest } from "./buildRequest.js";
 import { decodeError } from "./decodeError.js";
 import { planTransfer, planGdapOnboarding, planReconciliation, planCspOnboarding, planUserOnboarding, planUserOffboarding } from "./planWorkflows.js";
@@ -24,7 +25,7 @@ export const allTools: Tool[] = [
   generateCall, migrateFromSdk,
   lookupError, diagnose, getReference,
   validateRequest, planPurchase,
-  getEnums, whatsNew, getResource,
+  getEnums, whatsNew, getResource, explainLifecycle,
   buildRequest, decodeError,
   planTransfer, planGdapOnboarding, planReconciliation, planCspOnboarding,
   planUserOnboarding, planUserOffboarding,

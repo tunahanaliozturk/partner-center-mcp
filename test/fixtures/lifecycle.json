@@ -1,0 +1,16 @@
+{
+  "version": "test",
+  "states": ["active", "suspended", "deleted", "expired"],
+  "operations": [
+    {
+      "operation": "cancel",
+      "title": "Cancel a subscription",
+      "fromStates": ["active", "suspended"],
+      "toState": "deleted",
+      "scenarioId": "update-subscription",
+      "guard": { "field": "cancellationAllowedUntilDate", "condition": "must still be in the future" },
+      "errorCodes": [],
+      "notes": ["fixture entry"]
+    }
+  ]
+}

@@ -64,6 +64,7 @@ const HAPPY: Record<string, Record<string, unknown>> = {
   pc_get_enums: {},
   pc_whats_new: {},
   pc_get_resource: {},
+  pc_explain_lifecycle: {},
   pc_build_request: { id: "get-invoices" },
   pc_decode_error: { error: "{\"code\":\"900400\"}" },
   pc_plan_transfer: {},
