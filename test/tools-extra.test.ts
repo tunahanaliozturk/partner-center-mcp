@@ -3,6 +3,7 @@ import { loadKnowledge } from "../src/knowledge/load.js";
 import { validateRequest } from "../src/tools/validateRequest.js";
 import { planPurchase } from "../src/tools/planPurchase.js";
 import { generateCall } from "../src/tools/generateCall.js";
+import { getReference } from "../src/tools/getReference.js";
 import type { ToolContext } from "../src/types.js";
 
 const ctx: ToolContext = { knowledge: loadKnowledge("data"), docFetch: async () => ({ ok: true, excerpts: [] }) };
@@ -115,4 +116,18 @@ test("pc_generate_call now includes auth/retry helpers and notes by default", as
   const d = r.data as any;
   expect(d.helpers).toContain("getAccessToken");
   expect(d.notes.some((n: string) => /links\.next/i.test(n))).toBe(true);
+});
+
+test("pc_get_reference explains webhook-driven lifecycle notification", async () => {
+  const r = await getReference.run({ topic: "webhooks" }, ctx);
+  const data = r.data as any;
+  const names = data.events.map((e: any) => e.name);
+  // The real documented event names - there is no "order-created".
+  expect(names).toEqual(expect.arrayContaining([
+    "subscription-updated", "subscription-renewed", "new-commerce-migration-completed",
+  ]));
+  expect(data.registration).toContain("/webhooks/v1/registration");
+  // The 48-hour lag is the fact that decides whether webhooks can be trusted
+  // as a license manager's only signal. It must not be lost.
+  expect(data.latency).toMatch(/48 hours/i);
 });

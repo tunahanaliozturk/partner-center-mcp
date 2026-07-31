@@ -72,6 +72,16 @@ export const ReferenceSchema = z.object({
   sandbox: z.string(),
   rateLimits: z.string(),
   nationalClouds: z.string(),
+  // Webhooks are documented on conceptual pages that tabulate no request
+  // syntax, so they cannot be scenarios without weakening the pack ratchet.
+  // They live here instead, which keeps the facts reachable and CI honest.
+  webhooks: z.object({
+    registration: z.string(),
+    latency: z.string(),
+    validation: z.string(),
+    events: z.array(z.object({ name: z.string(), purpose: z.string() })),
+    docUrl: z.string().url(),
+  }),
 });
 
 export const EnumsSchema = z.object({

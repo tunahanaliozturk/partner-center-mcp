@@ -12,14 +12,15 @@ export const getReference: Tool = {
     "Use this for questions about the API as a whole. For a specific endpoint use pc_get_scenario, and for authentication specifics use pc_auth_guidance. " +
     "Read-only, offline, deterministic. `topic` is required and the payload shape differs per topic.",
   inputShape: {
-    topic: z.enum(["base-urls", "headers", "versioning", "sandbox", "rate-limits", "national-clouds"]).describe(
+    topic: z.enum(["base-urls", "headers", "versioning", "sandbox", "rate-limits", "national-clouds", "webhooks"]).describe(
       "Which reference topic to return. " +
       "\"base-urls\": host per API surface. " +
       "\"headers\": the headers every request should carry and why. " +
       "\"versioning\": how API versions are selected. " +
       "\"sandbox\": integration sandbox account rules. " +
       "\"rate-limits\": throttling behaviour and how to back off. " +
-      "\"national-clouds\": what differs in the sovereign clouds. Required — there is no default.",
+      "\"national-clouds\": what differs in the sovereign clouds. " +
+      "\"webhooks\": how to be notified of lifecycle changes instead of polling — the registration endpoints, the event names, the signature check, and the delivery delay. Required — there is no default.",
     ),
   },
   outputShape: envelope(z.unknown().describe(
@@ -36,6 +37,7 @@ export const getReference: Tool = {
       case "sandbox": return ok({ sandbox: ref.sandbox });
       case "rate-limits": return ok({ rateLimits: ref.rateLimits });
       case "national-clouds": return ok({ nationalClouds: ref.nationalClouds });
+      case "webhooks": return ok(ref.webhooks);
       default: return ok({});
     }
   },

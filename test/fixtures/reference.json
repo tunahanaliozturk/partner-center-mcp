@@ -4,4 +4,11 @@
   "versioning": "Paths are prefixed with /v1.",
   "sandbox": "Use the integration sandbox for testing.",
   "rateLimits": "Honor 429 Retry-After.",
-  "nationalClouds": "Pick the base URL and authority for the customer's cloud." }
+  "nationalClouds": "Pick the base URL and authority for the customer's cloud.",
+  "webhooks": {
+    "registration": "POST /webhooks/v1/registration",
+    "latency": "Up to 48 hours.",
+    "validation": "Verify the signature before trusting the payload.",
+    "events": [ { "name": "subscription-updated", "purpose": "A subscription changed." } ],
+    "docUrl": "https://learn.microsoft.com/partner-center/developer/partner-center-webhooks"
+  } }
