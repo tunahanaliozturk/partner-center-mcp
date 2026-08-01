@@ -1,5 +1,5 @@
 {
-  "version": "2026-06",
+  "version": "2026-07",
   "errors": [
     { "httpStatus": 401, "errorCode": "900420", "description": "The audience in the token is invalid and is no longer supported in Partner Center API.", "causes": ["Token requested with the retired graph.windows.net audience"], "remediation": "Request the token with resource https://api.partnercenter.microsoft.com (see the deprecate-azure-active-directory-graph-token guidance).", "docUrl": "https://learn.microsoft.com/partner-center/developer/deprecate-azure-active-directory-graph-token" },
     { "httpStatus": 403, "errorCode": "900329", "description": "This resource doesn't support application-only authentication.", "causes": ["Called an app+user-only operation with an app-only token"], "remediation": "Acquire an App+User (secure application model) token for this scenario; check the scenario's authType before calling.", "docUrl": "https://learn.microsoft.com/partner-center/developer/error-codes" },

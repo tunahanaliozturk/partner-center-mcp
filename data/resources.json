@@ -1,5 +1,5 @@
 {
-  "version": "2026-06",
+  "version": "2026-07",
   "resources": {
     "Customer": {
       "description": "A CSP customer (response of get-customer-by-id / create-customer).",

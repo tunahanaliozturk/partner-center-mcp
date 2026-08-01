@@ -1,5 +1,5 @@
 {
-  "version": "2026-06",
+  "version": "2026-07",
   "cases": [
     { "name": "decode the retired-audience error", "tool": "pc_lookup_error", "input": { "code": "900420" }, "contains": ["api.partnercenter.microsoft.com", "900420"] },
     { "name": "list includes a core scenario", "tool": "pc_list_scenarios", "input": {}, "contains": ["create-customer"] },
