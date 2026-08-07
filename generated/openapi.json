@@ -71,7 +71,16 @@
         },
         "externalDocs": {
           "url": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-customers"
-        }
+        },
+        "x-variants": [
+          {
+            "operationId": "search-customers",
+            "summary": "Search customers by company name or domain",
+            "externalDocs": {
+              "url": "https://learn.microsoft.com/partner-center/developer/get-a-customer-by-name"
+            }
+          }
+        ]
       },
       "post": {
         "operationId": "create-customer",
@@ -4001,6 +4010,273 @@
               }
             }
           }
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/profiles/company": {
+      "get": {
+        "operationId": "get-customer-company-profile",
+        "summary": "Get a customer's company profile",
+        "description": "Returns tenantId, companyName and the customer's primary domain - the domain is what you need when inviting users or checking a duplicate tenant.\nget-customer-by-id returns the same profile nested; this route is for when you only want the company block.\nThe company profile is read-only through the API; the customer changes it in their own tenant.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-a-customer-s-company-profile"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/profiles/billing": {
+      "get": {
+        "operationId": "get-customer-billing-profile",
+        "summary": "Get a customer's billing profile",
+        "description": "Read this before update-customer-billing-profile: the write is a PUT of the whole profile and needs the ETag this response carries.\nHolds the billing email, culture, language and default address - the address that address validation rules (get-country-validation-rules) apply to.\nThis is the CUSTOMER's billing profile; the partner's own is get-billing-profile.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-all-of-a-customer-s-billing-profiles"
+        }
+      },
+      "put": {
+        "operationId": "update-customer-billing-profile",
+        "summary": "Update a customer's billing profile",
+        "description": "If-Match with the ETag from the GET is REQUIRED; without it, or with a stale one, the write fails with 2055.\nPUT, not PATCH: the body replaces the profile, so send every field you want to keep.\nValidate the address against the market's rules first (get-country-validation-rules, validate-address) - a rejected address blocks transacting.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/update-a-customer-s-billing-profile"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "culture": {
+                    "type": "string"
+                  },
+                  "language": {
+                    "type": "string"
+                  },
+                  "defaultAddress": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/organization": {
+      "get": {
+        "operationId": "get-customer-organization",
+        "summary": "Get a customer's organization profile",
+        "description": "Organization-level tenant detail, distinct from the company profile returned by get-customer-company-profile.\nUseful when reconciling a customer the partner did not create, where the company profile alone is ambiguous.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-customer-organization"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/customDomains": {
+      "get": {
+        "operationId": "get-customer-custom-domains",
+        "summary": "Get a customer's custom domains",
+        "description": "Lists the domains already added to the customer tenant - check here before creating users, because a user's UPN must use one of them.\nThe onmicrosoft.com default domain is on the company profile, not necessarily in this list.\nTo register another one use add-verified-domain; to check whether a domain is free use check-domain-availability.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-customer-custom-domain"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/verifieddomain": {
+      "post": {
+        "operationId": "add-verified-domain",
+        "summary": "Add a verified domain to a customer",
+        "description": "This RECORDS a domain that is already verified; it does not perform DNS verification. Verify in the customer tenant first or the call is rejected.\nRead the current list with get-customer-custom-domains before adding, to avoid a duplicate.\nAdding a federated domain changes how the customer's users sign in - do not do it as a side effect of onboarding.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/add-a-verified-domain-for-a-customer"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "verifiedDomainName": {
+                    "type": "string"
+                  },
+                  "domain": {
+                    "type": "string"
+                  },
+                  "domainFederationSettings": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/validationStatus": {
+      "get": {
+        "operationId": "get-customer-validation-status",
+        "summary": "Get a customer's account validation status",
+        "description": "App+User credentials only - an app-only token is rejected with 900329.\ntype=account is the documented validation type; the status is what decides whether the customer may transact at all.\nA customer under review fails purchases with 800075 - check here before blaming the cart.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/retrieve-validation-status"
+        }
+      }
+    },
+    "/v1/customers/all/validations": {
+      "get": {
+        "operationId": "get-partner-validation-codes",
+        "summary": "Get the partner's Government Community Cloud validation codes",
+        "description": "US GOVERNMENT ONLY (Partner Center for Microsoft Cloud for US Government). A validation code is required to create a customer in the Government Community Cloud.\n\"all\" is a literal path segment here, not a placeholder for a customer id.\nIrrelevant in the commercial cloud - create-customer needs no validation code there.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-a-partner-s-validation-codes"
+        }
+      }
+    },
+    "/v1/countryvalidationrules/{country-code}": {
+      "get": {
+        "operationId": "get-country-validation-rules",
+        "summary": "Get address formatting rules for a market",
+        "description": "The two-character ISO country code is the path segment - the market, not a language.\nTells you which address fields are required, whether a state/region list is fixed, and the postal-code format - drive your address form from this rather than hardcoding per country.\nvalidate-address enforces these same rules; call this first if you want to fail in the UI rather than at the API.",
+        "parameters": [
+          {
+            "name": "country-code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-market-specific-validation-data"
         }
       }
     }

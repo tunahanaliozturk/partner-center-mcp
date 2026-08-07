@@ -1212,6 +1212,350 @@
             },
             "description": "The inverse of assign-user-role; the response body is empty on success.\nPart of offboarding: strip elevated directory roles before deleting the user.\nApp+User credentials only; needs the User Administrator GDAP role.\n\nDocs: https://learn.microsoft.com/partner-center/developer/remove-customer-user-from-a-role"
           }
+        },
+        {
+          "name": "Search customers by company name or domain",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers?size={size}&filter={filter}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers"
+              ],
+              "query": [
+                {
+                  "key": "size",
+                  "value": "{size}"
+                },
+                {
+                  "key": "filter",
+                  "value": "{filter}"
+                }
+              ]
+            },
+            "description": "filter is a URL-ENCODED JSON object: {\"Field\":\"CompanyName\",\"Value\":\"Cont\",\"Operator\":\"starts_with\"}. Sending it unencoded is the usual 400.\nstarts_with is the only operator this endpoint supports - there is no contains or equals.\nField accepts CompanyName or Domain.\nSame route as list-customers; that entry is the unfiltered listing.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-a-customer-by-name"
+          }
+        },
+        {
+          "name": "Get a customer's company profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/profiles/company",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "profiles",
+                "company"
+              ],
+              "query": []
+            },
+            "description": "Returns tenantId, companyName and the customer's primary domain - the domain is what you need when inviting users or checking a duplicate tenant.\nget-customer-by-id returns the same profile nested; this route is for when you only want the company block.\nThe company profile is read-only through the API; the customer changes it in their own tenant.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-a-customer-s-company-profile"
+          }
+        },
+        {
+          "name": "Get a customer's billing profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/profiles/billing",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "profiles",
+                "billing"
+              ],
+              "query": []
+            },
+            "description": "Read this before update-customer-billing-profile: the write is a PUT of the whole profile and needs the ETag this response carries.\nHolds the billing email, culture, language and default address - the address that address validation rules (get-country-validation-rules) apply to.\nThis is the CUSTOMER's billing profile; the partner's own is get-billing-profile.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-all-of-a-customer-s-billing-profiles"
+          }
+        },
+        {
+          "name": "Update a customer's billing profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              },
+              {
+                "key": "If-Match",
+                "value": "the ETag from the GET; required for concurrency detection",
+                "description": "the ETag from the GET; required for concurrency detection"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/profiles/billing",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "profiles",
+                "billing"
+              ],
+              "query": []
+            },
+            "description": "If-Match with the ETag from the GET is REQUIRED; without it, or with a stale one, the write fails with 2055.\nPUT, not PATCH: the body replaces the profile, so send every field you want to keep.\nValidate the address against the market's rules first (get-country-validation-rules, validate-address) - a rejected address blocks transacting.\n\nDocs: https://learn.microsoft.com/partner-center/developer/update-a-customer-s-billing-profile"
+          }
+        },
+        {
+          "name": "Get a customer's organization profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/organization",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "organization"
+              ],
+              "query": []
+            },
+            "description": "Organization-level tenant detail, distinct from the company profile returned by get-customer-company-profile.\nUseful when reconciling a customer the partner did not create, where the company profile alone is ambiguous.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-customer-organization"
+          }
+        },
+        {
+          "name": "Get a customer's custom domains",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/customDomains",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "customDomains"
+              ],
+              "query": []
+            },
+            "description": "Lists the domains already added to the customer tenant - check here before creating users, because a user's UPN must use one of them.\nThe onmicrosoft.com default domain is on the company profile, not necessarily in this list.\nTo register another one use add-verified-domain; to check whether a domain is free use check-domain-availability.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-customer-custom-domain"
+          }
+        },
+        {
+          "name": "Add a verified domain to a customer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/verifieddomain",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "verifieddomain"
+              ],
+              "query": []
+            },
+            "description": "This RECORDS a domain that is already verified; it does not perform DNS verification. Verify in the customer tenant first or the call is rejected.\nRead the current list with get-customer-custom-domains before adding, to avoid a duplicate.\nAdding a federated domain changes how the customer's users sign in - do not do it as a side effect of onboarding.\n\nDocs: https://learn.microsoft.com/partner-center/developer/add-a-verified-domain-for-a-customer"
+          }
+        },
+        {
+          "name": "Get a customer's account validation status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/validationStatus?type={validation-type}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "validationStatus"
+              ],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "{validation-type}"
+                }
+              ]
+            },
+            "description": "App+User credentials only - an app-only token is rejected with 900329.\ntype=account is the documented validation type; the status is what decides whether the customer may transact at all.\nA customer under review fails purchases with 800075 - check here before blaming the cart.\n\nDocs: https://learn.microsoft.com/partner-center/developer/retrieve-validation-status"
+          }
+        },
+        {
+          "name": "Get the partner's Government Community Cloud validation codes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/all/validations",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "all",
+                "validations"
+              ],
+              "query": []
+            },
+            "description": "US GOVERNMENT ONLY (Partner Center for Microsoft Cloud for US Government). A validation code is required to create a customer in the Government Community Cloud.\n\"all\" is a literal path segment here, not a placeholder for a customer id.\nIrrelevant in the commercial cloud - create-customer needs no validation code there.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-a-partner-s-validation-codes"
+          }
         }
       ]
     },
@@ -3126,6 +3470,11 @@
                 "key": "Content-Type",
                 "value": "application/json",
                 "description": "application/json"
+              },
+              {
+                "key": "If-Match",
+                "value": "the ETag from the GET; send it to make the update conditional so a concurrent change is not silently overwritten",
+                "description": "the ETag from the GET; send it to make the update conditional so a concurrent change is not silently overwritten"
               }
             ],
             "url": {
@@ -3223,6 +3572,11 @@
                 "key": "Authorization",
                 "value": "Bearer {{token}}",
                 "description": "Bearer token, audience https://graph.microsoft.com; scope DelegatedAdminRelationship.ReadWrite.All"
+              },
+              {
+                "key": "If-Match",
+                "value": "the ETag from the GET; send it to make the delete conditional so a concurrent change is not silently overwritten",
+                "description": "the ETag from the GET; send it to make the delete conditional so a concurrent change is not silently overwritten"
               }
             ],
             "url": {
@@ -5302,6 +5656,41 @@
               "query": []
             },
             "description": "Use the HEAD method - there is no response body; rely on the status code.\n404 Not Found means the domain IS available; 200 OK means it is already in use.\nThe {domain} segment is the full domain string, e.g. contoso.onmicrosoft.com.\n\nDocs: https://learn.microsoft.com/partner-center/developer/verify-domain-availability"
+          }
+        },
+        {
+          "name": "Get address formatting rules for a market",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/countryvalidationrules/{country-code}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "countryvalidationrules",
+                "%7Bcountry-code%7D"
+              ],
+              "query": []
+            },
+            "description": "The two-character ISO country code is the path segment - the market, not a language.\nTells you which address fields are required, whether a state/region list is fixed, and the postal-code format - drive your address form from this rather than hardcoding per country.\nvalidate-address enforces these same rules; call this first if you want to fail in the UI rather than at the API.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-market-specific-validation-data"
           }
         }
       ]

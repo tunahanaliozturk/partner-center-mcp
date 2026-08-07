@@ -2352,6 +2352,11 @@
           "name": "Content-Type",
           "required": true,
           "note": "application/json"
+        },
+        {
+          "name": "If-Match",
+          "required": false,
+          "note": "the ETag from the GET; send it to make the update conditional so a concurrent change is not silently overwritten"
         }
       ],
       "requestShape": "delegatedAdminAccessAssignment",
@@ -2461,6 +2466,11 @@
           "name": "Authorization",
           "required": true,
           "note": "Bearer token, audience https://graph.microsoft.com; scope DelegatedAdminRelationship.ReadWrite.All"
+        },
+        {
+          "name": "If-Match",
+          "required": false,
+          "note": "the ETag from the GET; send it to make the delete conditional so a concurrent change is not silently overwritten"
         }
       ],
       "requestShape": null,
@@ -4037,6 +4047,279 @@
       ],
       "docUrl": "https://learn.microsoft.com/partner-center/developer/update-a-subscription-s-support-contact",
       "lastVerified": "2026-07-31"
+    },
+    {
+      "id": "search-customers",
+      "area": "customers",
+      "title": "Search customers by company name or domain",
+      "method": "GET",
+      "path": "/v1/customers?size={size}&filter={filter}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "Customer collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers?size=0&filter=%7B%22Field%22%3A%22CompanyName%22%2C%22Value%22%3A%22Cont%22%2C%22Operator%22%3A%22starts_with%22%7D\"",
+        "csharp": "var filter = Uri.EscapeDataString(\"{\\\"Field\\\":\\\"CompanyName\\\",\\\"Value\\\":\\\"Cont\\\",\\\"Operator\\\":\\\"starts_with\\\"}\");\nvar res = await http.GetAsync($\"/v1/customers?size=0&filter={filter}\");",
+        "typescript": "const filter = encodeURIComponent(JSON.stringify({ Field: \"CompanyName\", Value: \"Cont\", Operator: \"starts_with\" }));\nconst res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers?size=0&filter=${filter}`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "filter is a URL-ENCODED JSON object: {\"Field\":\"CompanyName\",\"Value\":\"Cont\",\"Operator\":\"starts_with\"}. Sending it unencoded is the usual 400.",
+        "starts_with is the only operator this endpoint supports - there is no contains or equals.",
+        "Field accepts CompanyName or Domain.",
+        "Same route as list-customers; that entry is the unfiltered listing."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-customer-by-name",
+      "lastVerified": "2026-08-01"
+    },
+    {
+      "id": "get-customer-company-profile",
+      "area": "customers",
+      "title": "Get a customer's company profile",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/profiles/company",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "CustomerCompanyProfile",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/profiles/company\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/profiles/company\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/profiles/company`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Returns tenantId, companyName and the customer's primary domain - the domain is what you need when inviting users or checking a duplicate tenant.",
+        "get-customer-by-id returns the same profile nested; this route is for when you only want the company block.",
+        "The company profile is read-only through the API; the customer changes it in their own tenant."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-customer-s-company-profile",
+      "lastVerified": "2026-08-01"
+    },
+    {
+      "id": "get-customer-billing-profile",
+      "area": "customers",
+      "title": "Get a customer's billing profile",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/profiles/billing",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "CustomerBillingProfile",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/profiles/billing\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/profiles/billing\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/profiles/billing`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Read this before update-customer-billing-profile: the write is a PUT of the whole profile and needs the ETag this response carries.",
+        "Holds the billing email, culture, language and default address - the address that address validation rules (get-country-validation-rules) apply to.",
+        "This is the CUSTOMER's billing profile; the partner's own is get-billing-profile."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-all-of-a-customer-s-billing-profiles",
+      "lastVerified": "2026-08-01"
+    },
+    {
+      "id": "update-customer-billing-profile",
+      "area": "customers",
+      "title": "Update a customer's billing profile",
+      "method": "PUT",
+      "path": "/v1/customers/{customer-id}/profiles/billing",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" },
+        { "name": "If-Match", "required": true, "note": "the ETag from the GET; required for concurrency detection" }
+      ],
+      "requestShape": "CustomerBillingProfile",
+      "requestFields": [
+        { "name": "(full CustomerBillingProfile resource)", "type": "CustomerBillingProfile", "required": true, "note": "PUT replaces the profile - GET it, mutate, send it all back" },
+        { "name": "email", "type": "string", "required": false, "note": "billing contact address" },
+        { "name": "culture", "type": "string", "required": false, "note": "e.g. en-US" },
+        { "name": "language", "type": "string", "required": false },
+        { "name": "defaultAddress", "type": "Address", "required": false, "note": "must satisfy the market's rules - see get-country-validation-rules" }
+      ],
+      "responseShape": "CustomerBillingProfile",
+      "examples": {
+        "curl": "curl -X PUT -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -H 'If-Match: \"<etag>\"' -d @billing-profile.json \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/profiles/billing\"",
+        "csharp": "var req = new HttpRequestMessage(HttpMethod.Put, $\"/v1/customers/{customerId}/profiles/billing\") { Content = content };\nreq.Headers.TryAddWithoutValidation(\"If-Match\", etag);\nvar res = await http.SendAsync(req);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/profiles/billing`, { method: \"PUT\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\", \"If-Match\": etag }, body });"
+      },
+      "gotchas": [
+        "If-Match with the ETag from the GET is REQUIRED; without it, or with a stale one, the write fails with 2055.",
+        "PUT, not PATCH: the body replaces the profile, so send every field you want to keep.",
+        "Validate the address against the market's rules first (get-country-validation-rules, validate-address) - a rejected address blocks transacting."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/update-a-customer-s-billing-profile",
+      "lastVerified": "2026-08-01"
+    },
+    {
+      "id": "get-customer-organization",
+      "area": "customers",
+      "title": "Get a customer's organization profile",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/organization",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "CustomerOrganization",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/organization\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/organization\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/organization`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Organization-level tenant detail, distinct from the company profile returned by get-customer-company-profile.",
+        "Useful when reconciling a customer the partner did not create, where the company profile alone is ambiguous."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-customer-organization",
+      "lastVerified": "2026-08-01"
+    },
+    {
+      "id": "get-customer-custom-domains",
+      "area": "customers",
+      "title": "Get a customer's custom domains",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/customDomains",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "string[] (domain names)",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/customDomains\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/customDomains\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/customDomains`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Lists the domains already added to the customer tenant - check here before creating users, because a user's UPN must use one of them.",
+        "The onmicrosoft.com default domain is on the company profile, not necessarily in this list.",
+        "To register another one use add-verified-domain; to check whether a domain is free use check-domain-availability."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-customer-custom-domain",
+      "lastVerified": "2026-08-01"
+    },
+    {
+      "id": "add-verified-domain",
+      "area": "customers",
+      "title": "Add a verified domain to a customer",
+      "method": "POST",
+      "path": "/v1/customers/{customer-id}/verifieddomain",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "VerifiedDomain",
+      "requestFields": [
+        { "name": "verifiedDomainName", "type": "string", "required": true, "note": "the domain being added" },
+        { "name": "domain", "type": "object", "required": true, "note": "the domain information block" },
+        { "name": "domainFederationSettings", "type": "object", "required": false, "note": "federation configuration for the domain" }
+      ],
+      "responseShape": null,
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d @verified-domain.json \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/verifieddomain\"",
+        "csharp": "var res = await http.PostAsync($\"/v1/customers/{customerId}/verifieddomain\", content);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/verifieddomain`, { method: \"POST\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "This RECORDS a domain that is already verified; it does not perform DNS verification. Verify in the customer tenant first or the call is rejected.",
+        "Read the current list with get-customer-custom-domains before adding, to avoid a duplicate.",
+        "Adding a federated domain changes how the customer's users sign in - do not do it as a side effect of onboarding."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/add-a-verified-domain-for-a-customer",
+      "lastVerified": "2026-08-01"
+    },
+    {
+      "id": "get-customer-validation-status",
+      "area": "customers",
+      "title": "Get a customer's account validation status",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/validationStatus?type={validation-type}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "ValidationStatus",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/validationStatus?type=account\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/validationStatus?type=account\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/validationStatus?type=account`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "App+User credentials only - an app-only token is rejected with 900329.",
+        "type=account is the documented validation type; the status is what decides whether the customer may transact at all.",
+        "A customer under review fails purchases with 800075 - check here before blaming the cart."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/retrieve-validation-status",
+      "lastVerified": "2026-08-01"
+    },
+    {
+      "id": "get-partner-validation-codes",
+      "area": "customers",
+      "title": "Get the partner's Government Community Cloud validation codes",
+      "method": "GET",
+      "path": "/v1/customers/all/validations",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "ValidationCode collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/all/validations\"",
+        "csharp": "var res = await http.GetAsync(\"/v1/customers/all/validations\");",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/customers/all/validations\", { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "US GOVERNMENT ONLY (Partner Center for Microsoft Cloud for US Government). A validation code is required to create a customer in the Government Community Cloud.",
+        "\"all\" is a literal path segment here, not a placeholder for a customer id.",
+        "Irrelevant in the commercial cloud - create-customer needs no validation code there."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-partner-s-validation-codes",
+      "lastVerified": "2026-08-01"
+    },
+    {
+      "id": "get-country-validation-rules",
+      "area": "utilities",
+      "title": "Get address formatting rules for a market",
+      "method": "GET",
+      "path": "/v1/countryvalidationrules/{country-code}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "CountryValidationRules",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/countryvalidationrules/US\"",
+        "csharp": "var res = await http.GetAsync(\"/v1/countryvalidationrules/US\");",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/countryvalidationrules/US\", { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "The two-character ISO country code is the path segment - the market, not a language.",
+        "Tells you which address fields are required, whether a state/region list is fixed, and the postal-code format - drive your address form from this rather than hardcoding per country.",
+        "validate-address enforces these same rules; call this first if you want to fail in the UI rather than at the API."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-market-specific-validation-data",
+      "lastVerified": "2026-08-01"
     }
   ]
 }
