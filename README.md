@@ -86,6 +86,18 @@ PORT=3000 npx -p partner-center-mcp partner-center-mcp-http
 # MCP endpoint: POST http://localhost:3000/mcp   •   health: GET /healthz
 ```
 
+**The endpoint has no authentication of its own**, so it binds `127.0.0.1` by
+default. Request bodies are capped at 1 MiB, and a browser `Origin` has to be
+loopback or explicitly allowed, which is what keeps a random web page from
+driving your local server.
+
+| Variable | Default | What it does |
+| --- | --- | --- |
+| `PORT` | `3000` | Port to listen on. |
+| `HOST` | `127.0.0.1` | Interface to bind. Set `0.0.0.0` only behind a proxy that authenticates. |
+| `ALLOWED_ORIGINS` | none | Comma-separated browser origins allowed in addition to loopback. |
+| `MAX_BODY_BYTES` | `1048576` | Largest accepted request body. |
+
 ## Tools
 
 | Tool | Purpose |
