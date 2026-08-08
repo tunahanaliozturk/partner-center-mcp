@@ -34,3 +34,25 @@ test("the legacy offer routes say what replaced them", () => {
     expect(scenario(id).gotchas.join(" "), id).toMatch(/legacy|new commerce|get-products/i);
   }
 });
+
+test("batch Q: partner profiles, compliance, fraud and referral writes are addressable", () => {
+  for (const id of [
+    "get-partner-network-profile", "update-legal-business-profile", "update-support-profile",
+    "validate-reseller-por", "verify-reseller-mpa-status", "update-fraud-event-status",
+    "get-referral-by-id", "update-referral",
+  ]) {
+    expect(byId.has(id), id).toBe(true);
+  }
+});
+
+test("the referral writes sit on the referrals host", () => {
+  for (const id of ["get-referral-by-id", "update-referral"]) {
+    expect(scenario(id).api, id).toBe("pricing-and-referrals");
+  }
+});
+
+test("the MPN profile route without a query is distinguished from verify-mpn", () => {
+  const s = scenario("get-partner-network-profile");
+  expect(s.path).toBe("/v1/profiles/mpn");
+  expect(s.gotchas.join(" ")).toContain("verify-mpn");
+});

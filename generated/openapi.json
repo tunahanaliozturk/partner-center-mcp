@@ -46,7 +46,16 @@
         },
         "externalDocs": {
           "url": "https://learn.microsoft.com/partner-center/developer/get-partner-by-mpn-id"
-        }
+        },
+        "x-variants": [
+          {
+            "operationId": "get-partner-network-profile",
+            "summary": "Get the partner's network (MPN) profile",
+            "externalDocs": {
+              "url": "https://learn.microsoft.com/partner-center/developer/get-partner-network-profile"
+            }
+          }
+        ]
       }
     },
     "/v1/customers": {
@@ -3044,6 +3053,41 @@
         },
         "externalDocs": {
           "url": "https://learn.microsoft.com/partner-center/developer/get-legal-business-profile"
+        }
+      },
+      "put": {
+        "operationId": "update-legal-business-profile",
+        "summary": "Update the partner's legal business profile",
+        "description": "The legal business profile drives vetting and payout. Changing the address can put the account back into review, so treat it as a deliberate act rather than a data tidy-up.\nPUT replaces the profile: read it first with get-legal-business-profile and send back everything you want to keep.\nValidate the address against the market's rules before sending; a rejection leaves the profile untouched.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/update-legal-business-profile"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "address": {
+                    "type": "string"
+                  },
+                  "primaryContact": {
+                    "type": "string"
+                  },
+                  "companyName": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -6175,6 +6219,161 @@
         },
         "externalDocs": {
           "url": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-availabilities-for-a-sku-by-customer"
+        }
+      }
+    },
+    "/v1/profiles/supportprofile": {
+      "put": {
+        "operationId": "update-support-profile",
+        "summary": "Update the partner's support profile",
+        "description": "These details are surfaced to CUSTOMERS in their admin center, so a stale mailbox here is a support channel nobody is reading.\nNote the route: supportprofile as one word, unlike legalbusiness and organization.\nPer-subscription support ownership is a different thing entirely - see update-subscription-support-contact.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/update-support-profile"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "telephone": {
+                    "type": "string"
+                  },
+                  "website": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/partners/validateresellers": {
+      "post": {
+        "operationId": "validate-reseller-por",
+        "summary": "Validate a reseller partner of record",
+        "description": "Run it before naming a reseller as partner of record on an order: an invalid POR is rejected at purchase, after the cart has been built.\nAn MPN id that exists is not necessarily eligible - enrolment and agreement status both matter, and verify-reseller-mpa-status answers the agreement half.\nThe doc page writes its request URI with the protocol token twice; the real route is /v1/partners/validateresellers.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/validate-reseller-partner-of-record"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "mpnId": {
+                    "type": "string"
+                  },
+                  "customerTenantId": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/compliance/{program-name}/agreementstatus": {
+      "get": {
+        "operationId": "verify-reseller-mpa-status",
+        "summary": "Check an indirect reseller's Microsoft Partner Agreement status",
+        "description": "An indirect reseller who has not signed the Microsoft Partner Agreement cannot transact, so an indirect provider should check this before onboarding them.\nEither mpnId or tenantId identifies the reseller; supplying both narrows it when a partner has several MPN ids.\nThis is the reseller's agreement, not the customer's - customer consent is get-customer-consent.",
+        "parameters": [
+          {
+            "name": "program-name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "mpnId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tenantId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/verify-indirect-reseller-mpa-status"
+        }
+      }
+    },
+    "/v1/fraudEvents/subscription/{subscription-id}/status": {
+      "post": {
+        "operationId": "update-fraud-event-status",
+        "summary": "Update the status of an Azure fraud event",
+        "description": "Closes the loop on get-fraud-events: unresolved Azure fraud alerts keep surfacing until a status is written back.\nMarking an event resolved does not stop the consumption that triggered it - suspend the subscription or fix the compromised resource separately.\nThe route is keyed by SUBSCRIPTION, not by fraud event id.",
+        "parameters": [
+          {
+            "name": "subscription-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/update-fraud-events-status"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string"
+                  },
+                  "comment": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }

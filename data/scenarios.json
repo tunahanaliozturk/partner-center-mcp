@@ -6269,6 +6269,242 @@
       ],
       "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-availabilities-for-a-sku-by-customer",
       "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "get-partner-network-profile",
+      "area": "profiles",
+      "title": "Get the partner's network (MPN) profile",
+      "method": "GET",
+      "path": "/v1/profiles/mpn",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "MpnProfile",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/profiles/mpn\"",
+        "csharp": "var res = await http.GetAsync(\"/v1/profiles/mpn\");",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/profiles/mpn\", { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Returns the SIGNED-IN partner's own MPN profile. Adding ?mpnId= turns the same route into a lookup of somebody else's, which is verify-mpn.",
+        "This is where you read your own MPN id before quoting it in a transfer, a POR validation or a compliance check.",
+        "MPN id is now branded PLA ID in some documentation; the field name in the payload has not changed."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-partner-network-profile",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "update-legal-business-profile",
+      "area": "profiles",
+      "title": "Update the partner's legal business profile",
+      "method": "PUT",
+      "path": "/v1/profiles/legalbusiness",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "LegalBusinessProfile",
+      "requestFields": [
+        { "name": "(full LegalBusinessProfile resource)", "type": "LegalBusinessProfile", "required": true, "note": "PUT replaces the profile - GET it with get-legal-business-profile, mutate, send it all back" },
+        { "name": "address", "type": "Address", "required": false, "note": "must satisfy the market's rules - see get-country-validation-rules" },
+        { "name": "primaryContact", "type": "Contact", "required": false },
+        { "name": "companyName", "type": "string", "required": false }
+      ],
+      "responseShape": "LegalBusinessProfile",
+      "examples": {
+        "curl": "curl -X PUT -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d @legal-profile.json \"https://api.partnercenter.microsoft.com/v1/profiles/legalbusiness\"",
+        "csharp": "var res = await http.PutAsync(\"/v1/profiles/legalbusiness\", content);",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/profiles/legalbusiness\", { method: \"PUT\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "The legal business profile drives vetting and payout. Changing the address can put the account back into review, so treat it as a deliberate act rather than a data tidy-up.",
+        "PUT replaces the profile: read it first with get-legal-business-profile and send back everything you want to keep.",
+        "Validate the address against the market's rules before sending; a rejection leaves the profile untouched."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/update-legal-business-profile",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "update-support-profile",
+      "area": "profiles",
+      "title": "Update the partner's support profile",
+      "method": "PUT",
+      "path": "/v1/profiles/supportprofile",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "SupportProfile",
+      "requestFields": [
+        { "name": "(full SupportProfile resource)", "type": "SupportProfile", "required": true, "note": "PUT replaces the profile - GET it with get-support-profile, mutate, send it all back" },
+        { "name": "email", "type": "string", "required": false, "note": "shown to customers as the support contact" },
+        { "name": "telephone", "type": "string", "required": false },
+        { "name": "website", "type": "string", "required": false }
+      ],
+      "responseShape": "SupportProfile",
+      "examples": {
+        "curl": "curl -X PUT -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d @support-profile.json \"https://api.partnercenter.microsoft.com/v1/profiles/supportprofile\"",
+        "csharp": "var res = await http.PutAsync(\"/v1/profiles/supportprofile\", content);",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/profiles/supportprofile\", { method: \"PUT\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "These details are surfaced to CUSTOMERS in their admin center, so a stale mailbox here is a support channel nobody is reading.",
+        "Note the route: supportprofile as one word, unlike legalbusiness and organization.",
+        "Per-subscription support ownership is a different thing entirely - see update-subscription-support-contact."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/update-support-profile",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "validate-reseller-por",
+      "area": "security",
+      "title": "Validate a reseller partner of record",
+      "method": "POST",
+      "path": "/v1/partners/validateresellers",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "ValidateResellersRequest",
+      "requestFields": [
+        { "name": "mpnId", "type": "string", "required": true, "note": "the reseller being validated as partner of record" },
+        { "name": "customerTenantId", "type": "string (guid)", "required": false, "note": "the customer the reseller would be attached to" }
+      ],
+      "responseShape": "reseller validation result",
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d '{\"mpnId\":\"1234567\"}' \"https://api.partnercenter.microsoft.com/v1/partners/validateresellers\"",
+        "csharp": "var res = await http.PostAsync(\"/v1/partners/validateresellers\", content);",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/partners/validateresellers\", { method: \"POST\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "Run it before naming a reseller as partner of record on an order: an invalid POR is rejected at purchase, after the cart has been built.",
+        "An MPN id that exists is not necessarily eligible - enrolment and agreement status both matter, and verify-reseller-mpa-status answers the agreement half.",
+        "The doc page writes its request URI with the protocol token twice; the real route is /v1/partners/validateresellers."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/validate-reseller-partner-of-record",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "verify-reseller-mpa-status",
+      "area": "security",
+      "title": "Check an indirect reseller's Microsoft Partner Agreement status",
+      "method": "GET",
+      "path": "/v1/compliance/{program-name}/agreementstatus?mpnId={mpn-id}&tenantId={tenant-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "agreement status",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/compliance/MPA/agreementstatus?mpnId=1234567&tenantId={tenant-id}\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/compliance/MPA/agreementstatus?mpnId={mpnId}&tenantId={tenantId}\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/compliance/MPA/agreementstatus?mpnId=${mpnId}&tenantId=${tenantId}`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "An indirect reseller who has not signed the Microsoft Partner Agreement cannot transact, so an indirect provider should check this before onboarding them.",
+        "Either mpnId or tenantId identifies the reseller; supplying both narrows it when a partner has several MPN ids.",
+        "This is the reseller's agreement, not the customer's - customer consent is get-customer-consent."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/verify-indirect-reseller-mpa-status",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "update-fraud-event-status",
+      "area": "security",
+      "title": "Update the status of an Azure fraud event",
+      "method": "POST",
+      "path": "/v1/fraudEvents/subscription/{subscription-id}/status",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "FraudEventStatusUpdate",
+      "requestFields": [
+        { "name": "status", "type": "string", "required": true, "note": "the new status, e.g. Resolved or Investigating" },
+        { "name": "comment", "type": "string", "required": false, "note": "why the status changed; this is the audit trail" }
+      ],
+      "responseShape": null,
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d '{\"status\":\"Resolved\"}' \"https://api.partnercenter.microsoft.com/v1/fraudEvents/subscription/{subscription-id}/status\"",
+        "csharp": "var res = await http.PostAsync($\"/v1/fraudEvents/subscription/{subscriptionId}/status\", content);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/fraudEvents/subscription/${subscriptionId}/status`, { method: \"POST\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "Closes the loop on get-fraud-events: unresolved Azure fraud alerts keep surfacing until a status is written back.",
+        "Marking an event resolved does not stop the consumption that triggered it - suspend the subscription or fix the compromised resource separately.",
+        "The route is keyed by SUBSCRIPTION, not by fraud event id."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/update-fraud-events-status",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "get-referral-by-id",
+      "area": "referrals",
+      "title": "Get a co-sell referral by ID",
+      "method": "GET",
+      "api": "pricing-and-referrals",
+      "path": "/v1.0/engagements/referrals/{referral-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token for https://api.partner.microsoft.com; a Partner Center audience token is rejected" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "Referral",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partner.microsoft.com/v1.0/engagements/referrals/{referral-id}\"",
+        "csharp": "var res = await http.GetAsync($\"https://api.partner.microsoft.com/v1.0/engagements/referrals/{referralId}\");",
+        "typescript": "const res = await fetch(`https://api.partner.microsoft.com/v1.0/engagements/referrals/${referralId}`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Referrals live on the partner host with their own token audience, not on Partner Center.",
+        "Read the referral before update-referral: the PATCH is applied to the whole deal, so you need its current state.",
+        "Aggregate performance is get-referral-analytics, which IS on the Partner Center host."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-referral-by-id",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "update-referral",
+      "area": "referrals",
+      "title": "Update a co-sell referral",
+      "method": "PATCH",
+      "api": "pricing-and-referrals",
+      "path": "/v1.0/engagements/referrals/{referral-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token for https://api.partner.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "Referral",
+      "requestFields": [
+        { "name": "status", "type": "string", "required": false, "note": "deal progress, e.g. Accepted, Won, Lost, Declined" },
+        { "name": "substatus", "type": "string", "required": false, "note": "the reason behind the status, required by some transitions" },
+        { "name": "notes", "type": "string", "required": false },
+        { "name": "consent", "type": "object", "required": false, "note": "whether Microsoft may share the customer's details" }
+      ],
+      "responseShape": "Referral",
+      "examples": {
+        "curl": "curl -X PATCH -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d '{\"status\":\"Accepted\"}' \"https://api.partner.microsoft.com/v1.0/engagements/referrals/{referral-id}\"",
+        "csharp": "var req = new HttpRequestMessage(HttpMethod.Patch, $\"https://api.partner.microsoft.com/v1.0/engagements/referrals/{referralId}\") { Content = content };\nvar res = await http.SendAsync(req);",
+        "typescript": "const res = await fetch(`https://api.partner.microsoft.com/v1.0/engagements/referrals/${referralId}`, { method: \"PATCH\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body: JSON.stringify({ status: \"Accepted\" }) });"
+      },
+      "gotchas": [
+        "Accepting or declining a referral is time-bound: an untouched referral expires and is withdrawn, so poll get-referrals and respond.",
+        "Some status transitions require a substatus; sending status alone is rejected for those.",
+        "Partner host and partner token audience, like get-referral-by-id."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/patch-a-referral",
+      "lastVerified": "2026-08-08"
     }
   ]
 }

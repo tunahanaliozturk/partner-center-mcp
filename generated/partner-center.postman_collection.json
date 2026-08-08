@@ -5737,6 +5737,111 @@
             },
             "description": "This is the PARTNER's own profile. A customer's equivalent is get-customer-organization - the routes look alike and the mistake is expensive.\nPUT replaces the profile: read it with get-organization-profile first and send back everything you want to keep.\nValidate the address against the market rules before sending; a rejected address leaves the profile unchanged.\n\nDocs: https://learn.microsoft.com/partner-center/developer/update-an-organization-profile"
           }
+        },
+        {
+          "name": "Get the partner's network (MPN) profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/profiles/mpn",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "profiles",
+                "mpn"
+              ],
+              "query": []
+            },
+            "description": "Returns the SIGNED-IN partner's own MPN profile. Adding ?mpnId= turns the same route into a lookup of somebody else's, which is verify-mpn.\nThis is where you read your own MPN id before quoting it in a transfer, a POR validation or a compliance check.\nMPN id is now branded PLA ID in some documentation; the field name in the payload has not changed.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-partner-network-profile"
+          }
+        },
+        {
+          "name": "Update the partner's legal business profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/profiles/legalbusiness",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "profiles",
+                "legalbusiness"
+              ],
+              "query": []
+            },
+            "description": "The legal business profile drives vetting and payout. Changing the address can put the account back into review, so treat it as a deliberate act rather than a data tidy-up.\nPUT replaces the profile: read it first with get-legal-business-profile and send back everything you want to keep.\nValidate the address against the market's rules before sending; a rejection leaves the profile untouched.\n\nDocs: https://learn.microsoft.com/partner-center/developer/update-legal-business-profile"
+          }
+        },
+        {
+          "name": "Update the partner's support profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/profiles/supportprofile",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "profiles",
+                "supportprofile"
+              ],
+              "query": []
+            },
+            "description": "These details are surfaced to CUSTOMERS in their admin center, so a stale mailbox here is a support channel nobody is reading.\nNote the route: supportprofile as one word, unlike legalbusiness and organization.\nPer-subscription support ownership is a different thing entirely - see update-subscription-support-contact.\n\nDocs: https://learn.microsoft.com/partner-center/developer/update-support-profile"
+          }
         }
       ]
     },
@@ -5806,6 +5911,78 @@
               "query": []
             },
             "description": "Host is api.partner.microsoft.com. App+User only.\nCo-sell (Shared) is a two-step flow: POST the partner-led deal, then POST a Microsoft referral linked via the returned engagementId.\nFor Services co-sell, PartnerRole/SolutionArea/SolutionPlay are required under details.requirements.additionalRequirements.\n\nDocs: https://learn.microsoft.com/partner-center/developer/create-a-referral"
+          }
+        },
+        {
+          "name": "Get a co-sell referral by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token for https://api.partner.microsoft.com; a Partner Center audience token is rejected"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partner.microsoft.com/v1.0/engagements/referrals/{referral-id}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partner",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1.0",
+                "engagements",
+                "referrals",
+                "%7Breferral-id%7D"
+              ],
+              "query": []
+            },
+            "description": "Referrals live on the partner host with their own token audience, not on Partner Center.\nRead the referral before update-referral: the PATCH is applied to the whole deal, so you need its current state.\nAggregate performance is get-referral-analytics, which IS on the Partner Center host.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-a-referral-by-id"
+          }
+        },
+        {
+          "name": "Update a co-sell referral",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token for https://api.partner.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partner.microsoft.com/v1.0/engagements/referrals/{referral-id}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partner",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1.0",
+                "engagements",
+                "referrals",
+                "%7Breferral-id%7D"
+              ],
+              "query": []
+            },
+            "description": "Accepting or declining a referral is time-bound: an untouched referral expires and is withdrawn, so poll get-referrals and respond.\nSome status transitions require a substatus; sending status alone is rejected for those.\nPartner host and partner token audience, like get-referral-by-id.\n\nDocs: https://learn.microsoft.com/partner-center/developer/patch-a-referral"
           }
         }
       ]
@@ -6379,6 +6556,123 @@
               "query": []
             },
             "description": "Removes the whole policy. To keep the policy but narrow it, PUT a smaller permission set with update-selfserve-policy instead.\nAfter deletion the customer loses the self-serve purchasing the policy granted.\npolicy-id comes from list-selfserve-policies.\n\nDocs: https://learn.microsoft.com/partner-center/developer/delete-a-self-serve-policy"
+          }
+        },
+        {
+          "name": "Validate a reseller partner of record",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/partners/validateresellers",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "partners",
+                "validateresellers"
+              ],
+              "query": []
+            },
+            "description": "Run it before naming a reseller as partner of record on an order: an invalid POR is rejected at purchase, after the cart has been built.\nAn MPN id that exists is not necessarily eligible - enrolment and agreement status both matter, and verify-reseller-mpa-status answers the agreement half.\nThe doc page writes its request URI with the protocol token twice; the real route is /v1/partners/validateresellers.\n\nDocs: https://learn.microsoft.com/partner-center/developer/validate-reseller-partner-of-record"
+          }
+        },
+        {
+          "name": "Check an indirect reseller's Microsoft Partner Agreement status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/compliance/{program-name}/agreementstatus?mpnId={mpn-id}&tenantId={tenant-id}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "compliance",
+                "%7Bprogram-name%7D",
+                "agreementstatus"
+              ],
+              "query": [
+                {
+                  "key": "mpnId",
+                  "value": "{mpn-id}"
+                },
+                {
+                  "key": "tenantId",
+                  "value": "{tenant-id}"
+                }
+              ]
+            },
+            "description": "An indirect reseller who has not signed the Microsoft Partner Agreement cannot transact, so an indirect provider should check this before onboarding them.\nEither mpnId or tenantId identifies the reseller; supplying both narrows it when a partner has several MPN ids.\nThis is the reseller's agreement, not the customer's - customer consent is get-customer-consent.\n\nDocs: https://learn.microsoft.com/partner-center/developer/verify-indirect-reseller-mpa-status"
+          }
+        },
+        {
+          "name": "Update the status of an Azure fraud event",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/fraudEvents/subscription/{subscription-id}/status",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "fraudEvents",
+                "subscription",
+                "%7Bsubscription-id%7D",
+                "status"
+              ],
+              "query": []
+            },
+            "description": "Closes the loop on get-fraud-events: unresolved Azure fraud alerts keep surfacing until a status is written back.\nMarking an event resolved does not stop the consumption that triggered it - suspend the subscription or fix the compromised resource separately.\nThe route is keyed by SUBSCRIPTION, not by fraud event id.\n\nDocs: https://learn.microsoft.com/partner-center/developer/update-fraud-events-status"
           }
         }
       ]
