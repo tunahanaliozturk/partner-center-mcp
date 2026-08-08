@@ -2010,7 +2010,7 @@
               ],
               "query": []
             },
-            "description": "Returns 202 Accepted with a Location header (/customers/{id}/batchJobStatus/{tracking-id}) - poll it for status.\nApp+User only. Each device must satisfy one of the accepted id field combinations.\nAdd devices to an EXISTING batch via update-devices instead of reusing a batchId.\n\nDocs: https://learn.microsoft.com/partner-center/developer/upload-a-list-of-devices-to-create-a-new-batch-for-the-specified-customer"
+            "description": "Returns 202 Accepted with a Location header (/customers/{id}/batchJobStatus/{tracking-id}) - poll it with get-device-batch-status; the upload is asynchronous, so the devices do not exist yet when this returns.\nApp+User only. Each device must satisfy one of the accepted id field combinations.\nAdd devices to an EXISTING batch via update-devices instead of reusing a batchId.\nConfirm what actually landed with get-batch-devices once the job reports a terminal status.\n\nDocs: https://learn.microsoft.com/partner-center/developer/upload-a-list-of-devices-to-create-a-new-batch-for-the-specified-customer"
           }
         },
         {
@@ -2121,6 +2121,303 @@
               "query": []
             },
             "description": "The wire path is /policies (the SDK surface is named ConfigurationPolicies).\npolicySettings is an enum: remove_oem_preinstalls, oobe_user_not_local_admin, skip_express_settings, skip_oem_registration, skip_eula.\nSupports both app-only and app+user.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-a-list-of-a-customer-s-policies"
+          }
+        },
+        {
+          "name": "Create a device configuration policy (Autopilot)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/policies",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "policies"
+              ],
+              "query": []
+            },
+            "description": "Creating the policy does not apply it to anything - attach it to devices with update-device-policy.\nSame route as get-configuration-policies, which lists the customer's policies.\npolicySettings is a flat array of setting names; an unknown setting is rejected for the whole policy.\n\nDocs: https://learn.microsoft.com/partner-center/developer/create-a-new-configuration-policy-for-the-specified-customer"
+          }
+        },
+        {
+          "name": "Get one device configuration policy",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/policies/{policy-id}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "policies",
+                "%7Bpolicy-id%7D"
+              ],
+              "query": []
+            },
+            "description": "Read it before update-configuration-policy, which is a PUT and replaces the whole policy.\npolicy-id comes from get-configuration-policies.\nThe response reports how many devices carry the policy - check it before deleting.\n\nDocs: https://learn.microsoft.com/partner-center/developer/retrieve-a-customer-s-configuration-policy"
+          }
+        },
+        {
+          "name": "Update a device configuration policy",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/policies/{policy-id}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "policies",
+                "%7Bpolicy-id%7D"
+              ],
+              "query": []
+            },
+            "description": "PUT, not PATCH: a dropped policySettings entry is a removed setting.\nThe change reaches every device already carrying the policy - it is not scoped to new devices.\nDevices that have already been provisioned keep their current configuration until they are reset.\n\nDocs: https://learn.microsoft.com/partner-center/developer/update-a-configuration-policy-for-the-specified-customer"
+          }
+        },
+        {
+          "name": "Delete a device configuration policy",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/policies/{policy-id}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "policies",
+                "%7Bpolicy-id%7D"
+              ],
+              "query": []
+            },
+            "description": "A policy still attached to devices cannot be deleted - detach them first with update-device-policy, then delete.\nget-configuration-policy reports the device count, which is how you know whether it is detachable.\nDeletion does not reconfigure devices already provisioned under the policy.\n\nDocs: https://learn.microsoft.com/partner-center/developer/delete-a-configuration-policy-for-the-specified-customer"
+          }
+        },
+        {
+          "name": "List the devices in a device batch",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/deviceBatches/{devicebatch-id}/devices",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "deviceBatches",
+                "%7Bdevicebatch-id%7D",
+                "devices"
+              ],
+              "query": []
+            },
+            "description": "This is how you confirm an upload actually landed - get-device-batches only lists the batches, not their contents.\nEach device carries the id needed by delete-device and update-device-policy.\nRight after create-device-batch the list can be empty because the upload is asynchronous; poll get-device-batch-status first.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-a-list-of-devices-for-the-specified-batch-and-customer"
+          }
+        },
+        {
+          "name": "Delete a device from a batch",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/deviceBatches/{devicebatch-id}/devices/{device-id}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "deviceBatches",
+                "%7Bdevicebatch-id%7D",
+                "devices",
+                "%7Bdevice-id%7D"
+              ],
+              "query": []
+            },
+            "description": "Removes the device from the customer's Autopilot inventory; it does not wipe or unenroll a device already in service.\ndevice-id comes from get-batch-devices, not from the hardware hash you uploaded.\nA device already provisioned under a policy keeps that configuration after deletion.\n\nDocs: https://learn.microsoft.com/partner-center/developer/delete-a-device-for-the-specified-customer"
+          }
+        },
+        {
+          "name": "Apply a configuration policy to devices",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/DevicePolicyUpdates",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "DevicePolicyUpdates"
+              ],
+              "query": []
+            },
+            "description": "The route is DevicePolicyUpdates on the customer - not the policy and not the device. Its capitalisation is part of the path.\nThis is the only way to attach or detach a policy, and detaching is the prerequisite for delete-configuration-policy.\nAsynchronous like the batch upload: it returns a tracking id in the Location header, so poll get-device-batch-status.\n\nDocs: https://learn.microsoft.com/partner-center/developer/update-a-list-of-devices-with-a-policy"
+          }
+        },
+        {
+          "name": "Get the status of a device batch upload",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/batchJobStatus/{batchtracking-id}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "batchJobStatus",
+                "%7Bbatchtracking-id%7D"
+              ],
+              "query": []
+            },
+            "description": "batchtracking-id is returned in the LOCATION header of create-device-batch and update-device-policy - it is not the device batch id.\nDevice uploads are asynchronous: this is the only way to learn that one finished, and the only place a per-device failure reason appears.\nPoll until the status is terminal before calling get-batch-devices, or the device list comes back short.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-the-status-of-a-device-batch-upload"
           }
         }
       ]

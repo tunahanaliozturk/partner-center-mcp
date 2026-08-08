@@ -1557,9 +1557,10 @@
         "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/deviceBatches`, { method: \"POST\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
       },
       "gotchas": [
-        "Returns 202 Accepted with a Location header (/customers/{id}/batchJobStatus/{tracking-id}) - poll it for status.",
+        "Returns 202 Accepted with a Location header (/customers/{id}/batchJobStatus/{tracking-id}) - poll it with get-device-batch-status; the upload is asynchronous, so the devices do not exist yet when this returns.",
         "App+User only. Each device must satisfy one of the accepted id field combinations.",
-        "Add devices to an EXISTING batch via update-devices instead of reusing a batchId."
+        "Add devices to an EXISTING batch via update-devices instead of reusing a batchId.",
+        "Confirm what actually landed with get-batch-devices once the job reports a terminal status."
       ],
       "docUrl": "https://learn.microsoft.com/partner-center/developer/upload-a-list-of-devices-to-create-a-new-batch-for-the-specified-customer",
       "lastVerified": "2026-06-21"
@@ -4798,6 +4799,230 @@
         "Validate the address against the market rules before sending; a rejected address leaves the profile unchanged."
       ],
       "docUrl": "https://learn.microsoft.com/partner-center/developer/update-an-organization-profile",
+      "lastVerified": "2026-08-01"
+    },
+    {
+      "id": "create-configuration-policy",
+      "area": "devices",
+      "title": "Create a device configuration policy (Autopilot)",
+      "method": "POST",
+      "path": "/v1/customers/{customer-id}/policies",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "ConfigurationPolicy",
+      "requestFields": [
+        { "name": "name", "type": "string", "required": true, "note": "friendly name of the policy" },
+        { "name": "category", "type": "string", "required": true, "note": "the policy category" },
+        { "name": "description", "type": "string", "required": false },
+        { "name": "policySettings", "type": "string[]", "required": true, "note": "the settings applied to devices carrying this policy" }
+      ],
+      "responseShape": "ConfigurationPolicy",
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d @policy.json \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/policies\"",
+        "csharp": "var res = await http.PostAsync($\"/v1/customers/{customerId}/policies\", content);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/policies`, { method: \"POST\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "Creating the policy does not apply it to anything - attach it to devices with update-device-policy.",
+        "Same route as get-configuration-policies, which lists the customer's policies.",
+        "policySettings is a flat array of setting names; an unknown setting is rejected for the whole policy."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/create-a-new-configuration-policy-for-the-specified-customer",
+      "lastVerified": "2026-08-01"
+    },
+    {
+      "id": "get-configuration-policy",
+      "area": "devices",
+      "title": "Get one device configuration policy",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/policies/{policy-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "ConfigurationPolicy",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/policies/{policy-id}\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/policies/{policyId}\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/policies/${policyId}`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Read it before update-configuration-policy, which is a PUT and replaces the whole policy.",
+        "policy-id comes from get-configuration-policies.",
+        "The response reports how many devices carry the policy - check it before deleting."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/retrieve-a-customer-s-configuration-policy",
+      "lastVerified": "2026-08-01"
+    },
+    {
+      "id": "update-configuration-policy",
+      "area": "devices",
+      "title": "Update a device configuration policy",
+      "method": "PUT",
+      "path": "/v1/customers/{customer-id}/policies/{policy-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "ConfigurationPolicy",
+      "requestFields": [
+        { "name": "(full ConfigurationPolicy resource)", "type": "ConfigurationPolicy", "required": true, "note": "PUT replaces the policy - GET it, mutate, send it all back" },
+        { "name": "name", "type": "string", "required": true },
+        { "name": "category", "type": "string", "required": true },
+        { "name": "policySettings", "type": "string[]", "required": true, "note": "the complete setting list that should remain in force" }
+      ],
+      "responseShape": "ConfigurationPolicy",
+      "examples": {
+        "curl": "curl -X PUT -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d @policy.json \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/policies/{policy-id}\"",
+        "csharp": "var res = await http.PutAsync($\"/v1/customers/{customerId}/policies/{policyId}\", content);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/policies/${policyId}`, { method: \"PUT\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "PUT, not PATCH: a dropped policySettings entry is a removed setting.",
+        "The change reaches every device already carrying the policy - it is not scoped to new devices.",
+        "Devices that have already been provisioned keep their current configuration until they are reset."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/update-a-configuration-policy-for-the-specified-customer",
+      "lastVerified": "2026-08-01"
+    },
+    {
+      "id": "delete-configuration-policy",
+      "area": "devices",
+      "title": "Delete a device configuration policy",
+      "method": "DELETE",
+      "path": "/v1/customers/{customer-id}/policies/{policy-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": null,
+      "examples": {
+        "curl": "curl -X DELETE -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/policies/{policy-id}\"",
+        "csharp": "var res = await http.DeleteAsync($\"/v1/customers/{customerId}/policies/{policyId}\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/policies/${policyId}`, { method: \"DELETE\", headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "A policy still attached to devices cannot be deleted - detach them first with update-device-policy, then delete.",
+        "get-configuration-policy reports the device count, which is how you know whether it is detachable.",
+        "Deletion does not reconfigure devices already provisioned under the policy."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/delete-a-configuration-policy-for-the-specified-customer",
+      "lastVerified": "2026-08-01"
+    },
+    {
+      "id": "get-batch-devices",
+      "area": "devices",
+      "title": "List the devices in a device batch",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/deviceBatches/{devicebatch-id}/devices",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "Device collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/deviceBatches/{devicebatch-id}/devices\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/deviceBatches/{deviceBatchId}/devices\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/deviceBatches/${deviceBatchId}/devices`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "This is how you confirm an upload actually landed - get-device-batches only lists the batches, not their contents.",
+        "Each device carries the id needed by delete-device and update-device-policy.",
+        "Right after create-device-batch the list can be empty because the upload is asynchronous; poll get-device-batch-status first."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-devices-for-the-specified-batch-and-customer",
+      "lastVerified": "2026-08-01"
+    },
+    {
+      "id": "delete-device",
+      "area": "devices",
+      "title": "Delete a device from a batch",
+      "method": "DELETE",
+      "path": "/v1/customers/{customer-id}/deviceBatches/{devicebatch-id}/devices/{device-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": null,
+      "examples": {
+        "curl": "curl -X DELETE -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/deviceBatches/{devicebatch-id}/devices/{device-id}\"",
+        "csharp": "var res = await http.DeleteAsync($\"/v1/customers/{customerId}/deviceBatches/{deviceBatchId}/devices/{deviceId}\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/deviceBatches/${deviceBatchId}/devices/${deviceId}`, { method: \"DELETE\", headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Removes the device from the customer's Autopilot inventory; it does not wipe or unenroll a device already in service.",
+        "device-id comes from get-batch-devices, not from the hardware hash you uploaded.",
+        "A device already provisioned under a policy keeps that configuration after deletion."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/delete-a-device-for-the-specified-customer",
+      "lastVerified": "2026-08-01"
+    },
+    {
+      "id": "update-device-policy",
+      "area": "devices",
+      "title": "Apply a configuration policy to devices",
+      "method": "PATCH",
+      "path": "/v1/customers/{customer-id}/DevicePolicyUpdates",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "DevicePolicyUpdateRequest",
+      "requestFields": [
+        { "name": "devices", "type": "Device[]", "required": true, "note": "the devices to update, each identified by its device id" },
+        { "name": "devices[].policies", "type": "array", "required": true, "note": "policy assignments; an empty list detaches the device from its policy" }
+      ],
+      "responseShape": null,
+      "examples": {
+        "curl": "curl -X PATCH -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d @device-policy-update.json \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/DevicePolicyUpdates\"",
+        "csharp": "var req = new HttpRequestMessage(HttpMethod.Patch, $\"/v1/customers/{customerId}/DevicePolicyUpdates\") { Content = content };\nvar res = await http.SendAsync(req);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/DevicePolicyUpdates`, { method: \"PATCH\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "The route is DevicePolicyUpdates on the customer - not the policy and not the device. Its capitalisation is part of the path.",
+        "This is the only way to attach or detach a policy, and detaching is the prerequisite for delete-configuration-policy.",
+        "Asynchronous like the batch upload: it returns a tracking id in the Location header, so poll get-device-batch-status."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/update-a-list-of-devices-with-a-policy",
+      "lastVerified": "2026-08-01"
+    },
+    {
+      "id": "get-device-batch-status",
+      "area": "devices",
+      "title": "Get the status of a device batch upload",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/batchJobStatus/{batchtracking-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "BatchUploadDetails",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/batchJobStatus/{batchtracking-id}\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/batchJobStatus/{batchTrackingId}\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/batchJobStatus/${batchTrackingId}`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "batchtracking-id is returned in the LOCATION header of create-device-batch and update-device-policy - it is not the device batch id.",
+        "Device uploads are asynchronous: this is the only way to learn that one finished, and the only place a per-device failure reason appears.",
+        "Poll until the status is terminal before calling get-batch-devices, or the device list comes back short."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-the-status-of-a-device-batch-upload",
       "lastVerified": "2026-08-01"
     }
   ]

@@ -82,3 +82,24 @@ test("the partner's own organization profile is not confused with a customer's",
   expect(s.path).toBe("/v1/profiles/organization");
   expect(s.gotchas.join(" ")).toContain("get-customer-organization");
 });
+
+test("batch J: the device and policy lifecycle is complete", () => {
+  for (const id of [
+    "create-configuration-policy", "get-configuration-policy", "update-configuration-policy",
+    "delete-configuration-policy", "get-batch-devices", "delete-device",
+    "update-device-policy", "get-device-batch-status",
+  ]) {
+    expect(byId.has(id), id).toBe(true);
+  }
+});
+
+test("the configuration policy CRUD is complete", () => {
+  const methods = ["create-configuration-policy", "get-configuration-policy", "update-configuration-policy", "delete-configuration-policy"]
+    .map((id) => scenario(id).method);
+  expect(methods).toEqual(["POST", "GET", "PUT", "DELETE"]);
+});
+
+test("a device batch upload is asynchronous and says how to poll it", () => {
+  expect(scenario("create-device-batch").gotchas.join(" ")).toContain("get-device-batch-status");
+  expect(scenario("get-device-batch-status").gotchas.join(" ")).toMatch(/location header/i);
+});
