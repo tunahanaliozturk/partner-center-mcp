@@ -6505,6 +6505,335 @@
       ],
       "docUrl": "https://learn.microsoft.com/partner-center/developer/patch-a-referral",
       "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "attach-purchase-order",
+      "area": "orders",
+      "title": "Attach a purchase order to an order",
+      "method": "POST",
+      "path": "/v1/customers/{customer-id}/orders/{order-id}/attachment",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "PurchaseOrderAttachment",
+      "requestFields": [
+        { "name": "purchaseOrderNumber", "type": "string", "required": true, "note": "the customer's PO reference" },
+        { "name": "attachmentName", "type": "string", "required": false },
+        { "name": "attachmentContent", "type": "string", "required": false, "note": "the PO document" }
+      ],
+      "responseShape": null,
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d @po.json \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/orders/{order-id}/attachment\"",
+        "csharp": "var res = await http.PostAsync($\"/v1/customers/{customerId}/orders/{orderId}/attachment\", content);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/orders/${orderId}/attachment`, { method: \"POST\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "Attaches the customer's purchase-order reference to an order that already exists, so it runs AFTER checkout-cart, not as part of it.",
+        "Customers who reconcile invoices against PO numbers will reject an invoice without one, which is what makes this worth automating.",
+        "The attachment belongs to the order; there is no subscription-level equivalent."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/attaching-purchase-order-and-completing-po-details",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "create-order-for-indirect-reseller",
+      "area": "orders",
+      "title": "Create an order for an indirect reseller's customer",
+      "method": "POST",
+      "path": "/v1/customers/{customer-id}/orders",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "Order",
+      "requestFields": [
+        { "name": "lineItems", "type": "OrderLineItem[]", "required": true },
+        { "name": "lineItems[].offerId", "type": "string", "required": true },
+        { "name": "lineItems[].quantity", "type": "int", "required": true },
+        { "name": "lineItems[].partnerIdOnRecord", "type": "string", "required": true, "note": "the indirect reseller's MPN id; this is what makes it a two-tier order" }
+      ],
+      "responseShape": "Order",
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d @order.json \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/orders\"",
+        "csharp": "var res = await http.PostAsync($\"/v1/customers/{customerId}/orders\", content);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/orders`, { method: \"POST\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "Same route as create-order; partnerIdOnRecord on the line item is what attributes the sale to the indirect reseller.",
+        "Omitting partnerIdOnRecord silently books the order to the provider, and the reseller loses the incentive on it.",
+        "Validate the reseller first with validate-reseller-por - an ineligible POR fails the purchase after the cart is built."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/create-an-order-for-a-customer-of-an-indirect-reseller",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "create-sandbox-indirect-reseller",
+      "area": "customers",
+      "title": "Create an indirect reseller in the integration sandbox",
+      "method": "POST",
+      "path": "/v1/sandboxIndirectReseller",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "SandboxIndirectReseller",
+      "requestFields": [
+        { "name": "companyName", "type": "string", "required": false, "note": "name for the simulated reseller" }
+      ],
+      "responseShape": "SandboxIndirectReseller",
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d '{}' \"https://api.partnercenter.microsoft.com/v1/sandboxIndirectReseller\"",
+        "csharp": "var res = await http.PostAsync(\"/v1/sandboxIndirectReseller\", content);",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/sandboxIndirectReseller\", { method: \"POST\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "Integration sandbox only. It fabricates a reseller so two-tier flows can be exercised without a real partner on the other side.",
+        "The doc page writes the route with a doubled slash (/v1//sandboxIndirectReseller); one slash is correct.",
+        "Use it to test create-order-for-indirect-reseller and the indirect analytics without touching production."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/create-indirect-reseller-in-sandbox",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "activate-marketplace-subscription",
+      "area": "subscriptions",
+      "title": "Activate a sandbox Marketplace SaaS subscription",
+      "method": "POST",
+      "path": "/v1/customers/{customer-id}/subscriptions/{subscription-id}/activate",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "Subscription",
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}/activate\"",
+        "csharp": "var res = await http.PostAsync($\"/v1/customers/{customerId}/subscriptions/{subscriptionId}/activate\", null);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/subscriptions/${subscriptionId}/activate`, { method: \"POST\", headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Integration sandbox only. In production a Marketplace SaaS subscription is activated by the customer through the publisher's own landing page.",
+        "It exists so billing can be exercised in the sandbox, where no publisher is there to complete activation.",
+        "The activation link a real customer follows comes from get-order-activation-link."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/activate-sandbox-subscription-azure-marketplace-products",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "get-azure-entitlement",
+      "area": "subscriptions",
+      "title": "Get one Azure entitlement of a subscription",
+      "method": "POST",
+      "path": "/v1/customers/{customer-id}/subscriptions/{subscription-id}/azureEntitlements/{entitlement-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "AzureEntitlement",
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}/azureEntitlements/{entitlement-id}\"",
+        "csharp": "var res = await http.PostAsync($\"/v1/customers/{customerId}/subscriptions/{subscriptionId}/azureEntitlements/{entitlementId}\", null);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/subscriptions/${subscriptionId}/azureEntitlements/${entitlementId}`, { method: \"POST\", headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "A POST that reads a single entitlement. The whole set is get-azure-entitlements, which is an ordinary GET.",
+        "An Azure plan subscription holds many entitlements, each one an Azure subscription in the customer's tenant. The entitlement, not the Partner Center subscription, is what you cancel or reactivate.",
+        "The entitlement id is also what update-subscription-overage keys on."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-an-azure-entitlement-for-a-subscription",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "cancel-azure-entitlement",
+      "area": "subscriptions",
+      "title": "Cancel an Azure entitlement",
+      "method": "POST",
+      "path": "/v1/customers/{customer-id}/subscriptions/{subscription-id}/azureEntitlements/{entitlement-id}/cancel",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "AzureEntitlement",
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}/azureEntitlements/{entitlement-id}/cancel\"",
+        "csharp": "var res = await http.PostAsync($\"/v1/customers/{customerId}/subscriptions/{subscriptionId}/azureEntitlements/{entitlementId}/cancel\", null);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/subscriptions/${subscriptionId}/azureEntitlements/${entitlementId}/cancel`, { method: \"POST\", headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "This cancels ONE Azure subscription inside the customer's Azure plan. It is not cancel-subscription, which would end the Azure plan itself.",
+        "Consumption billed before the cancellation still lands on the invoice; cancelling stops future consumption, it does not refund past usage.",
+        "Reversible for a period with reactivate-azure-entitlement, after which the resources are gone."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/cancel-an-azure-subscription",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "reactivate-azure-entitlement",
+      "area": "subscriptions",
+      "title": "Reactivate a cancelled Azure entitlement",
+      "method": "POST",
+      "path": "/v1/customers/{customer-id}/subscriptions/{subscription-id}/azureEntitlements/{entitlement-id}/reactivate",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "AzureEntitlement",
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}/azureEntitlements/{entitlement-id}/reactivate\"",
+        "csharp": "var res = await http.PostAsync($\"/v1/customers/{customerId}/subscriptions/{subscriptionId}/azureEntitlements/{entitlementId}/reactivate\", null);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/subscriptions/${subscriptionId}/azureEntitlements/${entitlementId}/reactivate`, { method: \"POST\", headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Only works inside the retention window that follows cancellation. After it, the Azure resources are deleted and reactivation cannot bring them back.",
+        "Reactivating restores the entitlement, not the data in resources Azure has already reclaimed.",
+        "Distinct from reactivate-subscription, which brings a suspended Partner Center subscription back."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/reactivate-an-azure-subscription",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "list-subscriptions-by-partner",
+      "area": "subscriptions",
+      "title": "List a customer's subscriptions filtered by partner",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/subscriptions?mpn_id={mpn-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "Subscription collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions?mpn_id=1234567\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/subscriptions?mpn_id={mpnId}\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/subscriptions?mpn_id=${mpnId}`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Indirect provider view: which of this customer's subscriptions carry a given reseller as partner of record.",
+        "Same route as list-customer-subscriptions; mpn_id is the filter, and note the underscore rather than the camelCase used elsewhere.",
+        "A subscription missing from the result is usually one where partnerIdOnRecord was never set at purchase - see create-order-for-indirect-reseller."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-all-subscriptions-by-partner",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "list-agreement-metadata",
+      "area": "customers",
+      "title": "List metadata for every agreement type",
+      "method": "GET",
+      "path": "/v1/agreements",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "AgreementMetaData collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/agreements\"",
+        "csharp": "var res = await http.GetAsync(\"/v1/agreements\");",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/agreements\", { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Unfiltered form of the route get-agreement-metadata narrows with ?agreementType. Use this one when you want every template id in a single call.",
+        "The templateId here is what create-agreement must quote, and a superseded template is rejected.",
+        "Partner-wide metadata, nothing customer-specific."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-agreement-metadata",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "get-dap-statistics",
+      "area": "security",
+      "title": "Get delegated admin relationship statistics (legacy host)",
+      "method": "GET",
+      "api": "customer-service-admin",
+      "path": "/CustomerServiceAdminApi/Web/v1/delegatedAdminStatistics",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token for https://traf-pcsvcadmin-prod.trafficmanager.net; neither a Partner Center nor a Graph token works here" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "delegated admin statistics",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://traf-pcsvcadmin-prod.trafficmanager.net/CustomerServiceAdminApi/Web/v1/delegatedAdminStatistics\"",
+        "csharp": "var res = await http.GetAsync(\"https://traf-pcsvcadmin-prod.trafficmanager.net/CustomerServiceAdminApi/Web/v1/delegatedAdminStatistics\");",
+        "typescript": "const res = await fetch(\"https://traf-pcsvcadmin-prod.trafficmanager.net/CustomerServiceAdminApi/Web/v1/delegatedAdminStatistics\", { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Documented against its own traffic-manager host, not Partner Center. It is legacy DAP tooling, and GDAP is the modern path - see list-delegated-admin-customers on Microsoft Graph for the supported equivalent.",
+        "Counts only; for the relationships themselves use the Graph GDAP scenarios.",
+        "Build nothing new on this. It is here so that an inherited integration pointing at it can be recognised."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-delegated-admin-relation-statistics",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "list-dap-customers",
+      "area": "security",
+      "title": "List delegated admin customers (legacy host)",
+      "method": "GET",
+      "api": "customer-service-admin",
+      "path": "/CustomerServiceAdminApi/Web/v1/delegatedAdminCustomers",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token for https://traf-pcsvcadmin-prod.trafficmanager.net" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "delegated admin customer collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://traf-pcsvcadmin-prod.trafficmanager.net/CustomerServiceAdminApi/Web/v1/delegatedAdminCustomers\"",
+        "csharp": "var res = await http.GetAsync(\"https://traf-pcsvcadmin-prod.trafficmanager.net/CustomerServiceAdminApi/Web/v1/delegatedAdminCustomers\");",
+        "typescript": "const res = await fetch(\"https://traf-pcsvcadmin-prod.trafficmanager.net/CustomerServiceAdminApi/Web/v1/delegatedAdminCustomers\", { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Legacy host again, and superseded: the supported way to enumerate delegated admin customers is the Graph route in list-delegated-admin-customers.",
+        "There are two scenarios with almost the same name for exactly this reason. Check the api field to tell them apart.",
+        "Legacy DAP is being retired in favour of GDAP; treat anything here as read-only archaeology."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/list-delegated-admin-customers",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "remove-sandbox-reseller-relationship",
+      "area": "customers",
+      "title": "Remove a reseller relationship in the integration sandbox",
+      "method": "DELETE",
+      "path": "/v1/customers/{customer-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": null,
+      "examples": {
+        "curl": "curl -X DELETE -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}\"",
+        "csharp": "var res = await http.DeleteAsync($\"/v1/customers/{customerId}\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}`, { method: \"DELETE\", headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "In the sandbox, removing a reseller relationship IS the delete-customer call: it drops the relationship and deletes the customer tenant in one go. In production the two are separate, and remove-reseller-relationship leaves the tenant alone.",
+        "Cancel every Azure reserved instance and software purchase order first, or the delete is refused.",
+        "Same endpoint as delete-customer-sandbox; this entry exists because Microsoft documents the relationship-removal behaviour on its own page, and the constraint above appears nowhere else.",
+        "Sandbox partners cannot invite sandbox customers, so a relationship removed here is re-established by creating the customer again."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/sandbox-scenario",
+      "lastVerified": "2026-08-08"
     }
   ]
 }

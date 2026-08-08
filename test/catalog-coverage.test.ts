@@ -56,3 +56,29 @@ test("the MPN profile route without a query is distinguished from verify-mpn", (
   expect(s.path).toBe("/v1/profiles/mpn");
   expect(s.gotchas.join(" ")).toContain("verify-mpn");
 });
+
+test("batch R: orders, Azure entitlements and the legacy DAP reads are addressable", () => {
+  for (const id of [
+    "attach-purchase-order", "create-order-for-indirect-reseller", "create-sandbox-indirect-reseller",
+    "activate-marketplace-subscription", "cancel-azure-entitlement", "reactivate-azure-entitlement",
+    "get-azure-entitlement", "list-subscriptions-by-partner", "list-agreement-metadata",
+    "get-dap-statistics", "list-dap-customers",
+  ]) {
+    expect(byId.has(id), id).toBe(true);
+  }
+});
+
+test("the legacy delegated-admin reads declare their own host", () => {
+  for (const id of ["get-dap-statistics", "list-dap-customers"]) {
+    expect(scenario(id).api, id).toBe("customer-service-admin");
+    expect(scenario(id).gotchas.join(" "), id).toMatch(/graph|legacy/i);
+  }
+});
+
+test("the Azure entitlement operations are POSTs keyed by entitlement, not subscription", () => {
+  for (const id of ["cancel-azure-entitlement", "reactivate-azure-entitlement", "get-azure-entitlement"]) {
+    const s = scenario(id);
+    expect(s.method, id).toBe("POST");
+    expect(s.path, id).toContain("azureEntitlements/{entitlement-id}");
+  }
+});

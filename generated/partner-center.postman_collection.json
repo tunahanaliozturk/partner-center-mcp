@@ -2959,6 +2959,109 @@
             },
             "description": "Returns the services the partner can administer for this customer, each with the deep link into that service's admin portal.\nRequires delegated admin access - with DAP removed (remove-delegated-admin) or no GDAP relationship the list comes back empty.\nAn empty list on a customer with active subscriptions is an access problem, not a subscription problem.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-the-managed-services-for-a-customer-by-id"
           }
+        },
+        {
+          "name": "Create an indirect reseller in the integration sandbox",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/sandboxIndirectReseller",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "sandboxIndirectReseller"
+              ],
+              "query": []
+            },
+            "description": "Integration sandbox only. It fabricates a reseller so two-tier flows can be exercised without a real partner on the other side.\nThe doc page writes the route with a doubled slash (/v1//sandboxIndirectReseller); one slash is correct.\nUse it to test create-order-for-indirect-reseller and the indirect analytics without touching production.\n\nDocs: https://learn.microsoft.com/partner-center/developer/create-indirect-reseller-in-sandbox"
+          }
+        },
+        {
+          "name": "List metadata for every agreement type",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/agreements",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "agreements"
+              ],
+              "query": []
+            },
+            "description": "Unfiltered form of the route get-agreement-metadata narrows with ?agreementType. Use this one when you want every template id in a single call.\nThe templateId here is what create-agreement must quote, and a superseded template is rejected.\nPartner-wide metadata, nothing customer-specific.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-agreement-metadata"
+          }
+        },
+        {
+          "name": "Remove a reseller relationship in the integration sandbox",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D"
+              ],
+              "query": []
+            },
+            "description": "In the sandbox, removing a reseller relationship IS the delete-customer call: it drops the relationship and deletes the customer tenant in one go. In production the two are separate, and remove-reseller-relationship leaves the tenant alone.\nCancel every Azure reserved instance and software purchase order first, or the delete is refused.\nSame endpoint as delete-customer-sandbox; this entry exists because Microsoft documents the relationship-removal behaviour on its own page, and the constraint above appears nowhere else.\nSandbox partners cannot invite sandbox customers, so a relationship removed here is re-established by creating the customer again.\n\nDocs: https://learn.microsoft.com/partner-center/developer/sandbox-scenario"
+          }
         }
       ]
     },
@@ -5482,6 +5585,80 @@
             },
             "description": "Same route as list-customer-orders; billingType narrows it to one billing cycle. See the billingCycle enum for the accepted values.\nUseful when reconciling a monthly invoice against annual orders that do not appear on it.\nThe filter is on the ORDER's billing cycle, which can differ from the subscription's after a scheduled change.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-a-list-of-orders-by-customer-and-billing-cycle-type"
           }
+        },
+        {
+          "name": "Attach a purchase order to an order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/orders/{order-id}/attachment",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "orders",
+                "%7Border-id%7D",
+                "attachment"
+              ],
+              "query": []
+            },
+            "description": "Attaches the customer's purchase-order reference to an order that already exists, so it runs AFTER checkout-cart, not as part of it.\nCustomers who reconcile invoices against PO numbers will reject an invoice without one, which is what makes this worth automating.\nThe attachment belongs to the order; there is no subscription-level equivalent.\n\nDocs: https://learn.microsoft.com/partner-center/developer/attaching-purchase-order-and-completing-po-details"
+          }
+        },
+        {
+          "name": "Create an order for an indirect reseller's customer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/orders",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "orders"
+              ],
+              "query": []
+            },
+            "description": "Same route as create-order; partnerIdOnRecord on the line item is what attributes the sale to the indirect reseller.\nOmitting partnerIdOnRecord silently books the order to the provider, and the reseller loses the incentive on it.\nValidate the reseller first with validate-reseller-por - an ineligible POR fails the purchase after the cart is built.\n\nDocs: https://learn.microsoft.com/partner-center/developer/create-an-order-for-a-customer-of-an-indirect-reseller"
+          }
         }
       ]
     },
@@ -6673,6 +6850,76 @@
               "query": []
             },
             "description": "Closes the loop on get-fraud-events: unresolved Azure fraud alerts keep surfacing until a status is written back.\nMarking an event resolved does not stop the consumption that triggered it - suspend the subscription or fix the compromised resource separately.\nThe route is keyed by SUBSCRIPTION, not by fraud event id.\n\nDocs: https://learn.microsoft.com/partner-center/developer/update-fraud-events-status"
+          }
+        },
+        {
+          "name": "Get delegated admin relationship statistics (legacy host)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token for https://traf-pcsvcadmin-prod.trafficmanager.net; neither a Partner Center nor a Graph token works here"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://traf-pcsvcadmin-prod.trafficmanager.net/CustomerServiceAdminApi/Web/v1/delegatedAdminStatistics",
+              "protocol": "https",
+              "host": [
+                "traf-pcsvcadmin-prod",
+                "trafficmanager",
+                "net"
+              ],
+              "path": [
+                "CustomerServiceAdminApi",
+                "Web",
+                "v1",
+                "delegatedAdminStatistics"
+              ],
+              "query": []
+            },
+            "description": "Documented against its own traffic-manager host, not Partner Center. It is legacy DAP tooling, and GDAP is the modern path - see list-delegated-admin-customers on Microsoft Graph for the supported equivalent.\nCounts only; for the relationships themselves use the Graph GDAP scenarios.\nBuild nothing new on this. It is here so that an inherited integration pointing at it can be recognised.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-delegated-admin-relation-statistics"
+          }
+        },
+        {
+          "name": "List delegated admin customers (legacy host)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token for https://traf-pcsvcadmin-prod.trafficmanager.net"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://traf-pcsvcadmin-prod.trafficmanager.net/CustomerServiceAdminApi/Web/v1/delegatedAdminCustomers",
+              "protocol": "https",
+              "host": [
+                "traf-pcsvcadmin-prod",
+                "trafficmanager",
+                "net"
+              ],
+              "path": [
+                "CustomerServiceAdminApi",
+                "Web",
+                "v1",
+                "delegatedAdminCustomers"
+              ],
+              "query": []
+            },
+            "description": "Legacy host again, and superseded: the supported way to enumerate delegated admin customers is the Graph route in list-delegated-admin-customers.\nThere are two scenarios with almost the same name for exactly this reason. Check the api field to tell them apart.\nLegacy DAP is being retired in favour of GDAP; treat anything here as read-only archaeology.\n\nDocs: https://learn.microsoft.com/partner-center/developer/list-delegated-admin-customers"
           }
         }
       ]
@@ -8452,6 +8699,204 @@
               "query": []
             },
             "description": "PUT, not PATCH - the body replaces the whole support contact.\nThe target partner must already have a relationship with the customer, otherwise the call is rejected.\nSet per subscription, so moving support for a customer means iterating their subscriptions.\n\nDocs: https://learn.microsoft.com/partner-center/developer/update-a-subscription-s-support-contact"
+          }
+        },
+        {
+          "name": "Activate a sandbox Marketplace SaaS subscription",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}/activate",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "subscriptions",
+                "%7Bsubscription-id%7D",
+                "activate"
+              ],
+              "query": []
+            },
+            "description": "Integration sandbox only. In production a Marketplace SaaS subscription is activated by the customer through the publisher's own landing page.\nIt exists so billing can be exercised in the sandbox, where no publisher is there to complete activation.\nThe activation link a real customer follows comes from get-order-activation-link.\n\nDocs: https://learn.microsoft.com/partner-center/developer/activate-sandbox-subscription-azure-marketplace-products"
+          }
+        },
+        {
+          "name": "Get one Azure entitlement of a subscription",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}/azureEntitlements/{entitlement-id}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "subscriptions",
+                "%7Bsubscription-id%7D",
+                "azureEntitlements",
+                "%7Bentitlement-id%7D"
+              ],
+              "query": []
+            },
+            "description": "A POST that reads a single entitlement. The whole set is get-azure-entitlements, which is an ordinary GET.\nAn Azure plan subscription holds many entitlements, each one an Azure subscription in the customer's tenant. The entitlement, not the Partner Center subscription, is what you cancel or reactivate.\nThe entitlement id is also what update-subscription-overage keys on.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-an-azure-entitlement-for-a-subscription"
+          }
+        },
+        {
+          "name": "Cancel an Azure entitlement",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}/azureEntitlements/{entitlement-id}/cancel",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "subscriptions",
+                "%7Bsubscription-id%7D",
+                "azureEntitlements",
+                "%7Bentitlement-id%7D",
+                "cancel"
+              ],
+              "query": []
+            },
+            "description": "This cancels ONE Azure subscription inside the customer's Azure plan. It is not cancel-subscription, which would end the Azure plan itself.\nConsumption billed before the cancellation still lands on the invoice; cancelling stops future consumption, it does not refund past usage.\nReversible for a period with reactivate-azure-entitlement, after which the resources are gone.\n\nDocs: https://learn.microsoft.com/partner-center/developer/cancel-an-azure-subscription"
+          }
+        },
+        {
+          "name": "Reactivate a cancelled Azure entitlement",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}/azureEntitlements/{entitlement-id}/reactivate",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "subscriptions",
+                "%7Bsubscription-id%7D",
+                "azureEntitlements",
+                "%7Bentitlement-id%7D",
+                "reactivate"
+              ],
+              "query": []
+            },
+            "description": "Only works inside the retention window that follows cancellation. After it, the Azure resources are deleted and reactivation cannot bring them back.\nReactivating restores the entitlement, not the data in resources Azure has already reclaimed.\nDistinct from reactivate-subscription, which brings a suspended Partner Center subscription back.\n\nDocs: https://learn.microsoft.com/partner-center/developer/reactivate-an-azure-subscription"
+          }
+        },
+        {
+          "name": "List a customer's subscriptions filtered by partner",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions?mpn_id={mpn-id}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "subscriptions"
+              ],
+              "query": [
+                {
+                  "key": "mpn_id",
+                  "value": "{mpn-id}"
+                }
+              ]
+            },
+            "description": "Indirect provider view: which of this customer's subscriptions carry a given reseller as partner of record.\nSame route as list-customer-subscriptions; mpn_id is the filter, and note the underscore rather than the camelCase used elsewhere.\nA subscription missing from the result is usually one where partnerIdOnRecord was never set at purchase - see create-order-for-indirect-reseller.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-all-subscriptions-by-partner"
           }
         }
       ]

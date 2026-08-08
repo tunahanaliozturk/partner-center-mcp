@@ -188,7 +188,16 @@
         },
         "externalDocs": {
           "url": "https://learn.microsoft.com/partner-center/developer/delete-a-customer-account-from-the-integration-sandbox"
-        }
+        },
+        "x-variants": [
+          {
+            "operationId": "remove-sandbox-reseller-relationship",
+            "summary": "Remove a reseller relationship in the integration sandbox",
+            "externalDocs": {
+              "url": "https://learn.microsoft.com/partner-center/developer/sandbox-scenario"
+            }
+          }
+        ]
       },
       "patch": {
         "operationId": "remove-reseller-relationship",
@@ -789,7 +798,16 @@
               }
             }
           }
-        }
+        },
+        "x-variants": [
+          {
+            "operationId": "create-order-for-indirect-reseller",
+            "summary": "Create an order for an indirect reseller's customer",
+            "externalDocs": {
+              "url": "https://learn.microsoft.com/partner-center/developer/create-an-order-for-a-customer-of-an-indirect-reseller"
+            }
+          }
+        ]
       }
     },
     "/v1/customers/{customer-id}/subscriptions": {
@@ -821,6 +839,13 @@
             "summary": "Get a list of subscriptions by order",
             "externalDocs": {
               "url": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-subscriptions-by-order"
+            }
+          },
+          {
+            "operationId": "list-subscriptions-by-partner",
+            "summary": "List a customer's subscriptions filtered by partner",
+            "externalDocs": {
+              "url": "https://learn.microsoft.com/partner-center/developer/get-all-subscriptions-by-partner"
             }
           }
         ]
@@ -4669,7 +4694,16 @@
         },
         "externalDocs": {
           "url": "https://learn.microsoft.com/partner-center/developer/get-customer-agreement-metadata"
-        }
+        },
+        "x-variants": [
+          {
+            "operationId": "list-agreement-metadata",
+            "summary": "List metadata for every agreement type",
+            "externalDocs": {
+              "url": "https://learn.microsoft.com/partner-center/developer/get-agreement-metadata"
+            }
+          }
+        ]
       }
     },
     "/v1/customers/{customer-id}/directSignedMicrosoftCustomerAgreementStatus": {
@@ -6374,6 +6408,247 @@
               }
             }
           }
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/orders/{order-id}/attachment": {
+      "post": {
+        "operationId": "attach-purchase-order",
+        "summary": "Attach a purchase order to an order",
+        "description": "Attaches the customer's purchase-order reference to an order that already exists, so it runs AFTER checkout-cart, not as part of it.\nCustomers who reconcile invoices against PO numbers will reject an invoice without one, which is what makes this worth automating.\nThe attachment belongs to the order; there is no subscription-level equivalent.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/attaching-purchase-order-and-completing-po-details"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "purchaseOrderNumber": {
+                    "type": "string"
+                  },
+                  "attachmentName": {
+                    "type": "string"
+                  },
+                  "attachmentContent": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/sandboxIndirectReseller": {
+      "post": {
+        "operationId": "create-sandbox-indirect-reseller",
+        "summary": "Create an indirect reseller in the integration sandbox",
+        "description": "Integration sandbox only. It fabricates a reseller so two-tier flows can be exercised without a real partner on the other side.\nThe doc page writes the route with a doubled slash (/v1//sandboxIndirectReseller); one slash is correct.\nUse it to test create-order-for-indirect-reseller and the indirect analytics without touching production.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/create-indirect-reseller-in-sandbox"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "companyName": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/subscriptions/{subscription-id}/activate": {
+      "post": {
+        "operationId": "activate-marketplace-subscription",
+        "summary": "Activate a sandbox Marketplace SaaS subscription",
+        "description": "Integration sandbox only. In production a Marketplace SaaS subscription is activated by the customer through the publisher's own landing page.\nIt exists so billing can be exercised in the sandbox, where no publisher is there to complete activation.\nThe activation link a real customer follows comes from get-order-activation-link.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "subscription-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/activate-sandbox-subscription-azure-marketplace-products"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/subscriptions/{subscription-id}/azureEntitlements/{entitlement-id}": {
+      "post": {
+        "operationId": "get-azure-entitlement",
+        "summary": "Get one Azure entitlement of a subscription",
+        "description": "A POST that reads a single entitlement. The whole set is get-azure-entitlements, which is an ordinary GET.\nAn Azure plan subscription holds many entitlements, each one an Azure subscription in the customer's tenant. The entitlement, not the Partner Center subscription, is what you cancel or reactivate.\nThe entitlement id is also what update-subscription-overage keys on.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "subscription-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "entitlement-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-an-azure-entitlement-for-a-subscription"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/subscriptions/{subscription-id}/azureEntitlements/{entitlement-id}/cancel": {
+      "post": {
+        "operationId": "cancel-azure-entitlement",
+        "summary": "Cancel an Azure entitlement",
+        "description": "This cancels ONE Azure subscription inside the customer's Azure plan. It is not cancel-subscription, which would end the Azure plan itself.\nConsumption billed before the cancellation still lands on the invoice; cancelling stops future consumption, it does not refund past usage.\nReversible for a period with reactivate-azure-entitlement, after which the resources are gone.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "subscription-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "entitlement-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/cancel-an-azure-subscription"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/subscriptions/{subscription-id}/azureEntitlements/{entitlement-id}/reactivate": {
+      "post": {
+        "operationId": "reactivate-azure-entitlement",
+        "summary": "Reactivate a cancelled Azure entitlement",
+        "description": "Only works inside the retention window that follows cancellation. After it, the Azure resources are deleted and reactivation cannot bring them back.\nReactivating restores the entitlement, not the data in resources Azure has already reclaimed.\nDistinct from reactivate-subscription, which brings a suspended Partner Center subscription back.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "subscription-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "entitlement-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/reactivate-an-azure-subscription"
         }
       }
     }
