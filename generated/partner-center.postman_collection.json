@@ -3250,6 +3250,227 @@
             },
             "description": "MONTHLY aggregation of UNBILLED usage per resource, as opposed to the current-period view of get-subscription-resource-usage.\nNote the path shape: usagerecords/resources, not resourceusagerecords. Two different routes with nearly the same name.\nStill an estimate - reconcile against the invoice line items before invoicing a customer.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-all-monthly-usage-records-for-a-subscription"
           }
+        },
+        {
+          "name": "Get a customer's Azure spending budget",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/usagebudget",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "usagebudget"
+              ],
+              "query": []
+            },
+            "description": "The budget is a NOTIFICATION threshold. Azure keeps consuming past it; nothing is capped or stopped.\nIt is evaluated against unbilled usage estimates, which lag consumption by about 24 hours - a customer can pass the budget before anyone is told.\nRead it before writing: update-usage-budget replaces the amount.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-a-customer-s-usage-spending-budget"
+          }
+        },
+        {
+          "name": "Set a customer's Azure spending budget",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/usagebudget",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "usagebudget"
+              ],
+              "query": []
+            },
+            "description": "Setting a budget does not stop consumption. It is a notification threshold, not a hard cap, so do not sell it to a customer as spend protection.\nTo actually limit spend you have to act on the notification yourself - suspend the subscription or remove the Azure entitlement.\nThe budget applies to the customer's Azure usage as a whole, not per subscription.\n\nDocs: https://learn.microsoft.com/partner-center/developer/update-a-customer-s-usage-spending-budget"
+          }
+        },
+        {
+          "name": "Get the overage setting for a customer's consumption subscriptions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/overage",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "subscriptions",
+                "overage"
+              ],
+              "query": []
+            },
+            "description": "Overage decides where consumption beyond a prepaid commitment is billed. It is keyed by Azure entitlement, not by subscription id.\nThe route sits on the subscriptions COLLECTION and covers every consumption subscription the customer has.\nRead it before update-subscription-overage, which is a PUT.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-subscription-overage"
+          }
+        },
+        {
+          "name": "Enable or disable overage for a consumption subscription",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/overage",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "subscriptions",
+                "overage"
+              ],
+              "query": []
+            },
+            "description": "azureEntitlementId identifies the target, not a subscription id - get it from get-azure-entitlements.\npartnerId only applies in the two-tier model, where an indirect provider sets overage on behalf of a reseller. Sending it in a direct-bill setup is wrong.\nDisabling overage stops consumption beyond the commitment from being billable; it does not cap what Azure will run.\n\nDocs: https://learn.microsoft.com/partner-center/developer/update-subscription-overage"
+          }
+        },
+        {
+          "name": "Get a customer's service costs summary for a billing period",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/servicecosts/{billing-period}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "servicecosts",
+                "%7Bbilling-period%7D"
+              ],
+              "query": []
+            },
+            "description": "This is the CUSTOMER-facing cost view for a closed billing period, not the partner invoice. The two answer different questions and can differ.\nbilling-period is an enum value, not a date - \"MostRecent\" is the usual one.\nUnlike the usage endpoints these are settled figures, so they are the right basis for a customer-facing statement.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-a-customer-s-service-costs-summary"
+          }
+        },
+        {
+          "name": "Get a customer's service cost line items",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/servicecosts/{billing-period}/lineitems",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "servicecosts",
+                "%7Bbilling-period%7D",
+                "lineitems"
+              ],
+              "query": []
+            },
+            "description": "The per-line detail behind get-service-costs-summary, still customer-facing rather than the partner invoice.\nUse these to build a customer statement; use the invoice line items (get-invoice-billed-lineitems) for what the partner actually owes Microsoft.\nbilling-period is the same enum used by the summary route.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-a-customer-s-service-costs-line-items"
+          }
         }
       ]
     },

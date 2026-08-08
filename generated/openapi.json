@@ -5226,6 +5226,204 @@
           "url": "https://learn.microsoft.com/partner-center/developer/get-all-monthly-usage-records-for-a-subscription"
         }
       }
+    },
+    "/v1/customers/{customer-id}/usagebudget": {
+      "get": {
+        "operationId": "get-usage-budget",
+        "summary": "Get a customer's Azure spending budget",
+        "description": "The budget is a NOTIFICATION threshold. Azure keeps consuming past it; nothing is capped or stopped.\nIt is evaluated against unbilled usage estimates, which lag consumption by about 24 hours - a customer can pass the budget before anyone is told.\nRead it before writing: update-usage-budget replaces the amount.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-a-customer-s-usage-spending-budget"
+        }
+      },
+      "patch": {
+        "operationId": "update-usage-budget",
+        "summary": "Set a customer's Azure spending budget",
+        "description": "Setting a budget does not stop consumption. It is a notification threshold, not a hard cap, so do not sell it to a customer as spend protection.\nTo actually limit spend you have to act on the notification yourself - suspend the subscription or remove the Azure entitlement.\nThe budget applies to the customer's Azure usage as a whole, not per subscription.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/update-a-customer-s-usage-spending-budget"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "amount": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/subscriptions/overage": {
+      "get": {
+        "operationId": "get-subscription-overage",
+        "summary": "Get the overage setting for a customer's consumption subscriptions",
+        "description": "Overage decides where consumption beyond a prepaid commitment is billed. It is keyed by Azure entitlement, not by subscription id.\nThe route sits on the subscriptions COLLECTION and covers every consumption subscription the customer has.\nRead it before update-subscription-overage, which is a PUT.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-subscription-overage"
+        }
+      },
+      "put": {
+        "operationId": "update-subscription-overage",
+        "summary": "Enable or disable overage for a consumption subscription",
+        "description": "azureEntitlementId identifies the target, not a subscription id - get it from get-azure-entitlements.\npartnerId only applies in the two-tier model, where an indirect provider sets overage on behalf of a reseller. Sending it in a direct-bill setup is wrong.\nDisabling overage stops consumption beyond the commitment from being billable; it does not cap what Azure will run.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/update-subscription-overage"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "azureEntitlementId": {
+                    "type": "string"
+                  },
+                  "overageEnabled": {
+                    "type": "string"
+                  },
+                  "partnerId": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/servicecosts/{billing-period}": {
+      "get": {
+        "operationId": "get-service-costs-summary",
+        "summary": "Get a customer's service costs summary for a billing period",
+        "description": "This is the CUSTOMER-facing cost view for a closed billing period, not the partner invoice. The two answer different questions and can differ.\nbilling-period is an enum value, not a date - \"MostRecent\" is the usual one.\nUnlike the usage endpoints these are settled figures, so they are the right basis for a customer-facing statement.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "billing-period",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-a-customer-s-service-costs-summary"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/servicecosts/{billing-period}/lineitems": {
+      "get": {
+        "operationId": "get-service-costs-lineitems",
+        "summary": "Get a customer's service cost line items",
+        "description": "The per-line detail behind get-service-costs-summary, still customer-facing rather than the partner invoice.\nUse these to build a customer statement; use the invoice line items (get-invoice-billed-lineitems) for what the partner actually owes Microsoft.\nbilling-period is the same enum used by the summary route.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "billing-period",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-a-customer-s-service-costs-line-items"
+        }
+      }
     }
   }
 }

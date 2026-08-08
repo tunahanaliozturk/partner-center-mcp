@@ -5233,6 +5233,170 @@
       ],
       "docUrl": "https://learn.microsoft.com/partner-center/developer/get-all-monthly-usage-records-for-a-subscription",
       "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "get-usage-budget",
+      "area": "invoicing",
+      "title": "Get a customer's Azure spending budget",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/usagebudget",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "SpendingBudget",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/usagebudget\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/usagebudget\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/usagebudget`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "The budget is a NOTIFICATION threshold. Azure keeps consuming past it; nothing is capped or stopped.",
+        "It is evaluated against unbilled usage estimates, which lag consumption by about 24 hours - a customer can pass the budget before anyone is told.",
+        "Read it before writing: update-usage-budget replaces the amount."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-customer-s-usage-spending-budget",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "update-usage-budget",
+      "area": "invoicing",
+      "title": "Set a customer's Azure spending budget",
+      "method": "PATCH",
+      "path": "/v1/customers/{customer-id}/usagebudget",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "SpendingBudget",
+      "requestFields": [
+        { "name": "amount", "type": "decimal", "required": true, "note": "the new budget for the customer's Azure usage" }
+      ],
+      "responseShape": "SpendingBudget",
+      "examples": {
+        "curl": "curl -X PATCH -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d '{\"amount\":5000}' \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/usagebudget\"",
+        "csharp": "var req = new HttpRequestMessage(HttpMethod.Patch, $\"/v1/customers/{customerId}/usagebudget\") { Content = content };\nvar res = await http.SendAsync(req);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/usagebudget`, { method: \"PATCH\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body: JSON.stringify({ amount: 5000 }) });"
+      },
+      "gotchas": [
+        "Setting a budget does not stop consumption. It is a notification threshold, not a hard cap, so do not sell it to a customer as spend protection.",
+        "To actually limit spend you have to act on the notification yourself - suspend the subscription or remove the Azure entitlement.",
+        "The budget applies to the customer's Azure usage as a whole, not per subscription."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/update-a-customer-s-usage-spending-budget",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "get-subscription-overage",
+      "area": "invoicing",
+      "title": "Get the overage setting for a customer's consumption subscriptions",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/subscriptions/overage",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "Overage collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/overage\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/subscriptions/overage\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/subscriptions/overage`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Overage decides where consumption beyond a prepaid commitment is billed. It is keyed by Azure entitlement, not by subscription id.",
+        "The route sits on the subscriptions COLLECTION and covers every consumption subscription the customer has.",
+        "Read it before update-subscription-overage, which is a PUT."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-subscription-overage",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "update-subscription-overage",
+      "area": "invoicing",
+      "title": "Enable or disable overage for a consumption subscription",
+      "method": "PUT",
+      "path": "/v1/customers/{customer-id}/subscriptions/overage",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "Overage",
+      "requestFields": [
+        { "name": "azureEntitlementId", "type": "string (guid)", "required": true, "note": "the consumption subscription overage applies to" },
+        { "name": "overageEnabled", "type": "boolean", "required": true, "note": "whether overage is allowed for that entitlement" },
+        { "name": "partnerId", "type": "string (guid)", "required": false, "note": "the indirect reseller's PartnerID; two-tier (indirect provider) only" }
+      ],
+      "responseShape": "Overage",
+      "examples": {
+        "curl": "curl -X PUT -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d '{\"azureEntitlementId\":\"{entitlement-id}\",\"overageEnabled\":true}' \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/overage\"",
+        "csharp": "var res = await http.PutAsync($\"/v1/customers/{customerId}/subscriptions/overage\", content);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/subscriptions/overage`, { method: \"PUT\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "azureEntitlementId identifies the target, not a subscription id - get it from get-azure-entitlements.",
+        "partnerId only applies in the two-tier model, where an indirect provider sets overage on behalf of a reseller. Sending it in a direct-bill setup is wrong.",
+        "Disabling overage stops consumption beyond the commitment from being billable; it does not cap what Azure will run."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/update-subscription-overage",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "get-service-costs-summary",
+      "area": "invoicing",
+      "title": "Get a customer's service costs summary for a billing period",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/servicecosts/{billing-period}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "ServiceCostsSummary",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/servicecosts/MostRecent\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/servicecosts/MostRecent\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/servicecosts/MostRecent`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "This is the CUSTOMER-facing cost view for a closed billing period, not the partner invoice. The two answer different questions and can differ.",
+        "billing-period is an enum value, not a date - \"MostRecent\" is the usual one.",
+        "Unlike the usage endpoints these are settled figures, so they are the right basis for a customer-facing statement."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-customer-s-service-costs-summary",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "get-service-costs-lineitems",
+      "area": "invoicing",
+      "title": "Get a customer's service cost line items",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/servicecosts/{billing-period}/lineitems",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "ServiceCostLineItem collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/servicecosts/MostRecent/lineitems\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/servicecosts/MostRecent/lineitems\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/servicecosts/MostRecent/lineitems`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "The per-line detail behind get-service-costs-summary, still customer-facing rather than the partner invoice.",
+        "Use these to build a customer statement; use the invoice line items (get-invoice-billed-lineitems) for what the partner actually owes Microsoft.",
+        "billing-period is the same enum used by the summary route."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-customer-s-service-costs-line-items",
+      "lastVerified": "2026-08-08"
     }
   ]
 }

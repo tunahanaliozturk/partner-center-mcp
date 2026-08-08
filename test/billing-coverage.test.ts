@@ -30,3 +30,23 @@ test("the usage family states the 24-hour data delay somewhere", () => {
   const all = USAGE.map((id) => scenario(id).gotchas.join(" ")).join(" ");
   expect(all).toMatch(/24 hours/i);
 });
+
+test("batch L: spending budget, overage and service costs are addressable", () => {
+  for (const id of [
+    "get-usage-budget", "update-usage-budget", "get-subscription-overage",
+    "update-subscription-overage", "get-service-costs-summary", "get-service-costs-lineitems",
+  ]) {
+    expect(byId.has(id), id).toBe(true);
+  }
+});
+
+test("the spending budget is documented as a notification threshold, not a cap", () => {
+  const g = scenario("update-usage-budget").gotchas.join(" ");
+  expect(g).toMatch(/does not (stop|cap)|not a (hard )?cap/i);
+});
+
+test("overage is written with PUT and keyed by the Azure entitlement", () => {
+  const s = scenario("update-subscription-overage");
+  expect(s.method).toBe("PUT");
+  expect(s.requestFields?.map((f) => f.name)).toContain("azureEntitlementId");
+});
