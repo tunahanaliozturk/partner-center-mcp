@@ -143,10 +143,12 @@ on failure — returned as `structuredContent` and validated against each tool's
 
 ## Coverage
 
-Scenarios span **customers**, **subscriptions** (the whole lifecycle: seats up and down,
-upgrade, cancel, renewal changes, suspend/reactivate, add-ons, New Commerce migration and
-transfer), **orders & carts** (through to provisioning status), **catalog/products**,
-**licenses**, **invoicing/billing**, **utilities** (address & domain validation), **audit**,
+Scenarios span **customers** (identity and profiles, search, users and directory roles,
+relationship removal, agreements and consent, self-serve policies), **subscriptions** (the whole
+lifecycle: seats up and down, upgrade, cancel, renewal changes, suspend/reactivate, add-ons, New
+Commerce migration and transfer), **orders & carts** (through to provisioning status),
+**catalog/products**, **licenses**, **invoicing/billing**, **devices** (Autopilot batches and
+configuration policies, end to end), **utilities** (address & domain validation), **audit**,
 **support**, **security/MFA**, **analytics**, and **profiles** — each with a verified `docUrl`
 and `lastVerified` date.
 
