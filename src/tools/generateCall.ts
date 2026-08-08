@@ -4,6 +4,7 @@ import type { Knowledge, Scenario } from "../knowledge/schema.js";
 import { ok, notFound } from "../util/result.js";
 import { envelope, OFFLINE } from "../util/schema.js";
 import { baseUrlFor } from "../knowledge/apis.js";
+import { findScenario } from "../knowledge/lookup.js";
 
 type Lang = "curl" | "csharp" | "typescript" | "powershell";
 
@@ -143,7 +144,7 @@ export const generateCall: Tool = {
   annotations: OFFLINE,
   run(args, ctx) {
     const k = ctx.knowledge as Knowledge;
-    const scenario = k.scenarios.find((s) => s.id === args.id);
+    const scenario = findScenario(k, args.id);
     if (!scenario) return notFound(`No scenario with id "${args.id}".`, k.scenarios.map((s) => s.id));
     const lang = args.language as Lang;
     const fullUrl = baseUrlFor(scenario.api) + scenario.path;

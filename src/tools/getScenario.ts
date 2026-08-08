@@ -3,6 +3,7 @@ import type { Tool } from "../types.js";
 import { type Knowledge, ScenarioSchema } from "../knowledge/schema.js";
 import { ok, notFound } from "../util/result.js";
 import { DocExcerpt, envelope, LIVE_DOCS, OFFLINE } from "../util/schema.js";
+import { findScenario } from "../knowledge/lookup.js";
 
 export const getScenario: Tool = {
   name: "pc_get_scenario",
@@ -35,7 +36,7 @@ export const getScenario: Tool = {
   annotations: { ...OFFLINE, idempotentHint: LIVE_DOCS.idempotentHint, openWorldHint: LIVE_DOCS.openWorldHint },
   async run(args, ctx) {
     const k = ctx.knowledge as Knowledge;
-    const scenario = k.scenarios.find((s) => s.id === args.id);
+    const scenario = findScenario(k, args.id);
     if (!scenario) {
       const suggestions = k.scenarios.map((s) => s.id).filter((id) => id.includes(args.id) || args.id.includes(id));
       return notFound(`No scenario with id "${args.id}".`, suggestions.length ? suggestions : k.scenarios.map((s) => s.id));

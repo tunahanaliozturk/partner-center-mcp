@@ -3,8 +3,9 @@ import { randomUUID } from "node:crypto";
 import type { Tool } from "../types.js";
 import { ok, notFound } from "../util/result.js";
 import { envelope, OFFLINE } from "../util/schema.js";
-import type { Knowledge, Scenario } from "../knowledge/schema.js";
+import type { Knowledge } from "../knowledge/schema.js";
 import { baseUrlFor } from "../knowledge/apis.js";
+import { findScenario } from "../knowledge/lookup.js";
 
 function defaultFor(type: string, note?: string): unknown {
   const lit = note?.match(/'([^']+)'/);
@@ -79,7 +80,7 @@ export const buildRequest: Tool = {
   annotations: { ...OFFLINE, idempotentHint: false },
   run(args, ctx) {
     const k = ctx.knowledge as Knowledge;
-    const scenario = k.scenarios.find((s) => s.id === args.id) as Scenario | undefined;
+    const scenario = findScenario(k, args.id);
     if (!scenario) return notFound(`No scenario with id "${args.id}".`, k.scenarios.map((s) => s.id));
 
     const params = args.params ?? {};

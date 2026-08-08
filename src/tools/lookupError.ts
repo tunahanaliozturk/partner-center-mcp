@@ -3,6 +3,7 @@ import type { Tool } from "../types.js";
 import { ErrorEntrySchema, type Knowledge } from "../knowledge/schema.js";
 import { ok, notFound, toolError } from "../util/result.js";
 import { envelope, OFFLINE, ScenarioRef } from "../util/schema.js";
+import { findScenarios } from "../knowledge/lookup.js";
 
 export const lookupError: Tool = {
   name: "pc_lookup_error",
@@ -38,9 +39,7 @@ export const lookupError: Tool = {
     const errors = k.errors;
     const withScenarios = (e: typeof errors[number]) => ({
       ...e,
-      relatedScenarios: (e.relatedScenarios ?? [])
-        .map((id) => k.scenarios.find((s) => s.id === id))
-        .filter((s): s is Knowledge["scenarios"][number] => s !== undefined)
+      relatedScenarios: findScenarios(k, e.relatedScenarios ?? [])
         .map((s) => ({ id: s.id, title: s.title, docUrl: s.docUrl })),
     });
     if (args.code) {

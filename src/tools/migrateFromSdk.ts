@@ -3,6 +3,7 @@ import type { Tool } from "../types.js";
 import { type Knowledge, ScenarioSchema } from "../knowledge/schema.js";
 import { ok } from "../util/result.js";
 import { envelope, OFFLINE } from "../util/schema.js";
+import { findScenario } from "../knowledge/lookup.js";
 
 export const migrateFromSdk: Tool = {
   name: "pc_migrate_from_sdk",
@@ -37,7 +38,7 @@ export const migrateFromSdk: Tool = {
         const safeNeedle = needle.replace(/\./g, "\\.");
         return new RegExp(safeNeedle, "i").test(args.code);
       })
-      .map((m) => ({ sdkPattern: m.sdkPattern, notes: m.notes, scenario: k.scenarios.find((s) => s.id === m.restScenarioId) }))
+      .map((m) => ({ sdkPattern: m.sdkPattern, notes: m.notes, scenario: findScenario(k, m.restScenarioId) }))
       .filter((m) => m.scenario);
     return ok({ matches, unmatched: matches.length === 0 });
   },

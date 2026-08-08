@@ -3,6 +3,7 @@ import type { Tool } from "../types.js";
 import { ok } from "../util/result.js";
 import { envelope, OFFLINE, ScenarioRef } from "../util/schema.js";
 import { ErrorEntrySchema, type Knowledge } from "../knowledge/schema.js";
+import { findScenarios } from "../knowledge/lookup.js";
 
 const GUID = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
 
@@ -64,9 +65,7 @@ export const decodeError: Tool = {
     const match = code ? k.errors.find((e) => e.errorCode === code) : undefined;
     const byStatus = !match && httpStatus ? k.errors.filter((e) => e.httpStatus === httpStatus) : [];
 
-    const relatedScenarios = (match?.relatedScenarios ?? [])
-      .map((id) => k.scenarios.find((s) => s.id === id))
-      .filter((s): s is Knowledge["scenarios"][number] => s !== undefined)
+    const relatedScenarios = findScenarios(k, match?.relatedScenarios ?? [])
       .map((s) => ({ id: s.id, title: s.title, docUrl: s.docUrl }));
 
     return ok({
