@@ -49,3 +49,23 @@ test("docFetch re-fetches after the TTL expires", async () => {
   await docFetch("auth");
   expect(calls).toBe(2);
 });
+
+test("the cache is bounded, so an unauthenticated caller cannot grow it without limit", async () => {
+  let calls = 0;
+  const fetchImpl = (async () => {
+    calls++;
+    return { ok: true, json: async () => ({ results: [] }) } as unknown as Response;
+  }) as unknown as typeof fetch;
+
+  const docFetch = makeDocFetch({ fetchImpl, maxCacheEntries: 3 });
+  for (const q of ["a", "b", "c", "d"]) await docFetch(q);
+  expect(calls).toBe(4);
+
+  // "d" is the newest and must still be cached.
+  await docFetch("d");
+  expect(calls).toBe(4);
+
+  // "a" was evicted when "d" pushed the cache past its limit, so it refetches.
+  await docFetch("a");
+  expect(calls).toBe(5);
+});
