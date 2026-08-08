@@ -139,8 +139,13 @@ Scenarios cover:
   suspend and reactivate, add-ons, New Commerce migration, transfer.
 - **Orders and carts.** Through to provisioning status, not just checkout.
 - **Devices.** Autopilot batches and configuration policies, end to end.
-- Plus catalog and products, licenses, invoicing and billing, address and domain validation,
-  audit, support, security and MFA, analytics, and partner profiles.
+- **Billing and pricing.** Azure consumption usage at every level, spending budgets and overage,
+  invoices and reconciliation line items, service costs, margins and growth margins, price sheets,
+  the offer matrix, FX rates, and promotion eligibility.
+- **Analytics.** Subscription, indirect reseller, referral and search analytics, plus the three
+  separate licence usage and deployment families.
+- Plus catalog and products, licenses, address and domain validation, audit, support, security and
+  MFA, and partner profiles.
 
 Every scenario carries the `docUrl` it was verified against and the date it was last checked.
 National clouds covered: commercial, 21Vianet (China), and US Gov.
