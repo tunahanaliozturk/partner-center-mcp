@@ -5695,6 +5695,175 @@
           "url": "https://learn.microsoft.com/partner-center/developer/get-growth-margin-by-id"
         }
       }
+    },
+    "/partner/v1/analytics/subscriptions": {
+      "get": {
+        "operationId": "get-subscription-analytics",
+        "summary": "Get subscription analytics",
+        "description": "Analytics, not inventory: aggregated counts and churn across the partner's estate. To enumerate actual subscriptions use list-customer-subscriptions.\nThe /partner/v1 prefix still lives on the Partner Center host, unlike the /v1.0/sales pricing routes.\nNarrow it with get-subscription-analytics-filtered or reshape it with get-subscription-analytics-grouped.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-all-subscription-analytics"
+        },
+        "x-variants": [
+          {
+            "operationId": "get-subscription-analytics-filtered",
+            "summary": "Filter subscription analytics with a search query",
+            "externalDocs": {
+              "url": "https://learn.microsoft.com/partner-center/developer/get-subscription-analytics-by-search-query"
+            }
+          },
+          {
+            "operationId": "get-subscription-analytics-grouped",
+            "summary": "Group subscription analytics by date or term",
+            "externalDocs": {
+              "url": "https://learn.microsoft.com/partner-center/developer/get-subscription-analytics-grouped-by-dates-or-terms"
+            }
+          }
+        ]
+      }
+    },
+    "/partner/v1/analytics/indirectresellers": {
+      "get": {
+        "operationId": "get-indirect-reseller-analytics",
+        "summary": "Get indirect reseller analytics",
+        "description": "Indirect PROVIDER view: performance across the resellers underneath you. A direct-bill partner gets nothing useful here.\nTo enumerate the resellers themselves rather than their metrics use get-indirect-resellers.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-all-indirect-resellers-analytics"
+        }
+      }
+    },
+    "/partner/v1/analytics/referrals": {
+      "get": {
+        "operationId": "get-referral-analytics",
+        "summary": "Get referral analytics",
+        "description": "Aggregated co-sell referral performance. The referrals themselves live on the pricing-and-referrals host (get-referrals), so this and that route need different token audiences.\nUseful for win rates; useless for working a specific deal.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-all-referrals-analytics"
+        }
+      }
+    },
+    "/partner/v1/analytics/search": {
+      "get": {
+        "operationId": "get-search-analytics",
+        "summary": "Get marketplace search analytics",
+        "description": "How often the partner's profile surfaced in marketplace search and what was clicked. A marketing signal, unrelated to subscriptions or billing.\nNothing here is per customer.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-all-search-analytics"
+        }
+      }
+    },
+    "/v1/analytics/licenses/usage": {
+      "get": {
+        "operationId": "get-partner-licenses-usage",
+        "summary": "Get partner-wide licence usage",
+        "description": "Partner-wide scope, across every customer. There are three licence-analytics families and picking the wrong one silently answers a different question: this one, the commercial family (get-commercial-licenses-usage), and the per-customer one (get-customer-analytics).\nUsage means licences actually being USED; deployment means licences assigned. get-partner-licenses-deployment is the other half.\nSeats sold come from the subscriptions themselves, not from here.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-partner-licenses-usage-information"
+        }
+      }
+    },
+    "/v1/analytics/licenses/deployment": {
+      "get": {
+        "operationId": "get-partner-licenses-deployment",
+        "summary": "Get partner-wide licence deployment",
+        "description": "Partner-wide scope. Deployment counts licences ASSIGNED to users; get-partner-licenses-usage counts licences actually used.\nThe gap between the two is the number you take to a customer to argue for right-sizing seats.\nFor one customer use get-customer-licenses-deployment.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-partner-licenses-deployment-information"
+        }
+      }
+    },
+    "/v1/analytics/commercial/usage/license/": {
+      "get": {
+        "operationId": "get-commercial-licenses-usage",
+        "summary": "Get commercial licence usage",
+        "description": "The commercial-marketplace licence family, distinct from the partner-wide /v1/analytics/licenses/usage route despite the near-identical name.\nNote the trailing slash and the reversed path order: commercial/usage/license, not licenses/usage.\nCompare with get-commercial-licenses-deployment for assigned versus used.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-licenses-usage-information"
+        }
+      }
+    },
+    "/v1/analytics/commercial/deployment/license/": {
+      "get": {
+        "operationId": "get-commercial-licenses-deployment",
+        "summary": "Get commercial licence deployment",
+        "description": "The commercial counterpart of get-partner-licenses-deployment; the two do not return the same population, so do not treat them as interchangeable.\nTrailing slash and reversed path order again: commercial/deployment/license.\nAssigned licences, not used ones - pair it with get-commercial-licenses-usage.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-licenses-deployment-information"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/analytics/licenses/deployment": {
+      "get": {
+        "operationId": "get-customer-licenses-deployment",
+        "summary": "Get one customer's licence deployment",
+        "description": "Scoped to one customer, which is the family the partner-wide and commercial routes cannot answer.\nIts usage counterpart for the same customer is get-customer-analytics.\nDeployment is licences assigned to users; a large gap against seats purchased is unassigned spend.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-customer-licenses-deployment-information"
+        }
+      }
     }
   }
 }

@@ -89,3 +89,32 @@ test("promotion eligibility closes the loop with the promotion listings", () => 
   expect(scenario("verify-promotion-eligibility").requestFields?.map((f) => f.name))
     .toEqual(expect.arrayContaining(["items[].catalogItemId", "items[].termDuration"]));
 });
+
+const ANALYTICS = [
+  "get-subscription-analytics", "get-subscription-analytics-filtered",
+  "get-subscription-analytics-grouped", "get-indirect-reseller-analytics",
+  "get-referral-analytics", "get-search-analytics", "get-partner-licenses-usage",
+  "get-partner-licenses-deployment", "get-commercial-licenses-usage",
+  "get-commercial-licenses-deployment", "get-customer-licenses-deployment",
+];
+
+test("batch O: partner analytics is addressable", () => {
+  for (const id of ANALYTICS) expect(byId.has(id), id).toBe(true);
+});
+
+test("the three licence-analytics families each name their scope", () => {
+  const families = [
+    ["get-partner-licenses-usage", /partner-wide|across (all|every)/i],
+    ["get-commercial-licenses-usage", /commercial/i],
+    ["get-customer-licenses-deployment", /one customer|single customer|per customer/i],
+  ] as const;
+  for (const [id, re] of families) {
+    expect(scenario(id).gotchas.join(" "), id).toMatch(re);
+  }
+});
+
+test("partner analytics stays on the Partner Center host", () => {
+  for (const id of ["get-subscription-analytics", "get-referral-analytics"]) {
+    expect(scenario(id).api ?? "partner-center", id).toBe("partner-center");
+  }
+});

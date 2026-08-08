@@ -82,6 +82,416 @@
             },
             "description": "Note the /partner/v1/ path prefix (not /v1/). App+User only; CSP partners only.\nOData params: top (max 10000), skip, filter, orderby, groupby, aggregationLevel (day|week|month).\nResponse includes a next link when more rows exist than 'top'.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-all-azure-usage-analytics"
           }
+        },
+        {
+          "name": "Get subscription analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/partner/v1/analytics/subscriptions",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "partner",
+                "v1",
+                "analytics",
+                "subscriptions"
+              ],
+              "query": []
+            },
+            "description": "Analytics, not inventory: aggregated counts and churn across the partner's estate. To enumerate actual subscriptions use list-customer-subscriptions.\nThe /partner/v1 prefix still lives on the Partner Center host, unlike the /v1.0/sales pricing routes.\nNarrow it with get-subscription-analytics-filtered or reshape it with get-subscription-analytics-grouped.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-all-subscription-analytics"
+          }
+        },
+        {
+          "name": "Filter subscription analytics with a search query",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/partner/v1/analytics/subscriptions?filter={filter-string}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "partner",
+                "v1",
+                "analytics",
+                "subscriptions"
+              ],
+              "query": [
+                {
+                  "key": "filter",
+                  "value": "{filter-string}"
+                }
+              ]
+            },
+            "description": "The filter is an expression string, not the URL-encoded JSON object the customer and user search endpoints use. Two different filter dialects in one API.\nURL-encode the expression; spaces and quotes are what break it.\nSame route as get-subscription-analytics, so an invalid filter quietly returns the unfiltered shape rather than an error.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-subscription-analytics-by-search-query"
+          }
+        },
+        {
+          "name": "Group subscription analytics by date or term",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/partner/v1/analytics/subscriptions?groupby={groupby-queries}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "partner",
+                "v1",
+                "analytics",
+                "subscriptions"
+              ],
+              "query": [
+                {
+                  "key": "groupby",
+                  "value": "{groupby-queries}"
+                }
+              ]
+            },
+            "description": "groupby changes the SHAPE of the response, so a client that parses the ungrouped form will break on it.\nCombine with filter on the same route to slice and group in one call.\nGrouping by term is how you see renewal cohorts; grouping by date is how you see growth.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-subscription-analytics-grouped-by-dates-or-terms"
+          }
+        },
+        {
+          "name": "Get indirect reseller analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/partner/v1/analytics/indirectresellers",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "partner",
+                "v1",
+                "analytics",
+                "indirectresellers"
+              ],
+              "query": []
+            },
+            "description": "Indirect PROVIDER view: performance across the resellers underneath you. A direct-bill partner gets nothing useful here.\nTo enumerate the resellers themselves rather than their metrics use get-indirect-resellers.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-all-indirect-resellers-analytics"
+          }
+        },
+        {
+          "name": "Get referral analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/partner/v1/analytics/referrals",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "partner",
+                "v1",
+                "analytics",
+                "referrals"
+              ],
+              "query": []
+            },
+            "description": "Aggregated co-sell referral performance. The referrals themselves live on the pricing-and-referrals host (get-referrals), so this and that route need different token audiences.\nUseful for win rates; useless for working a specific deal.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-all-referrals-analytics"
+          }
+        },
+        {
+          "name": "Get marketplace search analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/partner/v1/analytics/search",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "partner",
+                "v1",
+                "analytics",
+                "search"
+              ],
+              "query": []
+            },
+            "description": "How often the partner's profile surfaced in marketplace search and what was clicked. A marketing signal, unrelated to subscriptions or billing.\nNothing here is per customer.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-all-search-analytics"
+          }
+        },
+        {
+          "name": "Get partner-wide licence usage",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/analytics/licenses/usage",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "analytics",
+                "licenses",
+                "usage"
+              ],
+              "query": []
+            },
+            "description": "Partner-wide scope, across every customer. There are three licence-analytics families and picking the wrong one silently answers a different question: this one, the commercial family (get-commercial-licenses-usage), and the per-customer one (get-customer-analytics).\nUsage means licences actually being USED; deployment means licences assigned. get-partner-licenses-deployment is the other half.\nSeats sold come from the subscriptions themselves, not from here.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-partner-licenses-usage-information"
+          }
+        },
+        {
+          "name": "Get partner-wide licence deployment",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/analytics/licenses/deployment",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "analytics",
+                "licenses",
+                "deployment"
+              ],
+              "query": []
+            },
+            "description": "Partner-wide scope. Deployment counts licences ASSIGNED to users; get-partner-licenses-usage counts licences actually used.\nThe gap between the two is the number you take to a customer to argue for right-sizing seats.\nFor one customer use get-customer-licenses-deployment.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-partner-licenses-deployment-information"
+          }
+        },
+        {
+          "name": "Get commercial licence usage",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/analytics/commercial/usage/license/",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "analytics",
+                "commercial",
+                "usage",
+                "license"
+              ],
+              "query": []
+            },
+            "description": "The commercial-marketplace licence family, distinct from the partner-wide /v1/analytics/licenses/usage route despite the near-identical name.\nNote the trailing slash and the reversed path order: commercial/usage/license, not licenses/usage.\nCompare with get-commercial-licenses-deployment for assigned versus used.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-licenses-usage-information"
+          }
+        },
+        {
+          "name": "Get commercial licence deployment",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/analytics/commercial/deployment/license/",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "analytics",
+                "commercial",
+                "deployment",
+                "license"
+              ],
+              "query": []
+            },
+            "description": "The commercial counterpart of get-partner-licenses-deployment; the two do not return the same population, so do not treat them as interchangeable.\nTrailing slash and reversed path order again: commercial/deployment/license.\nAssigned licences, not used ones - pair it with get-commercial-licenses-usage.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-licenses-deployment-information"
+          }
+        },
+        {
+          "name": "Get one customer's licence deployment",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/analytics/licenses/deployment",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "analytics",
+                "licenses",
+                "deployment"
+              ],
+              "query": []
+            },
+            "description": "Scoped to one customer, which is the family the partner-wide and commercial routes cannot answer.\nIts usage counterpart for the same customer is get-customer-analytics.\nDeployment is licences assigned to users; a large gap against seats purchased is unassigned spend.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-customer-licenses-deployment-information"
+          }
         }
       ]
     },

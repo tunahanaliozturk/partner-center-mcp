@@ -5749,6 +5749,289 @@
       ],
       "docUrl": "https://learn.microsoft.com/partner-center/developer/get-foreign-exchange-rates",
       "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "get-subscription-analytics",
+      "area": "analytics",
+      "title": "Get subscription analytics",
+      "method": "GET",
+      "path": "/partner/v1/analytics/subscriptions",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "SubscriptionAnalytics collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/partner/v1/analytics/subscriptions\"",
+        "csharp": "var res = await http.GetAsync(\"/partner/v1/analytics/subscriptions\");",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/partner/v1/analytics/subscriptions\", { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Analytics, not inventory: aggregated counts and churn across the partner's estate. To enumerate actual subscriptions use list-customer-subscriptions.",
+        "The /partner/v1 prefix still lives on the Partner Center host, unlike the /v1.0/sales pricing routes.",
+        "Narrow it with get-subscription-analytics-filtered or reshape it with get-subscription-analytics-grouped."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-all-subscription-analytics",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "get-subscription-analytics-filtered",
+      "area": "analytics",
+      "title": "Filter subscription analytics with a search query",
+      "method": "GET",
+      "path": "/partner/v1/analytics/subscriptions?filter={filter-string}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "SubscriptionAnalytics collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/partner/v1/analytics/subscriptions?filter=productName%20eq%20'Office'\"",
+        "csharp": "var res = await http.GetAsync(\"/partner/v1/analytics/subscriptions?filter=productName eq 'Office'\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/partner/v1/analytics/subscriptions?filter=${encodeURIComponent(\"productName eq 'Office'\")}`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "The filter is an expression string, not the URL-encoded JSON object the customer and user search endpoints use. Two different filter dialects in one API.",
+        "URL-encode the expression; spaces and quotes are what break it.",
+        "Same route as get-subscription-analytics, so an invalid filter quietly returns the unfiltered shape rather than an error."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-subscription-analytics-by-search-query",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "get-subscription-analytics-grouped",
+      "area": "analytics",
+      "title": "Group subscription analytics by date or term",
+      "method": "GET",
+      "path": "/partner/v1/analytics/subscriptions?groupby={groupby-queries}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "SubscriptionAnalytics collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/partner/v1/analytics/subscriptions?groupby=creationDate\"",
+        "csharp": "var res = await http.GetAsync(\"/partner/v1/analytics/subscriptions?groupby=creationDate\");",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/partner/v1/analytics/subscriptions?groupby=creationDate\", { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "groupby changes the SHAPE of the response, so a client that parses the ungrouped form will break on it.",
+        "Combine with filter on the same route to slice and group in one call.",
+        "Grouping by term is how you see renewal cohorts; grouping by date is how you see growth."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-subscription-analytics-grouped-by-dates-or-terms",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "get-indirect-reseller-analytics",
+      "area": "analytics",
+      "title": "Get indirect reseller analytics",
+      "method": "GET",
+      "path": "/partner/v1/analytics/indirectresellers",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "IndirectResellerAnalytics collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/partner/v1/analytics/indirectresellers\"",
+        "csharp": "var res = await http.GetAsync(\"/partner/v1/analytics/indirectresellers\");",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/partner/v1/analytics/indirectresellers\", { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Indirect PROVIDER view: performance across the resellers underneath you. A direct-bill partner gets nothing useful here.",
+        "To enumerate the resellers themselves rather than their metrics use get-indirect-resellers."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-all-indirect-resellers-analytics",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "get-referral-analytics",
+      "area": "analytics",
+      "title": "Get referral analytics",
+      "method": "GET",
+      "path": "/partner/v1/analytics/referrals",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "ReferralAnalytics collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/partner/v1/analytics/referrals\"",
+        "csharp": "var res = await http.GetAsync(\"/partner/v1/analytics/referrals\");",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/partner/v1/analytics/referrals\", { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Aggregated co-sell referral performance. The referrals themselves live on the pricing-and-referrals host (get-referrals), so this and that route need different token audiences.",
+        "Useful for win rates; useless for working a specific deal."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-all-referrals-analytics",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "get-search-analytics",
+      "area": "analytics",
+      "title": "Get marketplace search analytics",
+      "method": "GET",
+      "path": "/partner/v1/analytics/search",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "SearchAnalytics collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/partner/v1/analytics/search\"",
+        "csharp": "var res = await http.GetAsync(\"/partner/v1/analytics/search\");",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/partner/v1/analytics/search\", { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "How often the partner's profile surfaced in marketplace search and what was clicked. A marketing signal, unrelated to subscriptions or billing.",
+        "Nothing here is per customer."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-all-search-analytics",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "get-partner-licenses-usage",
+      "area": "analytics",
+      "title": "Get partner-wide licence usage",
+      "method": "GET",
+      "path": "/v1/analytics/licenses/usage",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "LicensesUsage collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/analytics/licenses/usage\"",
+        "csharp": "var res = await http.GetAsync(\"/v1/analytics/licenses/usage\");",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/analytics/licenses/usage\", { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Partner-wide scope, across every customer. There are three licence-analytics families and picking the wrong one silently answers a different question: this one, the commercial family (get-commercial-licenses-usage), and the per-customer one (get-customer-analytics).",
+        "Usage means licences actually being USED; deployment means licences assigned. get-partner-licenses-deployment is the other half.",
+        "Seats sold come from the subscriptions themselves, not from here."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-partner-licenses-usage-information",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "get-partner-licenses-deployment",
+      "area": "analytics",
+      "title": "Get partner-wide licence deployment",
+      "method": "GET",
+      "path": "/v1/analytics/licenses/deployment",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "LicensesDeployment collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/analytics/licenses/deployment\"",
+        "csharp": "var res = await http.GetAsync(\"/v1/analytics/licenses/deployment\");",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/analytics/licenses/deployment\", { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Partner-wide scope. Deployment counts licences ASSIGNED to users; get-partner-licenses-usage counts licences actually used.",
+        "The gap between the two is the number you take to a customer to argue for right-sizing seats.",
+        "For one customer use get-customer-licenses-deployment."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-partner-licenses-deployment-information",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "get-commercial-licenses-usage",
+      "area": "analytics",
+      "title": "Get commercial licence usage",
+      "method": "GET",
+      "path": "/v1/analytics/commercial/usage/license/",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "CommercialLicensesUsage collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/analytics/commercial/usage/license/\"",
+        "csharp": "var res = await http.GetAsync(\"/v1/analytics/commercial/usage/license/\");",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/analytics/commercial/usage/license/\", { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "The commercial-marketplace licence family, distinct from the partner-wide /v1/analytics/licenses/usage route despite the near-identical name.",
+        "Note the trailing slash and the reversed path order: commercial/usage/license, not licenses/usage.",
+        "Compare with get-commercial-licenses-deployment for assigned versus used."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-licenses-usage-information",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "get-commercial-licenses-deployment",
+      "area": "analytics",
+      "title": "Get commercial licence deployment",
+      "method": "GET",
+      "path": "/v1/analytics/commercial/deployment/license/",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "CommercialLicensesDeployment collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/analytics/commercial/deployment/license/\"",
+        "csharp": "var res = await http.GetAsync(\"/v1/analytics/commercial/deployment/license/\");",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/analytics/commercial/deployment/license/\", { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "The commercial counterpart of get-partner-licenses-deployment; the two do not return the same population, so do not treat them as interchangeable.",
+        "Trailing slash and reversed path order again: commercial/deployment/license.",
+        "Assigned licences, not used ones - pair it with get-commercial-licenses-usage."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-licenses-deployment-information",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "get-customer-licenses-deployment",
+      "area": "analytics",
+      "title": "Get one customer's licence deployment",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/analytics/licenses/deployment",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "CustomerLicensesDeployment collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/analytics/licenses/deployment\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/analytics/licenses/deployment\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/analytics/licenses/deployment`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Scoped to one customer, which is the family the partner-wide and commercial routes cannot answer.",
+        "Its usage counterpart for the same customer is get-customer-analytics.",
+        "Deployment is licences assigned to users; a large gap against seats purchased is unassigned spend."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-customer-licenses-deployment-information",
+      "lastVerified": "2026-08-08"
     }
   ]
 }
