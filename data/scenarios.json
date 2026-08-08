@@ -4546,6 +4546,259 @@
       ],
       "docUrl": "https://learn.microsoft.com/partner-center/developer/get-customers-of-an-indirect-reseller",
       "lastVerified": "2026-08-01"
+    },
+    {
+      "id": "get-customer-consent",
+      "area": "customers",
+      "title": "Get confirmation of a customer's agreement consent",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/agreements",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "Agreement collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/agreements\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/agreements\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/agreements`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Unfiltered form of the route get-agreements filters with ?agreementType - use that one when you only care about a specific agreement.",
+        "An empty collection means no attested consent is on record, which blocks transacting for the customer.",
+        "This records the PARTNER's attestation. If the customer signed directly with Microsoft, that shows up in get-direct-sign-status instead."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-confirmation-of-customer-consent",
+      "lastVerified": "2026-08-01"
+    },
+    {
+      "id": "get-agreement-metadata",
+      "area": "customers",
+      "title": "Get agreement metadata by agreement type",
+      "method": "GET",
+      "path": "/v1/agreements?agreementType={agreement-type}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "AgreementMetaData collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/agreements?agreementType=MicrosoftCustomerAgreement\"",
+        "csharp": "var res = await http.GetAsync(\"/v1/agreements?agreementType=MicrosoftCustomerAgreement\");",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/agreements?agreementType=MicrosoftCustomerAgreement\", { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Partner-wide metadata, not per customer: it returns the templateId and version you must quote when recording consent with create-agreement.",
+        "Quote the CURRENT templateId - recording consent against a superseded template is rejected.",
+        "See the agreementType enum for the accepted values."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-customer-agreement-metadata",
+      "lastVerified": "2026-08-01"
+    },
+    {
+      "id": "get-direct-sign-status",
+      "area": "customers",
+      "title": "Check whether a customer signed the MCA directly with Microsoft",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/directSignedMicrosoftCustomerAgreementStatus",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "DirectSignedMicrosoftCustomerAgreementStatus",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/directSignedMicrosoftCustomerAgreementStatus\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/directSignedMicrosoftCustomerAgreementStatus\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/directSignedMicrosoftCustomerAgreementStatus`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Answers a different question from get-customer-consent: this is the customer signing the Microsoft Customer Agreement DIRECTLY with Microsoft, not the partner attesting on their behalf.",
+        "When it reports a direct signature, the partner does not need to collect and record an attestation with create-agreement.",
+        "Check it before onboarding an existing tenant - a direct signature is the usual explanation for an empty agreements collection on a customer who can nevertheless transact."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-direct-sign-status-of-customer-agreement",
+      "lastVerified": "2026-08-01"
+    },
+    {
+      "id": "create-selfserve-policy",
+      "area": "security",
+      "title": "Create a self-serve policy",
+      "method": "POST",
+      "path": "/v1/SelfServePolicy",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" },
+        { "name": "MS-RequestId", "required": true, "note": "GUID; the docs mark it required on this route" },
+        { "name": "MS-CorrelationId", "required": true, "note": "GUID; the docs mark it required on this route" }
+      ],
+      "requestShape": "SelfServePolicy",
+      "requestFields": [
+        { "name": "selfServeEntity", "type": "SelfServeEntity", "required": true, "note": "who is granted access: selfServeEntityType (e.g. \"customer\") + tenantID" },
+        { "name": "grantor", "type": "Grantor", "required": true, "note": "who grants it: grantorType (e.g. \"billToPartner\") + tenantID" },
+        { "name": "permissions", "type": "Permission[]", "required": true, "note": "the actions the entity may perform for itself" }
+      ],
+      "responseShape": "SelfServePolicy",
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -H \"MS-RequestId: $(uuidgen)\" -H \"MS-CorrelationId: $(uuidgen)\" -d @policy.json \"https://api.partnercenter.microsoft.com/v1/SelfServePolicy\"",
+        "csharp": "var res = await http.PostAsync(\"/v1/SelfServePolicy\", content);",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/SelfServePolicy\", { method: \"POST\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "Governs what the CUSTOMER may buy for themselves in the Microsoft admin center - it is a purchasing-permission policy, not a Partner Center role.",
+        "MS-RequestId and MS-CorrelationId are documented as required here, unlike most routes where they are merely advisable.",
+        "The route is capitalised SelfServePolicy; some hosts are case-sensitive about it."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/create-a-self-serve-policy",
+      "lastVerified": "2026-08-01"
+    },
+    {
+      "id": "list-selfserve-policies",
+      "area": "security",
+      "title": "List self-serve policies for a customer",
+      "method": "GET",
+      "path": "/v1/SelfServePolicy?entity_id={entity-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "SelfServePolicy collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/SelfServePolicy?entity_id={customer-tenant-id}\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/SelfServePolicy?entity_id={customerTenantId}\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/SelfServePolicy?entity_id=${customerTenantId}`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "entity_id is the CUSTOMER's tenant id - the entity access is requested for, not a policy id.",
+        "Required: without entity_id the request has no scope and is rejected.",
+        "Take the policy id from here for update-selfserve-policy and delete-selfserve-policy."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-self-serve-policies",
+      "lastVerified": "2026-08-01"
+    },
+    {
+      "id": "update-selfserve-policy",
+      "area": "security",
+      "title": "Update a self-serve policy",
+      "method": "PUT",
+      "path": "/v1/SelfServePolicy/{policy-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" },
+        { "name": "MS-RequestId", "required": true, "note": "GUID; the docs mark it required on this route" },
+        { "name": "MS-CorrelationId", "required": true, "note": "GUID; the docs mark it required on this route" }
+      ],
+      "requestShape": "SelfServePolicy",
+      "requestFields": [
+        { "name": "(full SelfServePolicy resource)", "type": "SelfServePolicy", "required": true, "note": "PUT replaces the policy - GET it, mutate, send it all back" },
+        { "name": "permissions", "type": "Permission[]", "required": true, "note": "the full permission set that should remain in force" }
+      ],
+      "responseShape": "SelfServePolicy",
+      "examples": {
+        "curl": "curl -X PUT -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d @policy.json \"https://api.partnercenter.microsoft.com/v1/SelfServePolicy/{policy-id}\"",
+        "csharp": "var res = await http.PutAsync($\"/v1/SelfServePolicy/{policyId}\", content);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/SelfServePolicy/${policyId}`, { method: \"PUT\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "PUT, not PATCH: omitting a permission removes it, so send the whole set.",
+        "policy-id comes from list-selfserve-policies, which is keyed by the customer's tenant id.",
+        "Removing a permission takes effect for the customer's own admin-center purchasing immediately."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/update-a-self-serve-policy",
+      "lastVerified": "2026-08-01"
+    },
+    {
+      "id": "delete-selfserve-policy",
+      "area": "security",
+      "title": "Delete a self-serve policy",
+      "method": "DELETE",
+      "path": "/v1/SelfServePolicy/{policy-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": null,
+      "examples": {
+        "curl": "curl -X DELETE -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/SelfServePolicy/{policy-id}\"",
+        "csharp": "var res = await http.DeleteAsync($\"/v1/SelfServePolicy/{policyId}\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/SelfServePolicy/${policyId}`, { method: \"DELETE\", headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Removes the whole policy. To keep the policy but narrow it, PUT a smaller permission set with update-selfserve-policy instead.",
+        "After deletion the customer loses the self-serve purchasing the policy granted.",
+        "policy-id comes from list-selfserve-policies."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/delete-a-self-serve-policy",
+      "lastVerified": "2026-08-01"
+    },
+    {
+      "id": "get-managed-services",
+      "area": "customers",
+      "title": "Get a customer's managed services",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/managedservices",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "ManagedService collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/managedservices\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/managedservices\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/managedservices`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Returns the services the partner can administer for this customer, each with the deep link into that service's admin portal.",
+        "Requires delegated admin access - with DAP removed (remove-delegated-admin) or no GDAP relationship the list comes back empty.",
+        "An empty list on a customer with active subscriptions is an access problem, not a subscription problem."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-the-managed-services-for-a-customer-by-id",
+      "lastVerified": "2026-08-01"
+    },
+    {
+      "id": "update-organization-profile",
+      "area": "profiles",
+      "title": "Update the partner's organization profile",
+      "method": "PUT",
+      "path": "/v1/profiles/organization",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "OrganizationProfile",
+      "requestFields": [
+        { "name": "(full OrganizationProfile resource)", "type": "OrganizationProfile", "required": true, "note": "PUT replaces the profile - GET it with get-organization-profile, mutate, send it all back" },
+        { "name": "companyName", "type": "string", "required": false },
+        { "name": "address", "type": "Address", "required": false, "note": "must satisfy the market's rules - see get-country-validation-rules" },
+        { "name": "email", "type": "string", "required": false }
+      ],
+      "responseShape": "OrganizationProfile",
+      "examples": {
+        "curl": "curl -X PUT -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d @organization.json \"https://api.partnercenter.microsoft.com/v1/profiles/organization\"",
+        "csharp": "var res = await http.PutAsync(\"/v1/profiles/organization\", content);",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/profiles/organization\", { method: \"PUT\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "This is the PARTNER's own profile. A customer's equivalent is get-customer-organization - the routes look alike and the mistake is expensive.",
+        "PUT replaces the profile: read it with get-organization-profile first and send back everything you want to keep.",
+        "Validate the address against the market rules before sending; a rejected address leaves the profile unchanged."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/update-an-organization-profile",
+      "lastVerified": "2026-08-01"
     }
   ]
 }

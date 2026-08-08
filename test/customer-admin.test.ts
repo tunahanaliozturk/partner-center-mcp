@@ -60,3 +60,25 @@ test("deleted users are found through the filtered user list", () => {
   expect(scenario("list-deleted-users").path).toContain("filter");
   expect(scenario("list-deleted-users").gotchas.join(" ")).toContain("Inactive");
 });
+
+test("batch I: agreements, self-serve policies and managed services are addressable", () => {
+  for (const id of [
+    "get-customer-consent", "get-agreement-metadata", "get-direct-sign-status",
+    "create-selfserve-policy", "list-selfserve-policies", "update-selfserve-policy",
+    "delete-selfserve-policy", "get-managed-services", "update-organization-profile",
+  ]) {
+    expect(byId.has(id), id).toBe(true);
+  }
+});
+
+test("the self-serve policy CRUD is complete on one route", () => {
+  const methods = ["create-selfserve-policy", "list-selfserve-policies", "update-selfserve-policy", "delete-selfserve-policy"]
+    .map((id) => scenario(id).method);
+  expect(methods).toEqual(["POST", "GET", "PUT", "DELETE"]);
+});
+
+test("the partner's own organization profile is not confused with a customer's", () => {
+  const s = scenario("update-organization-profile");
+  expect(s.path).toBe("/v1/profiles/organization");
+  expect(s.gotchas.join(" ")).toContain("get-customer-organization");
+});

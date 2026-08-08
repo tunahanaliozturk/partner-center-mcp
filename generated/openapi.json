@@ -1619,7 +1619,16 @@
         },
         "externalDocs": {
           "url": "https://learn.microsoft.com/partner-center/developer/get-confirmation-of-customer-agreement"
-        }
+        },
+        "x-variants": [
+          {
+            "operationId": "get-customer-consent",
+            "summary": "Get confirmation of a customer's agreement consent",
+            "externalDocs": {
+              "url": "https://learn.microsoft.com/partner-center/developer/get-confirmation-of-customer-consent"
+            }
+          }
+        ]
       },
       "post": {
         "operationId": "create-agreement",
@@ -2971,6 +2980,41 @@
         },
         "externalDocs": {
           "url": "https://learn.microsoft.com/partner-center/developer/get-an-organization-profile"
+        }
+      },
+      "put": {
+        "operationId": "update-organization-profile",
+        "summary": "Update the partner's organization profile",
+        "description": "This is the PARTNER's own profile. A customer's equivalent is get-customer-organization - the routes look alike and the mistake is expensive.\nPUT replaces the profile: read it with get-organization-profile first and send back everything you want to keep.\nValidate the address against the market rules before sending; a rejected address leaves the profile unchanged.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/update-an-organization-profile"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "companyName": {
+                    "type": "string"
+                  },
+                  "address": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -4460,6 +4504,204 @@
         },
         "externalDocs": {
           "url": "https://learn.microsoft.com/partner-center/developer/get-user-roles-for-a-customer"
+        }
+      }
+    },
+    "/v1/agreements": {
+      "get": {
+        "operationId": "get-agreement-metadata",
+        "summary": "Get agreement metadata by agreement type",
+        "description": "Partner-wide metadata, not per customer: it returns the templateId and version you must quote when recording consent with create-agreement.\nQuote the CURRENT templateId - recording consent against a superseded template is rejected.\nSee the agreementType enum for the accepted values.",
+        "parameters": [
+          {
+            "name": "agreementType",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-customer-agreement-metadata"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/directSignedMicrosoftCustomerAgreementStatus": {
+      "get": {
+        "operationId": "get-direct-sign-status",
+        "summary": "Check whether a customer signed the MCA directly with Microsoft",
+        "description": "Answers a different question from get-customer-consent: this is the customer signing the Microsoft Customer Agreement DIRECTLY with Microsoft, not the partner attesting on their behalf.\nWhen it reports a direct signature, the partner does not need to collect and record an attestation with create-agreement.\nCheck it before onboarding an existing tenant - a direct signature is the usual explanation for an empty agreements collection on a customer who can nevertheless transact.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-direct-sign-status-of-customer-agreement"
+        }
+      }
+    },
+    "/v1/SelfServePolicy": {
+      "post": {
+        "operationId": "create-selfserve-policy",
+        "summary": "Create a self-serve policy",
+        "description": "Governs what the CUSTOMER may buy for themselves in the Microsoft admin center - it is a purchasing-permission policy, not a Partner Center role.\nMS-RequestId and MS-CorrelationId are documented as required here, unlike most routes where they are merely advisable.\nThe route is capitalised SelfServePolicy; some hosts are case-sensitive about it.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/create-a-self-serve-policy"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "selfServeEntity": {
+                    "type": "string"
+                  },
+                  "grantor": {
+                    "type": "string"
+                  },
+                  "permissions": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "list-selfserve-policies",
+        "summary": "List self-serve policies for a customer",
+        "description": "entity_id is the CUSTOMER's tenant id - the entity access is requested for, not a policy id.\nRequired: without entity_id the request has no scope and is rejected.\nTake the policy id from here for update-selfserve-policy and delete-selfserve-policy.",
+        "parameters": [
+          {
+            "name": "entity_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-self-serve-policies"
+        }
+      }
+    },
+    "/v1/SelfServePolicy/{policy-id}": {
+      "put": {
+        "operationId": "update-selfserve-policy",
+        "summary": "Update a self-serve policy",
+        "description": "PUT, not PATCH: omitting a permission removes it, so send the whole set.\npolicy-id comes from list-selfserve-policies, which is keyed by the customer's tenant id.\nRemoving a permission takes effect for the customer's own admin-center purchasing immediately.",
+        "parameters": [
+          {
+            "name": "policy-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/update-a-self-serve-policy"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "permissions": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "delete-selfserve-policy",
+        "summary": "Delete a self-serve policy",
+        "description": "Removes the whole policy. To keep the policy but narrow it, PUT a smaller permission set with update-selfserve-policy instead.\nAfter deletion the customer loses the self-serve purchasing the policy granted.\npolicy-id comes from list-selfserve-policies.",
+        "parameters": [
+          {
+            "name": "policy-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/delete-a-self-serve-policy"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/managedservices": {
+      "get": {
+        "operationId": "get-managed-services",
+        "summary": "Get a customer's managed services",
+        "description": "Returns the services the partner can administer for this customer, each with the deep link into that service's admin portal.\nRequires delegated admin access - with DAP removed (remove-delegated-admin) or no GDAP relationship the list comes back empty.\nAn empty list on a customer with active subscriptions is an access problem, not a subscription problem.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-the-managed-services-for-a-customer-by-id"
         }
       }
     }

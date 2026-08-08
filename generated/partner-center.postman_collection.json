@@ -1824,6 +1824,153 @@
             },
             "description": "URL-ENCODED filter with Field \"IndirectReseller\" and the reseller's tenant id as Value; the operator is starts_with.\nIndirect provider view - it answers \"which of my customers belong to this reseller\".\nSame route as list-customers and search-customers; only the filter differs.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-customers-of-an-indirect-reseller"
           }
+        },
+        {
+          "name": "Get confirmation of a customer's agreement consent",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/agreements",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "agreements"
+              ],
+              "query": []
+            },
+            "description": "Unfiltered form of the route get-agreements filters with ?agreementType - use that one when you only care about a specific agreement.\nAn empty collection means no attested consent is on record, which blocks transacting for the customer.\nThis records the PARTNER's attestation. If the customer signed directly with Microsoft, that shows up in get-direct-sign-status instead.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-confirmation-of-customer-consent"
+          }
+        },
+        {
+          "name": "Get agreement metadata by agreement type",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/agreements?agreementType={agreement-type}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "agreements"
+              ],
+              "query": [
+                {
+                  "key": "agreementType",
+                  "value": "{agreement-type}"
+                }
+              ]
+            },
+            "description": "Partner-wide metadata, not per customer: it returns the templateId and version you must quote when recording consent with create-agreement.\nQuote the CURRENT templateId - recording consent against a superseded template is rejected.\nSee the agreementType enum for the accepted values.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-customer-agreement-metadata"
+          }
+        },
+        {
+          "name": "Check whether a customer signed the MCA directly with Microsoft",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/directSignedMicrosoftCustomerAgreementStatus",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "directSignedMicrosoftCustomerAgreementStatus"
+              ],
+              "query": []
+            },
+            "description": "Answers a different question from get-customer-consent: this is the customer signing the Microsoft Customer Agreement DIRECTLY with Microsoft, not the partner attesting on their behalf.\nWhen it reports a direct signature, the partner does not need to collect and record an attestation with create-agreement.\nCheck it before onboarding an existing tenant - a direct signature is the usual explanation for an empty agreements collection on a customer who can nevertheless transact.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-direct-sign-status-of-customer-agreement"
+          }
+        },
+        {
+          "name": "Get a customer's managed services",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/managedservices",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "managedservices"
+              ],
+              "query": []
+            },
+            "description": "Returns the services the partner can administer for this customer, each with the deep link into that service's admin portal.\nRequires delegated admin access - with DAP removed (remove-delegated-admin) or no GDAP relationship the list comes back empty.\nAn empty list on a customer with active subscriptions is an access problem, not a subscription problem.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-the-managed-services-for-a-customer-by-id"
+          }
         }
       ]
     },
@@ -3420,6 +3567,41 @@
             },
             "description": "App+User only. Update via PUT /v1/profiles/organization (full resource).\nReturns id, companyName, defaultAddress, tenantId, domain, email, language, culture.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-an-organization-profile"
           }
+        },
+        {
+          "name": "Update the partner's organization profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/profiles/organization",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "profiles",
+                "organization"
+              ],
+              "query": []
+            },
+            "description": "This is the PARTNER's own profile. A customer's equivalent is get-customer-organization - the routes look alike and the mistake is expensive.\nPUT replaces the profile: read it with get-organization-profile first and send back everything you want to keep.\nValidate the address against the market rules before sending; a rejected address leaves the profile unchanged.\n\nDocs: https://learn.microsoft.com/partner-center/developer/update-an-organization-profile"
+          }
         }
       ]
     },
@@ -3899,6 +4081,169 @@
               "query": []
             },
             "description": "Drops ADMIN ACCESS only; billing ownership survives. Distinct from remove-reseller-relationship, which uses the same URI and method but sets relationshipToPartner to \"none\".\nThis is the legacy DAP switch. Granular access is governed by GDAP relationships - terminate those with delete-gdap-relationship or create-gdap-relationship-request.\nLosing admin access breaks user and licence management for that customer; the subscriptions keep running.\n\nDocs: https://learn.microsoft.com/partner-center/developer/remove-dap"
+          }
+        },
+        {
+          "name": "Create a self-serve policy",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              },
+              {
+                "key": "MS-RequestId",
+                "value": "GUID; the docs mark it required on this route",
+                "description": "GUID; the docs mark it required on this route"
+              },
+              {
+                "key": "MS-CorrelationId",
+                "value": "GUID; the docs mark it required on this route",
+                "description": "GUID; the docs mark it required on this route"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/SelfServePolicy",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "SelfServePolicy"
+              ],
+              "query": []
+            },
+            "description": "Governs what the CUSTOMER may buy for themselves in the Microsoft admin center - it is a purchasing-permission policy, not a Partner Center role.\nMS-RequestId and MS-CorrelationId are documented as required here, unlike most routes where they are merely advisable.\nThe route is capitalised SelfServePolicy; some hosts are case-sensitive about it.\n\nDocs: https://learn.microsoft.com/partner-center/developer/create-a-self-serve-policy"
+          }
+        },
+        {
+          "name": "List self-serve policies for a customer",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/SelfServePolicy?entity_id={entity-id}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "SelfServePolicy"
+              ],
+              "query": [
+                {
+                  "key": "entity_id",
+                  "value": "{entity-id}"
+                }
+              ]
+            },
+            "description": "entity_id is the CUSTOMER's tenant id - the entity access is requested for, not a policy id.\nRequired: without entity_id the request has no scope and is rejected.\nTake the policy id from here for update-selfserve-policy and delete-selfserve-policy.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-a-list-of-self-serve-policies"
+          }
+        },
+        {
+          "name": "Update a self-serve policy",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              },
+              {
+                "key": "MS-RequestId",
+                "value": "GUID; the docs mark it required on this route",
+                "description": "GUID; the docs mark it required on this route"
+              },
+              {
+                "key": "MS-CorrelationId",
+                "value": "GUID; the docs mark it required on this route",
+                "description": "GUID; the docs mark it required on this route"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/SelfServePolicy/{policy-id}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "SelfServePolicy",
+                "%7Bpolicy-id%7D"
+              ],
+              "query": []
+            },
+            "description": "PUT, not PATCH: omitting a permission removes it, so send the whole set.\npolicy-id comes from list-selfserve-policies, which is keyed by the customer's tenant id.\nRemoving a permission takes effect for the customer's own admin-center purchasing immediately.\n\nDocs: https://learn.microsoft.com/partner-center/developer/update-a-self-serve-policy"
+          }
+        },
+        {
+          "name": "Delete a self-serve policy",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/SelfServePolicy/{policy-id}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "SelfServePolicy",
+                "%7Bpolicy-id%7D"
+              ],
+              "query": []
+            },
+            "description": "Removes the whole policy. To keep the policy but narrow it, PUT a smaller permission set with update-selfserve-policy instead.\nAfter deletion the customer loses the self-serve purchasing the policy granted.\npolicy-id comes from list-selfserve-policies.\n\nDocs: https://learn.microsoft.com/partner-center/developer/delete-a-self-serve-policy"
           }
         }
       ]
