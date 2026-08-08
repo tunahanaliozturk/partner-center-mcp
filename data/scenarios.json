@@ -5397,6 +5397,137 @@
       ],
       "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-customer-s-service-costs-line-items",
       "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "get-invoice-summaries",
+      "area": "invoicing",
+      "title": "Get all invoice summaries for the partner",
+      "method": "GET",
+      "path": "/v1/invoices/summaries",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "InvoiceSummary collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/invoices/summaries\"",
+        "csharp": "var res = await http.GetAsync(\"/v1/invoices/summaries\");",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/invoices/summaries\", { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Plural /summaries returns one summary per billing provider; the singular /v1/invoices/summary in get-partner-balance returns the account balance. Different routes, near-identical names.",
+        "Balances here are the partner's, not any one customer's.",
+        "For a specific invoice use get-invoice-by-id; this is the starting point when you do not know the invoice id yet."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-invoice-summaries",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "get-invoice-estimate-links",
+      "area": "invoicing",
+      "title": "Get the estimate links for unbilled reconciliation",
+      "method": "GET",
+      "path": "/v1/invoices/estimates/links?currencycode={currency-code}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "estimate link collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/invoices/estimates/links?currencycode=USD\"",
+        "csharp": "var res = await http.GetAsync(\"/v1/invoices/estimates/links?currencycode=USD\");",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/invoices/estimates/links?currencycode=USD\", { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Returns the links you follow to query unbilled reconciliation detail; it is a directory, not the data itself.",
+        "currencycode is required and scopes the estimate to one billing currency.",
+        "For new commerce prefer the async Graph v2 exports (get-unbilled-reconciliation-v2); see pc_whats_new for the v1 cutoff dates."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-invoice-estimate-links",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "get-invoice-billed-consumption",
+      "area": "invoicing",
+      "title": "Get billed commercial consumption line items",
+      "method": "GET",
+      "path": "/v1/invoices/{invoice-id}/lineitems?provider=onetime&invoicelineitemtype=usagelineitems&currencycode={currency-code}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "InvoiceLineItem collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/invoices/{invoice-id}/lineitems?provider=onetime&invoicelineitemtype=usagelineitems&currencycode=USD\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/invoices/{invoiceId}/lineitems?provider=onetime&invoicelineitemtype=usagelineitems&currencycode=USD\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/invoices/${invoiceId}/lineitems?provider=onetime&invoicelineitemtype=usagelineitems&currencycode=USD`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "invoicelineitemtype=usagelineitems returns metered CONSUMPTION. Its sibling invoicelineitemtype=billinglineitems (get-invoice-billed-lineitems) returns everything else on the same invoice - query both to reconcile a full invoice.",
+        "currencycode is required here, unlike the billinglineitems variant.",
+        "Large invoices page: add size and a 0-based offset, or use seekOperation to continue."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-invoice-billed-consumption-lineitems",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "get-invoice-unbilled-consumption",
+      "area": "invoicing",
+      "title": "Get unbilled commercial consumption line items",
+      "method": "GET",
+      "path": "/v1/invoices/unbilled/lineitems?provider=onetime&invoicelineitemtype=usagelineitems&currencycode={currency-code}&period={period}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "InvoiceLineItem collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/invoices/unbilled/lineitems?provider=onetime&invoicelineitemtype=usagelineitems&currencycode=USD&period=current\"",
+        "csharp": "var res = await http.GetAsync(\"/v1/invoices/unbilled/lineitems?provider=onetime&invoicelineitemtype=usagelineitems&currencycode=USD&period=current\");",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/invoices/unbilled/lineitems?provider=onetime&invoicelineitemtype=usagelineitems&currencycode=USD&period=current\", { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "The unbilled counterpart of get-invoice-billed-consumption, and the usagelineitems sibling of the billinglineitems route in get-invoice-unbilled-lineitems.",
+        "period selects current or previous; there is no invoice id because nothing has been invoiced yet.",
+        "Unbilled figures are estimates that can still move - do not invoice a customer from them.",
+        "Page large results with size and a 0-based offset."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-invoice-unbilled-consumption-lineitems",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "list-orders-by-billing-cycle",
+      "area": "orders",
+      "title": "List a customer's orders by billing cycle type",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/orders?billingType={billing-cycle-type}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "Order collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/orders?billingType=monthly\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/orders?billingType=monthly\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/orders?billingType=monthly`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Same route as list-customer-orders; billingType narrows it to one billing cycle. See the billingCycle enum for the accepted values.",
+        "Useful when reconciling a monthly invoice against annual orders that do not appear on it.",
+        "The filter is on the ORDER's billing cycle, which can differ from the subscription's after a scheduled change."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-orders-by-customer-and-billing-cycle-type",
+      "lastVerified": "2026-08-08"
     }
   ]
 }

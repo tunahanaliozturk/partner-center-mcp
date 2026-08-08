@@ -3471,6 +3471,184 @@
             },
             "description": "The per-line detail behind get-service-costs-summary, still customer-facing rather than the partner invoice.\nUse these to build a customer statement; use the invoice line items (get-invoice-billed-lineitems) for what the partner actually owes Microsoft.\nbilling-period is the same enum used by the summary route.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-a-customer-s-service-costs-line-items"
           }
+        },
+        {
+          "name": "Get all invoice summaries for the partner",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/invoices/summaries",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "invoices",
+                "summaries"
+              ],
+              "query": []
+            },
+            "description": "Plural /summaries returns one summary per billing provider; the singular /v1/invoices/summary in get-partner-balance returns the account balance. Different routes, near-identical names.\nBalances here are the partner's, not any one customer's.\nFor a specific invoice use get-invoice-by-id; this is the starting point when you do not know the invoice id yet.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-invoice-summaries"
+          }
+        },
+        {
+          "name": "Get the estimate links for unbilled reconciliation",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/invoices/estimates/links?currencycode={currency-code}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "invoices",
+                "estimates",
+                "links"
+              ],
+              "query": [
+                {
+                  "key": "currencycode",
+                  "value": "{currency-code}"
+                }
+              ]
+            },
+            "description": "Returns the links you follow to query unbilled reconciliation detail; it is a directory, not the data itself.\ncurrencycode is required and scopes the estimate to one billing currency.\nFor new commerce prefer the async Graph v2 exports (get-unbilled-reconciliation-v2); see pc_whats_new for the v1 cutoff dates.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-invoice-estimate-links"
+          }
+        },
+        {
+          "name": "Get billed commercial consumption line items",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/invoices/{invoice-id}/lineitems?provider=onetime&invoicelineitemtype=usagelineitems&currencycode={currency-code}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "invoices",
+                "%7Binvoice-id%7D",
+                "lineitems"
+              ],
+              "query": [
+                {
+                  "key": "provider",
+                  "value": "onetime"
+                },
+                {
+                  "key": "invoicelineitemtype",
+                  "value": "usagelineitems"
+                },
+                {
+                  "key": "currencycode",
+                  "value": "{currency-code}"
+                }
+              ]
+            },
+            "description": "invoicelineitemtype=usagelineitems returns metered CONSUMPTION. Its sibling invoicelineitemtype=billinglineitems (get-invoice-billed-lineitems) returns everything else on the same invoice - query both to reconcile a full invoice.\ncurrencycode is required here, unlike the billinglineitems variant.\nLarge invoices page: add size and a 0-based offset, or use seekOperation to continue.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-invoice-billed-consumption-lineitems"
+          }
+        },
+        {
+          "name": "Get unbilled commercial consumption line items",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/invoices/unbilled/lineitems?provider=onetime&invoicelineitemtype=usagelineitems&currencycode={currency-code}&period={period}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "invoices",
+                "unbilled",
+                "lineitems"
+              ],
+              "query": [
+                {
+                  "key": "provider",
+                  "value": "onetime"
+                },
+                {
+                  "key": "invoicelineitemtype",
+                  "value": "usagelineitems"
+                },
+                {
+                  "key": "currencycode",
+                  "value": "{currency-code}"
+                },
+                {
+                  "key": "period",
+                  "value": "{period}"
+                }
+              ]
+            },
+            "description": "The unbilled counterpart of get-invoice-billed-consumption, and the usagelineitems sibling of the billinglineitems route in get-invoice-unbilled-lineitems.\nperiod selects current or previous; there is no invoice id because nothing has been invoiced yet.\nUnbilled figures are estimates that can still move - do not invoice a customer from them.\nPage large results with size and a 0-based offset.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-invoice-unbilled-consumption-lineitems"
+          }
         }
       ]
     },
@@ -4159,6 +4337,47 @@
               "query": []
             },
             "description": "Only products that require activation (Microsoft Marketplace SaaS and similar) return a link; an empty result for a seat-based offer is expected, not an error.\nline-item-number is the LineItemNumber from the order, starting at 0 - it is not the subscription id.\nThe customer has to open the link to finish activation; the purchase is not usable until they do.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-activation-link-by-order-line-item"
+          }
+        },
+        {
+          "name": "List a customer's orders by billing cycle type",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/orders?billingType={billing-cycle-type}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "orders"
+              ],
+              "query": [
+                {
+                  "key": "billingType",
+                  "value": "{billing-cycle-type}"
+                }
+              ]
+            },
+            "description": "Same route as list-customer-orders; billingType narrows it to one billing cycle. See the billingCycle enum for the accepted values.\nUseful when reconciling a monthly invoice against annual orders that do not appear on it.\nThe filter is on the ORDER's billing cycle, which can differ from the subscription's after a scheduled change.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-a-list-of-orders-by-customer-and-billing-cycle-type"
           }
         }
       ]

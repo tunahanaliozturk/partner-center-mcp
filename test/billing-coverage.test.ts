@@ -50,3 +50,20 @@ test("overage is written with PUT and keyed by the Azure entitlement", () => {
   expect(s.method).toBe("PUT");
   expect(s.requestFields?.map((f) => f.name)).toContain("azureEntitlementId");
 });
+
+test("batch M: invoice summaries, estimates and consumption line items are addressable", () => {
+  for (const id of [
+    "get-invoice-summaries", "get-invoice-estimate-links", "get-invoice-billed-consumption",
+    "get-invoice-unbilled-consumption", "list-orders-by-billing-cycle",
+  ]) {
+    expect(byId.has(id), id).toBe(true);
+  }
+});
+
+test("each consumption line-item entry names its billinglineitems sibling", () => {
+  for (const id of ["get-invoice-billed-consumption", "get-invoice-unbilled-consumption"]) {
+    const s = scenario(id);
+    expect(s.path, id).toContain("usagelineitems");
+    expect(s.gotchas.join(" "), id).toContain("billinglineitems");
+  }
+});
