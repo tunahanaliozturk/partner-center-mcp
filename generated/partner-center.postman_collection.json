@@ -2955,6 +2955,301 @@
             },
             "description": "Microsoft Graph v2; both currencyCode and billingPeriod (current|last) are required. Returns 202 + Location - poll then download from the manifest.\nCSP partners only; PartnerBilling.Read.All. Daily-rated usage takes ~24h to appear. Global cloud only.\n\nDocs: https://learn.microsoft.com/graph/api/partners-billing-unbilledreconciliation-export?view=graph-rest-1.0"
           }
+        },
+        {
+          "name": "Get the partner's Azure usage summary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/usagesummary",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "usagesummary"
+              ],
+              "query": []
+            },
+            "description": "UNBILLED estimates for the current billing period. These figures do not reconcile to an invoice - use the invoice line-item endpoints for anything you bill on.\nWidest aggregation in this family: the whole partner. Narrow with get-customer-usage-summary or get-subscription-usage-summary.\nApp+User credentials only.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-a-partner-usage-summary"
+          }
+        },
+        {
+          "name": "Get Azure usage records for every customer",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/usagerecords",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "usagerecords"
+              ],
+              "query": []
+            },
+            "description": "UNBILLED estimates for the current period, one record per customer. Not a billing source.\nThe path has no {customer-id}: \"customers\" is literal and the endpoint spans every customer the partner has.\nDaily rated usage generally appears about 24 hours after consumption, later depending on when meters report.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-a-customer-s-usage-records"
+          }
+        },
+        {
+          "name": "Get one customer's Azure usage summary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/usagesummary",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "usagesummary"
+              ],
+              "query": []
+            },
+            "description": "UNBILLED usage for the CURRENT billing period only; it is an estimate and will not match the invoice.\nDaily rated unbilled usage is generally available about 24 hours after the fact, and later if the meters report late.\nAt the start of a month you may see nothing until the previous month's BILLED data has been delivered. That is expected, not a fault: once billed data lands, unbilled data from the start of the month appears.\nApp+User credentials only.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-a-customer-usage-summary"
+          }
+        },
+        {
+          "name": "Get Azure usage records for a customer's subscriptions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/usagerecords",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "subscriptions",
+                "usagerecords"
+              ],
+              "query": []
+            },
+            "description": "UNBILLED estimates, broken down one record per subscription for this customer.\nThe route ends at the subscriptions COLLECTION with no subscription id - for one subscription use get-subscription-usage-summary.\nOnly Azure-consumption subscriptions report usage; seat-based subscriptions return nothing here.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-a-customer-subscription-s-usage-records"
+          }
+        },
+        {
+          "name": "Get one subscription's Azure usage summary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}/usagesummary",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "subscriptions",
+                "%7Bsubscription-id%7D",
+                "usagesummary"
+              ],
+              "query": []
+            },
+            "description": "UNBILLED estimate for the current period on this subscription; the invoice is the billing truth.\nA spending budget (get-usage-budget) is evaluated against figures like these, and it only notifies - it does not stop consumption.\nFor the breakdown behind the total use get-subscription-meter-usage or get-subscription-resource-usage.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-a-customer-subscription-usage-summary"
+          }
+        },
+        {
+          "name": "Get a subscription's usage broken down by meter",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}/meterusagerecords",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "subscriptions",
+                "%7Bsubscription-id%7D",
+                "meterusagerecords"
+              ],
+              "query": []
+            },
+            "description": "UNBILLED estimates per METER - the billing dimension. get-subscription-resource-usage answers the same period per RESOURCE instead.\nMeter-level detail is where an unexpected total is usually explained.\nFigures lag consumption by roughly 24 hours.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-a-customer-subscription-meter-usage-records"
+          }
+        },
+        {
+          "name": "Get a subscription's usage broken down by resource",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}/resourceusagerecords",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "subscriptions",
+                "%7Bsubscription-id%7D",
+                "resourceusagerecords"
+              ],
+              "query": []
+            },
+            "description": "UNBILLED estimates per RESOURCE, which is what you want when attributing spend back to a workload or a customer's team.\nIts sibling get-subscription-meter-usage slices the same period by meter; the two totals agree, the breakdown does not.\nOnly Azure-consumption subscriptions report anything here.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-a-customer-subscription-resource-usage-records"
+          }
+        },
+        {
+          "name": "Get a subscription's monthly usage records by resource",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}/usagerecords/resources",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "subscriptions",
+                "%7Bsubscription-id%7D",
+                "usagerecords",
+                "resources"
+              ],
+              "query": []
+            },
+            "description": "MONTHLY aggregation of UNBILLED usage per resource, as opposed to the current-period view of get-subscription-resource-usage.\nNote the path shape: usagerecords/resources, not resourceusagerecords. Two different routes with nearly the same name.\nStill an estimate - reconcile against the invoice line items before invoicing a customer.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-all-monthly-usage-records-for-a-subscription"
+          }
         }
       ]
     },

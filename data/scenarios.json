@@ -5024,6 +5024,215 @@
       ],
       "docUrl": "https://learn.microsoft.com/partner-center/developer/get-the-status-of-a-device-batch-upload",
       "lastVerified": "2026-08-01"
+    },
+    {
+      "id": "get-partner-usage-summary",
+      "area": "invoicing",
+      "title": "Get the partner's Azure usage summary",
+      "method": "GET",
+      "path": "/v1/usagesummary",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "PartnerUsageSummary",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/usagesummary\"",
+        "csharp": "var res = await http.GetAsync(\"/v1/usagesummary\");",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/usagesummary\", { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "UNBILLED estimates for the current billing period. These figures do not reconcile to an invoice - use the invoice line-item endpoints for anything you bill on.",
+        "Widest aggregation in this family: the whole partner. Narrow with get-customer-usage-summary or get-subscription-usage-summary.",
+        "App+User credentials only."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-partner-usage-summary",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "get-all-customers-usage-records",
+      "area": "invoicing",
+      "title": "Get Azure usage records for every customer",
+      "method": "GET",
+      "path": "/v1/customers/usagerecords",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "CustomerMonthlyUsageRecord collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/usagerecords\"",
+        "csharp": "var res = await http.GetAsync(\"/v1/customers/usagerecords\");",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/customers/usagerecords\", { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "UNBILLED estimates for the current period, one record per customer. Not a billing source.",
+        "The path has no {customer-id}: \"customers\" is literal and the endpoint spans every customer the partner has.",
+        "Daily rated usage generally appears about 24 hours after consumption, later depending on when meters report."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-customer-s-usage-records",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "get-customer-usage-summary",
+      "area": "invoicing",
+      "title": "Get one customer's Azure usage summary",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/usagesummary",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "CustomerUsageSummary",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/usagesummary\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/usagesummary\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/usagesummary`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "UNBILLED usage for the CURRENT billing period only; it is an estimate and will not match the invoice.",
+        "Daily rated unbilled usage is generally available about 24 hours after the fact, and later if the meters report late.",
+        "At the start of a month you may see nothing until the previous month's BILLED data has been delivered. That is expected, not a fault: once billed data lands, unbilled data from the start of the month appears.",
+        "App+User credentials only."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-customer-usage-summary",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "get-customer-subscriptions-usage-records",
+      "area": "invoicing",
+      "title": "Get Azure usage records for a customer's subscriptions",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/subscriptions/usagerecords",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "SubscriptionMonthlyUsageRecord collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/usagerecords\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/subscriptions/usagerecords\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/subscriptions/usagerecords`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "UNBILLED estimates, broken down one record per subscription for this customer.",
+        "The route ends at the subscriptions COLLECTION with no subscription id - for one subscription use get-subscription-usage-summary.",
+        "Only Azure-consumption subscriptions report usage; seat-based subscriptions return nothing here."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-customer-subscription-s-usage-records",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "get-subscription-usage-summary",
+      "area": "invoicing",
+      "title": "Get one subscription's Azure usage summary",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/subscriptions/{subscription-id}/usagesummary",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "SubscriptionUsageSummary",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}/usagesummary\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/subscriptions/{subscriptionId}/usagesummary\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/subscriptions/${subscriptionId}/usagesummary`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "UNBILLED estimate for the current period on this subscription; the invoice is the billing truth.",
+        "A spending budget (get-usage-budget) is evaluated against figures like these, and it only notifies - it does not stop consumption.",
+        "For the breakdown behind the total use get-subscription-meter-usage or get-subscription-resource-usage."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-customer-subscription-usage-summary",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "get-subscription-meter-usage",
+      "area": "invoicing",
+      "title": "Get a subscription's usage broken down by meter",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/subscriptions/{subscription-id}/meterusagerecords",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "MeterUsageRecord collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}/meterusagerecords\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/subscriptions/{subscriptionId}/meterusagerecords\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/subscriptions/${subscriptionId}/meterusagerecords`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "UNBILLED estimates per METER - the billing dimension. get-subscription-resource-usage answers the same period per RESOURCE instead.",
+        "Meter-level detail is where an unexpected total is usually explained.",
+        "Figures lag consumption by roughly 24 hours."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-customer-subscription-meter-usage-records",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "get-subscription-resource-usage",
+      "area": "invoicing",
+      "title": "Get a subscription's usage broken down by resource",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/subscriptions/{subscription-id}/resourceusagerecords",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "ResourceUsageRecord collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}/resourceusagerecords\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/subscriptions/{subscriptionId}/resourceusagerecords\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/subscriptions/${subscriptionId}/resourceusagerecords`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "UNBILLED estimates per RESOURCE, which is what you want when attributing spend back to a workload or a customer's team.",
+        "Its sibling get-subscription-meter-usage slices the same period by meter; the two totals agree, the breakdown does not.",
+        "Only Azure-consumption subscriptions report anything here."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-customer-subscription-resource-usage-records",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "get-subscription-monthly-usage",
+      "area": "invoicing",
+      "title": "Get a subscription's monthly usage records by resource",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/subscriptions/{subscription-id}/usagerecords/resources",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "AzureResourceMonthlyUsageRecord collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/subscriptions/{subscription-id}/usagerecords/resources\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/subscriptions/{subscriptionId}/usagerecords/resources\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/subscriptions/${subscriptionId}/usagerecords/resources`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "MONTHLY aggregation of UNBILLED usage per resource, as opposed to the current-period view of get-subscription-resource-usage.",
+        "Note the path shape: usagerecords/resources, not resourceusagerecords. Two different routes with nearly the same name.",
+        "Still an estimate - reconcile against the invoice line items before invoicing a customer."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-all-monthly-usage-records-for-a-subscription",
+      "lastVerified": "2026-08-08"
     }
   ]
 }
