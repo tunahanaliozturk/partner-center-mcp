@@ -8,6 +8,10 @@ export const API_BASES = {
   "partner-center": "https://api.partnercenter.microsoft.com",
   graph: "https://graph.microsoft.com/v1.0",
   "pricing-and-referrals": "https://api.partner.microsoft.com",
+  // Legacy delegated-admin statistics, documented against their own traffic
+  // manager host rather than the Partner Center one. Two read-only endpoints;
+  // the modern equivalent of what they report lives in Microsoft Graph.
+  "customer-service-admin": "https://traf-pcsvcadmin-prod.trafficmanager.net",
 } as const;
 
 export type ApiId = keyof typeof API_BASES;

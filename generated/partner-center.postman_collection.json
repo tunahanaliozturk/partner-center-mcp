@@ -1038,6 +1038,11 @@
                 "key": "Accept",
                 "value": "the response is a file, not JSON",
                 "description": "the response is a file, not JSON"
+              },
+              {
+                "key": "Accept-Encoding",
+                "value": "gzip; the payload is a large file, so asking for compression is worth it",
+                "description": "gzip; the payload is a large file, so asking for compression is worth it"
               }
             ],
             "url": {
@@ -1074,6 +1079,11 @@
                 "key": "Accept",
                 "value": "the response is a file, not JSON",
                 "description": "the response is a file, not JSON"
+              },
+              {
+                "key": "Accept-Encoding",
+                "value": "gzip; the payload is a large file, so asking for compression is worth it",
+                "description": "gzip; the payload is a large file, so asking for compression is worth it"
               }
             ],
             "url": {
@@ -1094,6 +1104,373 @@
               "query": []
             },
             "description": "On the pricing host with its own token audience, like the price sheet and FX rates.\nMonth is a parameter inside the parentheses, and /$value means you get a file back.\nThe matrix maps offers to their SKUs and availabilities for that month - it is the bridge between a legacy offer id and a New Commerce catalog item.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-an-offer-matrix"
+          }
+        },
+        {
+          "name": "List the legacy offers available in a market",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/offers?country={country-code}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "offers"
+              ],
+              "query": [
+                {
+                  "key": "country",
+                  "value": "{country-code}"
+                }
+              ]
+            },
+            "description": "The LEGACY catalog, keyed by offerId. New Commerce uses products, SKUs and availabilities - see get-products, and use catalogItemId rather than offerId when purchasing.\ncountry is required and changes what is on sale, so a single market's answer does not generalise.\nLegacy orders (create-order) take offerId; carts take catalogItemId. Mixing them is the usual purchase failure.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-a-list-of-offers-for-a-market"
+          }
+        },
+        {
+          "name": "Get a legacy offer by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/offers/{offer-id}?country={country-code}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "offers",
+                "%7Boffer-id%7D"
+              ],
+              "query": [
+                {
+                  "key": "country",
+                  "value": "{country-code}"
+                }
+              ]
+            },
+            "description": "Legacy offer detail: minimum and maximum seat counts, whether it is a trial, and what add-ons attach to it. The New Commerce equivalent is get-product-by-id plus get-sku-by-id.\ncountry is required; the same offer id can be unavailable or priced differently in another market.\nAn offer marked as having add-ons is queried with get-addon-offers.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-an-offer-by-id"
+          }
+        },
+        {
+          "name": "Get the add-on offers for a legacy offer",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/offers/{offer-id}/addons?country={country-code}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "offers",
+                "%7Boffer-id%7D",
+                "addons"
+              ],
+              "query": [
+                {
+                  "key": "country",
+                  "value": "{country-code}"
+                }
+              ]
+            },
+            "description": "What add-ons CAN be bought against this offer, in catalogue terms. What a customer already HAS is get-subscription-addons.\nAn empty list means the base offer supports no add-ons in that market.\nBuying one goes through purchase-addon, which PATCHes the base subscription's order.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-addon-offers-by-offer-id"
+          }
+        },
+        {
+          "name": "List offer categories for a market",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/offercategories?country={country-code}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "offercategories"
+              ],
+              "query": [
+                {
+                  "key": "country",
+                  "value": "{country-code}"
+                }
+              ]
+            },
+            "description": "Grouping metadata for the legacy offer catalogue, useful for building a browsable product picker.\nLocale comes from the Accept-Language or X-Locale header, not a query parameter, so category names are localised by header.\nNew Commerce has no direct equivalent; get-products with a targetView is the closest.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-a-list-of-offer-categories-by-country-and-locale"
+          }
+        },
+        {
+          "name": "List the SKUs of a product",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/products/{product-id}/skus?country={country-code}&targetSegment={target-segment}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "products",
+                "%7Bproduct-id%7D",
+                "skus"
+              ],
+              "query": [
+                {
+                  "key": "country",
+                  "value": "{country-code}"
+                },
+                {
+                  "key": "targetSegment",
+                  "value": "{target-segment}"
+                }
+              ]
+            },
+            "description": "The middle step of the New Commerce catalogue walk: product, then SKU, then availability. get-sku-availabilities is what produces the catalogItemId you can actually buy.\ntargetSegment filters to commercial, education, government or nonprofit; the wrong segment silently returns a different SKU set.\nA SKU is not purchasable on its own - only an availability carries the id a cart accepts.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-a-list-of-skus-for-a-product"
+          }
+        },
+        {
+          "name": "Get one availability by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/products/{product-id}/skus/{sku-id}/availabilities/{availability-id}?country={country-code}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "products",
+                "%7Bproduct-id%7D",
+                "skus",
+                "%7Bsku-id%7D",
+                "availabilities",
+                "%7Bavailability-id%7D"
+              ],
+              "query": [
+                {
+                  "key": "country",
+                  "value": "{country-code}"
+                }
+              ]
+            },
+            "description": "Confirms one availability is still sellable before you build a cart around its catalogItemId. Availabilities are withdrawn without notice at end of sale.\nThe catalogItemId is productId:skuId:availabilityId - this route is how you validate the third part.\nFor the whole set use get-sku-availabilities.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-an-availability-by-id"
+          }
+        },
+        {
+          "name": "List the products a specific customer can buy",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/products?targetView={target-view}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "targetView",
+                  "value": "{target-view}"
+                }
+              ]
+            },
+            "description": "A POST that takes NO BODY. It reads a catalogue, but the customer scoping made Microsoft model it as a POST, so a GET here returns 405.\nScoped to what THIS customer is eligible for, which is narrower than get-products: qualifications, segment and market are already applied.\nUse it before quoting, so you do not offer a customer something their qualification excludes.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-a-list-of-products-by-customer"
+          }
+        },
+        {
+          "name": "List a product's SKUs for a specific customer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/products/{product-id}/skus",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "products",
+                "%7Bproduct-id%7D",
+                "skus"
+              ],
+              "query": []
+            },
+            "description": "Another POST with NO BODY, same shape as list-products-by-customer.\nThe customer-scoped counterpart of list-product-skus: no country or targetSegment query, because the customer already determines both.\nContinue to list-availabilities-by-customer for the purchasable catalogItemId.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-a-list-of-skus-for-a-product-by-customer"
+          }
+        },
+        {
+          "name": "List a SKU's availabilities for a specific customer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/products/{product-id}/skus/{sku-id}/availabilities",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "products",
+                "%7Bproduct-id%7D",
+                "skus",
+                "%7Bsku-id%7D",
+                "availabilities"
+              ],
+              "query": []
+            },
+            "description": "The end of the customer-scoped catalogue walk, and a POST with NO BODY like the other two.\nThis is the one that matters: the catalogItemId it returns is scoped to a customer who is actually eligible, so a cart built from it is far less likely to fail at checkout.\nThe partner-wide equivalent is get-sku-availabilities.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-a-list-of-availabilities-for-a-sku-by-customer"
           }
         }
       ]
@@ -4349,6 +4726,11 @@
                 "key": "Accept",
                 "value": "the response is a file, not JSON",
                 "description": "the response is a file, not JSON"
+              },
+              {
+                "key": "Accept-Encoding",
+                "value": "gzip; the payload is a large file, so asking for compression is worth it",
+                "description": "gzip; the payload is a large file, so asking for compression is worth it"
               }
             ],
             "url": {

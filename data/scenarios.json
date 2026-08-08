@@ -6035,6 +6035,240 @@
       ],
       "docUrl": "https://learn.microsoft.com/partner-center/developer/get-customer-licenses-deployment-information",
       "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "list-offers",
+      "area": "catalog",
+      "title": "List the legacy offers available in a market",
+      "method": "GET",
+      "path": "/v1/offers?country={country-code}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "Offer collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/offers?country=US\"",
+        "csharp": "var res = await http.GetAsync(\"/v1/offers?country=US\");",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/offers?country=US\", { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "The LEGACY catalog, keyed by offerId. New Commerce uses products, SKUs and availabilities - see get-products, and use catalogItemId rather than offerId when purchasing.",
+        "country is required and changes what is on sale, so a single market's answer does not generalise.",
+        "Legacy orders (create-order) take offerId; carts take catalogItemId. Mixing them is the usual purchase failure."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-offers-for-a-market",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "get-offer-by-id",
+      "area": "catalog",
+      "title": "Get a legacy offer by ID",
+      "method": "GET",
+      "path": "/v1/offers/{offer-id}?country={country-code}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "Offer",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/offers/{offer-id}?country=US\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/offers/{offerId}?country=US\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/offers/${offerId}?country=US`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Legacy offer detail: minimum and maximum seat counts, whether it is a trial, and what add-ons attach to it. The New Commerce equivalent is get-product-by-id plus get-sku-by-id.",
+        "country is required; the same offer id can be unavailable or priced differently in another market.",
+        "An offer marked as having add-ons is queried with get-addon-offers."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-an-offer-by-id",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "get-addon-offers",
+      "area": "catalog",
+      "title": "Get the add-on offers for a legacy offer",
+      "method": "GET",
+      "path": "/v1/offers/{offer-id}/addons?country={country-code}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "Offer collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/offers/{offer-id}/addons?country=US\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/offers/{offerId}/addons?country=US\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/offers/${offerId}/addons?country=US`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "What add-ons CAN be bought against this offer, in catalogue terms. What a customer already HAS is get-subscription-addons.",
+        "An empty list means the base offer supports no add-ons in that market.",
+        "Buying one goes through purchase-addon, which PATCHes the base subscription's order."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-addon-offers-by-offer-id",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "list-offer-categories",
+      "area": "catalog",
+      "title": "List offer categories for a market",
+      "method": "GET",
+      "path": "/v1/offercategories?country={country-code}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "OfferCategory collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/offercategories?country=US\"",
+        "csharp": "var res = await http.GetAsync(\"/v1/offercategories?country=US\");",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/offercategories?country=US\", { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Grouping metadata for the legacy offer catalogue, useful for building a browsable product picker.",
+        "Locale comes from the Accept-Language or X-Locale header, not a query parameter, so category names are localised by header.",
+        "New Commerce has no direct equivalent; get-products with a targetView is the closest."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-offer-categories-by-country-and-locale",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "list-product-skus",
+      "area": "catalog",
+      "title": "List the SKUs of a product",
+      "method": "GET",
+      "path": "/v1/products/{product-id}/skus?country={country-code}&targetSegment={target-segment}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "Sku collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/products/{product-id}/skus?country=US&targetSegment=commercial\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/products/{productId}/skus?country=US&targetSegment=commercial\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/products/${productId}/skus?country=US&targetSegment=commercial`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "The middle step of the New Commerce catalogue walk: product, then SKU, then availability. get-sku-availabilities is what produces the catalogItemId you can actually buy.",
+        "targetSegment filters to commercial, education, government or nonprofit; the wrong segment silently returns a different SKU set.",
+        "A SKU is not purchasable on its own - only an availability carries the id a cart accepts."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-skus-for-a-product",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "get-availability-by-id",
+      "area": "catalog",
+      "title": "Get one availability by ID",
+      "method": "GET",
+      "path": "/v1/products/{product-id}/skus/{sku-id}/availabilities/{availability-id}?country={country-code}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "Availability",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/products/{product-id}/skus/{sku-id}/availabilities/{availability-id}?country=US\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/products/{productId}/skus/{skuId}/availabilities/{availabilityId}?country=US\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/products/${productId}/skus/${skuId}/availabilities/${availabilityId}?country=US`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Confirms one availability is still sellable before you build a cart around its catalogItemId. Availabilities are withdrawn without notice at end of sale.",
+        "The catalogItemId is productId:skuId:availabilityId - this route is how you validate the third part.",
+        "For the whole set use get-sku-availabilities."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-an-availability-by-id",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "list-products-by-customer",
+      "area": "catalog",
+      "title": "List the products a specific customer can buy",
+      "method": "POST",
+      "path": "/v1/customers/{customer-id}/products?targetView={target-view}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "Product collection",
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/products?targetView=OnlineServices\"",
+        "csharp": "var res = await http.PostAsync($\"/v1/customers/{customerId}/products?targetView=OnlineServices\", null);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/products?targetView=OnlineServices`, { method: \"POST\", headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "A POST that takes NO BODY. It reads a catalogue, but the customer scoping made Microsoft model it as a POST, so a GET here returns 405.",
+        "Scoped to what THIS customer is eligible for, which is narrower than get-products: qualifications, segment and market are already applied.",
+        "Use it before quoting, so you do not offer a customer something their qualification excludes."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-products-by-customer",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "list-skus-by-customer",
+      "area": "catalog",
+      "title": "List a product's SKUs for a specific customer",
+      "method": "POST",
+      "path": "/v1/customers/{customer-id}/products/{product-id}/skus",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "Sku collection",
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/products/{product-id}/skus\"",
+        "csharp": "var res = await http.PostAsync($\"/v1/customers/{customerId}/products/{productId}/skus\", null);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/products/${productId}/skus`, { method: \"POST\", headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Another POST with NO BODY, same shape as list-products-by-customer.",
+        "The customer-scoped counterpart of list-product-skus: no country or targetSegment query, because the customer already determines both.",
+        "Continue to list-availabilities-by-customer for the purchasable catalogItemId."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-skus-for-a-product-by-customer",
+      "lastVerified": "2026-08-08"
+    },
+    {
+      "id": "list-availabilities-by-customer",
+      "area": "catalog",
+      "title": "List a SKU's availabilities for a specific customer",
+      "method": "POST",
+      "path": "/v1/customers/{customer-id}/products/{product-id}/skus/{sku-id}/availabilities",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "Availability collection",
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/products/{product-id}/skus/{sku-id}/availabilities\"",
+        "csharp": "var res = await http.PostAsync($\"/v1/customers/{customerId}/products/{productId}/skus/{skuId}/availabilities\", null);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/products/${productId}/skus/${skuId}/availabilities`, { method: \"POST\", headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "The end of the customer-scoped catalogue walk, and a POST with NO BODY like the other two.",
+        "This is the one that matters: the catalogItemId it returns is scoped to a customer who is actually eligible, so a cart built from it is far less likely to fail at checkout.",
+        "The partner-wide equivalent is get-sku-availabilities."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-availabilities-for-a-sku-by-customer",
+      "lastVerified": "2026-08-08"
     }
   ]
 }

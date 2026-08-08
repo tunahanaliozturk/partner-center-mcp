@@ -15,7 +15,7 @@ export const ScenarioSchema = z.object({
   method: z.enum(["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD"]).describe("HTTP verb for the call."),
   // Absent means "partner-center": the default host a relative path resolves
   // against. See src/knowledge/apis.ts for the base each api id maps to.
-  api: z.enum(["partner-center", "graph", "pricing-and-referrals"]).optional()
+  api: z.enum(["partner-center", "graph", "pricing-and-referrals", "customer-service-admin"]).optional()
     .describe("Which API surface hosts this operation. Absent means \"partner-center\". GDAP and reconciliation-v2 operations are \"graph\" and need a different token audience."),
   path: z.string().describe("API-relative path with {placeholder} segments, e.g. \"/v1/customers/{customer-id}/subscriptions\". Resolve it against the base URL for `api`."),
   authType: z.enum(["app-only", "app+user"]).describe("Token flavour the operation requires. \"app+user\" needs the Secure Application Model refresh-token flow."),
