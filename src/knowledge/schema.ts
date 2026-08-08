@@ -130,6 +130,24 @@ export const LifecycleSchema = z.object({
   })),
 });
 
+
+/**
+ * Response examples lifted verbatim from each Learn page, keyed by scenario id.
+ *
+ * Kept out of ScenarioSchema on purpose: the bodies are large, and pc_list_scenarios
+ * would otherwise carry them on every entry it returns. Not every scenario has one,
+ * because not every page publishes an example and nothing here is invented.
+ */
+export const ExamplesSchema = z.object({
+  version: z.string(),
+  examples: z.record(z.string(), z.object({
+    httpStatus: z.union([z.number(), z.null()]).describe("Status from the example response, or null when the page stated none."),
+    body: z.unknown().describe("The example response body, exactly as the page publishes it."),
+    docUrl: z.string().url().describe("The page the example was taken from."),
+  })),
+});
+
+export type ExamplesData = z.infer<typeof ExamplesSchema>["examples"];
 export type LifecycleData = z.infer<typeof LifecycleSchema>;
 export type Scenario = z.infer<typeof ScenarioSchema>;
 export type ErrorEntry = z.infer<typeof ErrorEntrySchema>;
@@ -150,4 +168,5 @@ export interface Knowledge {
   deprecations: DeprecationItem[];
   resources: ResourcesData;
   lifecycle: LifecycleData;
+  examples: ExamplesData;
 }

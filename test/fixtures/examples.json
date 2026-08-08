@@ -1,0 +1,13 @@
+{
+  "version": "test",
+  "examples": {
+    "update-subscription": {
+      "httpStatus": 200,
+      "body": {
+        "id": "x",
+        "status": "active"
+      },
+      "docUrl": "https://learn.microsoft.com/x"
+    }
+  }
+}

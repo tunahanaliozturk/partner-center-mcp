@@ -47,6 +47,7 @@ function registerResources(server: McpServer, ctx: ToolContext): void {
     { slug: "deprecations", title: "Deprecations & deadlines", get: () => k().deprecations },
     { slug: "resources", title: "Resource field dictionary", get: () => k().resources },
     { slug: "lifecycle", title: "Subscription lifecycle state machine", get: () => k().lifecycle },
+    { slug: "examples", title: "Verified response examples per scenario", get: () => k().examples },
   ];
   for (const c of collections) {
     server.registerResource(

@@ -26,6 +26,13 @@ export const getScenario: Tool = {
   },
   outputShape: envelope(
     ScenarioSchema.extend({
+      exampleResponse: z.object({
+        httpStatus: z.union([z.number(), z.null()]).describe("Status the example response carried."),
+        body: z.unknown().describe("The response body exactly as Microsoft Learn publishes it."),
+      }).optional().describe(
+        "A real response taken from the operation's own doc page, so field names and nesting can be read off rather than guessed. " +
+        "Absent when the page publishes no example, which is normal for operations that return no body.",
+      ),
       liveDocs: z.array(DocExcerpt).optional().describe("Live documentation excerpts. Present only when `enrich` was true."),
       liveNote: z.string().optional().describe("Explains a degraded live fetch. Present only when `enrich` was true."),
     }),
@@ -41,10 +48,15 @@ export const getScenario: Tool = {
       const suggestions = k.scenarios.map((s) => s.id).filter((id) => id.includes(args.id) || args.id.includes(id));
       return notFound(`No scenario with id "${args.id}".`, suggestions.length ? suggestions : k.scenarios.map((s) => s.id));
     }
+    // The example is part of the record rather than an opt-in: it is the thing
+    // a caller reaches for when the field names in responseShape are not enough.
+    const stored = k.examples[scenario.id];
+    const exampleResponse = stored ? { httpStatus: stored.httpStatus, body: stored.body } : undefined;
+
     if (args.enrich) {
       const live = await ctx.docFetch(`${scenario.title} Partner Center`);
-      return ok({ ...scenario, liveDocs: live.excerpts, liveNote: live.note });
+      return ok({ ...scenario, exampleResponse, liveDocs: live.excerpts, liveNote: live.note });
     }
-    return ok(scenario);
+    return ok({ ...scenario, exampleResponse });
   },
 };

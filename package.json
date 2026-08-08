@@ -53,7 +53,8 @@
     "eval:llm": "node scripts/eval-llm.mjs",
     "export": "node scripts/export.mjs",
     "start": "node dist/index.js",
-    "start:http": "node dist/http.js"
+    "start:http": "node dist/http.js",
+    "examples:refresh": "node scripts/examples-refresh.mjs"
   },
   "engines": {
     "node": ">=20"
