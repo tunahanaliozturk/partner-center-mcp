@@ -33,3 +33,30 @@ test("customer search documents the encoded filter, which is what breaks it", ()
   expect(gotchas).toContain("starts_with");
   expect(gotchas).toMatch(/encod/i);
 });
+
+test("batch H: users, roles and partner relationships are addressable", () => {
+  for (const id of [
+    "get-user-by-id", "get-user-roles", "update-user-accounts", "list-deleted-users",
+    "remove-reseller-relationship", "remove-delegated-admin",
+    "create-indirect-reseller-customer", "list-indirect-reseller-customers",
+  ]) {
+    expect(byId.has(id), id).toBe(true);
+  }
+});
+
+test("the two relationship removals are told apart, since they share a URI", () => {
+  const reseller = scenario("remove-reseller-relationship");
+  const dap = scenario("remove-delegated-admin");
+  expect(reseller.path).toBe(dap.path);
+  expect(reseller.method).toBe(dap.method);
+  // Each must name the field that distinguishes it, or a caller severs the wrong thing.
+  expect(reseller.requestFields?.map((f) => f.name)).toContain("relationshipToPartner");
+  expect(dap.requestFields?.map((f) => f.name)).toContain("allowDelegatedAccess");
+  expect(reseller.gotchas.join(" ")).toContain("remove-delegated-admin");
+  expect(dap.gotchas.join(" ")).toContain("remove-reseller-relationship");
+});
+
+test("deleted users are found through the filtered user list", () => {
+  expect(scenario("list-deleted-users").path).toContain("filter");
+  expect(scenario("list-deleted-users").gotchas.join(" ")).toContain("Inactive");
+});

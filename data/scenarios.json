@@ -4320,6 +4320,232 @@
       ],
       "docUrl": "https://learn.microsoft.com/partner-center/developer/get-market-specific-validation-data",
       "lastVerified": "2026-08-01"
+    },
+    {
+      "id": "get-user-by-id",
+      "area": "customers",
+      "title": "Get a customer user account by ID",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/users/{user-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "CustomerUser",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/users/{user-id}\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/users/{userId}\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/users/${userId}`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "Read the user before any PATCH: user writes replace the object, so you need the current values.",
+        "Returns the user's state, which is how you tell an active account from a soft-deleted one (see list-deleted-users).",
+        "Licences assigned to the user are a separate call - get-user-licenses."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-a-user-account-by-id",
+      "lastVerified": "2026-08-01"
+    },
+    {
+      "id": "get-user-roles",
+      "area": "customers",
+      "title": "Get the directory roles assigned to a customer user",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/users/{user-id}/directoryroles",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "DirectoryRole collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/users/{user-id}/directoryroles\"",
+        "csharp": "var res = await http.GetAsync($\"/v1/customers/{customerId}/users/{userId}/directoryroles\");",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/users/${userId}/directoryroles`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "The same page documents two sibling routes: GET .../directoryroles lists every role in the customer tenant, and GET .../directoryroles/{role-id}/usermembers lists the members of one role. This entry is the per-user view.",
+        "Read this before offboarding - remove-user-role needs the role ids, and deleting a user who still holds a privileged role leaves the role unattended.",
+        "Roles here are Microsoft Entra directory roles in the CUSTOMER tenant, not Partner Center roles and not GDAP roles."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-user-roles-for-a-customer",
+      "lastVerified": "2026-08-01"
+    },
+    {
+      "id": "update-user-accounts",
+      "area": "customers",
+      "title": "Update a customer user account",
+      "method": "PATCH",
+      "path": "/v1/customers/{customer-id}/users",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "CustomerUser",
+      "requestFields": [
+        { "name": "(full CustomerUser resource)", "type": "CustomerUser", "required": true, "note": "GET the user, mutate, then PATCH the whole object back" },
+        { "name": "displayName", "type": "string", "required": false },
+        { "name": "firstName", "type": "string", "required": false },
+        { "name": "lastName", "type": "string", "required": false },
+        { "name": "userPrincipalName", "type": "string", "required": false, "note": "must use a domain registered on the customer tenant - see get-customer-custom-domains" }
+      ],
+      "responseShape": "CustomerUser",
+      "examples": {
+        "curl": "curl -X PATCH -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d @user.json \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/users\"",
+        "csharp": "var req = new HttpRequestMessage(HttpMethod.Patch, $\"/v1/customers/{customerId}/users\") { Content = content };\nvar res = await http.SendAsync(req);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/users`, { method: \"PATCH\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "The route is the COLLECTION (/users) with no user id in the path - the user being updated is identified by the id inside the body. This is easy to get wrong because reset-password and delete-user both take /users/{user-id}.",
+        "App+User credentials only.",
+        "Changing userPrincipalName changes how the user signs in; the new domain must already be on the tenant."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/update-user-accounts-for-a-customer",
+      "lastVerified": "2026-08-01"
+    },
+    {
+      "id": "list-deleted-users",
+      "area": "customers",
+      "title": "List a customer's deleted users",
+      "method": "GET",
+      "path": "/v1/customers/{customer-id}/users?size={size}&filter={filter}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "CustomerUser collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/users?size=0&filter=%7B%22Field%22%3A%22UserState%22%2C%22Value%22%3A%22Inactive%22%2C%22Operator%22%3A%22equals%22%7D\"",
+        "csharp": "var filter = Uri.EscapeDataString(\"{\\\"Field\\\":\\\"UserState\\\",\\\"Value\\\":\\\"Inactive\\\",\\\"Operator\\\":\\\"equals\\\"}\");\nvar res = await http.GetAsync($\"/v1/customers/{customerId}/users?size=0&filter={filter}\");",
+        "typescript": "const filter = encodeURIComponent(JSON.stringify({ Field: \"UserState\", Value: \"Inactive\", Operator: \"equals\" }));\nconst res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}/users?size=0&filter=${filter}`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "There is no separate deleted-users endpoint: it is the user list with a URL-ENCODED filter {\"Field\":\"UserState\",\"Value\":\"Inactive\",\"Operator\":\"equals\"}.",
+        "A deleted account stays recoverable for 30 days - restore-user brings it back within that window, after which it is gone.",
+        "Its licences are released on deletion, so restoring a user does not restore their licences; reassign with assign-licenses."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/view-a-deleted-user",
+      "lastVerified": "2026-08-01"
+    },
+    {
+      "id": "remove-reseller-relationship",
+      "area": "customers",
+      "title": "Remove the reseller relationship with a customer",
+      "method": "PATCH",
+      "path": "/v1/customers/{customer-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "Customer",
+      "requestFields": [
+        { "name": "relationshipToPartner", "type": "string", "required": true, "note": "set to \"none\" to end the reseller relationship" }
+      ],
+      "responseShape": "Customer",
+      "examples": {
+        "curl": "curl -X PATCH -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d '{\"relationshipToPartner\":\"none\"}' \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}\"",
+        "csharp": "var req = new HttpRequestMessage(HttpMethod.Patch, $\"/v1/customers/{customerId}\") { Content = content };\nvar res = await http.SendAsync(req);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}`, { method: \"PATCH\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body: JSON.stringify({ relationshipToPartner: \"none\" }) });"
+      },
+      "gotchas": [
+        "Ends BILLING ownership. Distinct from remove-delegated-admin, which uses the same URI and method but sets allowDelegatedAccess false and only drops admin access - read the field, not the route, to know which one you are sending.",
+        "Irreversible from the partner side: re-establishing it needs the customer to accept a fresh invitation (get-reseller-relationship-url).",
+        "Active subscriptions do not disappear; they stop being this partner's to bill and manage, so settle transfers first."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/remove-a-reseller-relationship-with-a-customer",
+      "lastVerified": "2026-08-01"
+    },
+    {
+      "id": "remove-delegated-admin",
+      "area": "security",
+      "title": "Remove delegated admin access to a customer",
+      "method": "PATCH",
+      "path": "/v1/customers/{customer-id}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "Customer",
+      "requestFields": [
+        { "name": "allowDelegatedAccess", "type": "boolean", "required": true, "note": "set to false to drop delegated admin privileges" }
+      ],
+      "responseShape": "Customer",
+      "examples": {
+        "curl": "curl -X PATCH -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d '{\"allowDelegatedAccess\":false}' \"https://api.partnercenter.microsoft.com/v1/customers/{customer-id}\"",
+        "csharp": "var req = new HttpRequestMessage(HttpMethod.Patch, $\"/v1/customers/{customerId}\") { Content = content };\nvar res = await http.SendAsync(req);",
+        "typescript": "const res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers/${customerId}`, { method: \"PATCH\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body: JSON.stringify({ allowDelegatedAccess: false }) });"
+      },
+      "gotchas": [
+        "Drops ADMIN ACCESS only; billing ownership survives. Distinct from remove-reseller-relationship, which uses the same URI and method but sets relationshipToPartner to \"none\".",
+        "This is the legacy DAP switch. Granular access is governed by GDAP relationships - terminate those with delete-gdap-relationship or create-gdap-relationship-request.",
+        "Losing admin access breaks user and licence management for that customer; the subscriptions keep running."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/remove-dap",
+      "lastVerified": "2026-08-01"
+    },
+    {
+      "id": "create-indirect-reseller-customer",
+      "area": "customers",
+      "title": "Create a customer for an indirect reseller",
+      "method": "POST",
+      "path": "/v1/customers",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Content-Type", "required": true, "note": "application/json" }
+      ],
+      "requestShape": "Customer",
+      "requestFields": [
+        { "name": "billingProfile", "type": "CustomerBillingProfile", "required": true, "note": "email, culture, language and default address" },
+        { "name": "companyProfile", "type": "CustomerCompanyProfile", "required": true, "note": "companyName and domain" },
+        { "name": "associatedPartnerId", "type": "string", "required": true, "note": "the indirect reseller this customer belongs to" }
+      ],
+      "responseShape": "Customer",
+      "examples": {
+        "curl": "curl -X POST -H \"Authorization: Bearer $TOKEN\" -H \"Content-Type: application/json\" -d @customer.json \"https://api.partnercenter.microsoft.com/v1/customers\"",
+        "csharp": "var res = await http.PostAsync(\"/v1/customers\", content);",
+        "typescript": "const res = await fetch(\"https://api.partnercenter.microsoft.com/v1/customers\", { method: \"POST\", headers: { Authorization: `Bearer ${token}`, \"Content-Type\": \"application/json\" }, body });"
+      },
+      "gotchas": [
+        "Same route as create-customer; associatedPartnerId is what makes it a two-tier (indirect provider on behalf of reseller) creation.",
+        "The indirect reseller must already be linked to the provider - list them with get-indirect-resellers.",
+        "The response carries userCredentials with the admin password exactly once. Save it; it is never returned again."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/create-a-customer-for-an-indirect-reseller",
+      "lastVerified": "2026-08-01"
+    },
+    {
+      "id": "list-indirect-reseller-customers",
+      "area": "customers",
+      "title": "List the customers of an indirect reseller",
+      "method": "GET",
+      "path": "/v1/customers?size={size}&filter={filter}",
+      "authType": "app+user",
+      "headers": [
+        { "name": "Authorization", "required": true, "note": "Bearer token, audience https://api.partnercenter.microsoft.com" },
+        { "name": "Accept", "required": true, "note": "application/json" }
+      ],
+      "requestShape": null,
+      "responseShape": "Customer collection",
+      "examples": {
+        "curl": "curl -H \"Authorization: Bearer $TOKEN\" \"https://api.partnercenter.microsoft.com/v1/customers?size=0&filter=%7B%22Field%22%3A%22IndirectReseller%22%2C%22Value%22%3A%22{reseller-tenant-id}%22%2C%22Operator%22%3A%22starts_with%22%7D\"",
+        "csharp": "var filter = Uri.EscapeDataString($\"{{\\\"Field\\\":\\\"IndirectReseller\\\",\\\"Value\\\":\\\"{resellerId}\\\",\\\"Operator\\\":\\\"starts_with\\\"}}\");\nvar res = await http.GetAsync($\"/v1/customers?size=0&filter={filter}\");",
+        "typescript": "const filter = encodeURIComponent(JSON.stringify({ Field: \"IndirectReseller\", Value: resellerId, Operator: \"starts_with\" }));\nconst res = await fetch(`https://api.partnercenter.microsoft.com/v1/customers?size=0&filter=${filter}`, { headers: { Authorization: `Bearer ${token}` } });"
+      },
+      "gotchas": [
+        "URL-ENCODED filter with Field \"IndirectReseller\" and the reseller's tenant id as Value; the operator is starts_with.",
+        "Indirect provider view - it answers \"which of my customers belong to this reseller\".",
+        "Same route as list-customers and search-customers; only the filter differs."
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/developer/get-customers-of-an-indirect-reseller",
+      "lastVerified": "2026-08-01"
     }
   ]
 }

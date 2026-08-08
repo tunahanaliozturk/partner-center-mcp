@@ -79,6 +79,13 @@
             "externalDocs": {
               "url": "https://learn.microsoft.com/partner-center/developer/get-a-customer-by-name"
             }
+          },
+          {
+            "operationId": "list-indirect-reseller-customers",
+            "summary": "List the customers of an indirect reseller",
+            "externalDocs": {
+              "url": "https://learn.microsoft.com/partner-center/developer/get-customers-of-an-indirect-reseller"
+            }
           }
         ]
       },
@@ -115,7 +122,16 @@
               }
             }
           }
-        }
+        },
+        "x-variants": [
+          {
+            "operationId": "create-indirect-reseller-customer",
+            "summary": "Create a customer for an indirect reseller",
+            "externalDocs": {
+              "url": "https://learn.microsoft.com/partner-center/developer/create-a-customer-for-an-indirect-reseller"
+            }
+          }
+        ]
       }
     },
     "/v1/customers/{customer-id}": {
@@ -164,6 +180,53 @@
         "externalDocs": {
           "url": "https://learn.microsoft.com/partner-center/developer/delete-a-customer-account-from-the-integration-sandbox"
         }
+      },
+      "patch": {
+        "operationId": "remove-reseller-relationship",
+        "summary": "Remove the reseller relationship with a customer",
+        "description": "Ends BILLING ownership. Distinct from remove-delegated-admin, which uses the same URI and method but sets allowDelegatedAccess false and only drops admin access - read the field, not the route, to know which one you are sending.\nIrreversible from the partner side: re-establishing it needs the customer to accept a fresh invitation (get-reseller-relationship-url).\nActive subscriptions do not disappear; they stop being this partner's to bill and manage, so settle transfers first.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/remove-a-reseller-relationship-with-a-customer"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "relationshipToPartner": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-variants": [
+          {
+            "operationId": "remove-delegated-admin",
+            "summary": "Remove delegated admin access to a customer",
+            "externalDocs": {
+              "url": "https://learn.microsoft.com/partner-center/developer/remove-dap"
+            }
+          }
+        ]
       }
     },
     "/v1/customers/{customer-id}/users": {
@@ -241,6 +304,62 @@
         },
         "externalDocs": {
           "url": "https://learn.microsoft.com/partner-center/developer/get-a-list-of-all-user-accounts-for-a-customer"
+        },
+        "x-variants": [
+          {
+            "operationId": "list-deleted-users",
+            "summary": "List a customer's deleted users",
+            "externalDocs": {
+              "url": "https://learn.microsoft.com/partner-center/developer/view-a-deleted-user"
+            }
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "update-user-accounts",
+        "summary": "Update a customer user account",
+        "description": "The route is the COLLECTION (/users) with no user id in the path - the user being updated is identified by the id inside the body. This is easy to get wrong because reset-password and delete-user both take /users/{user-id}.\nApp+User credentials only.\nChanging userPrincipalName changes how the user signs in; the new domain must already be on the tenant.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/update-user-accounts-for-a-customer"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "displayName": {
+                    "type": "string"
+                  },
+                  "firstName": {
+                    "type": "string"
+                  },
+                  "lastName": {
+                    "type": "string"
+                  },
+                  "userPrincipalName": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -2714,6 +2833,37 @@
         "externalDocs": {
           "url": "https://learn.microsoft.com/partner-center/developer/delete-user-accounts-for-a-customer"
         }
+      },
+      "get": {
+        "operationId": "get-user-by-id",
+        "summary": "Get a customer user account by ID",
+        "description": "Read the user before any PATCH: user writes replace the object, so you need the current values.\nReturns the user's state, which is how you tell an active account from a soft-deleted one (see list-deleted-users).\nLicences assigned to the user are a separate call - get-user-licenses.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "user-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-a-user-account-by-id"
+        }
       }
     },
     "/v1/profiles/billing": {
@@ -4277,6 +4427,39 @@
         },
         "externalDocs": {
           "url": "https://learn.microsoft.com/partner-center/developer/get-market-specific-validation-data"
+        }
+      }
+    },
+    "/v1/customers/{customer-id}/users/{user-id}/directoryroles": {
+      "get": {
+        "operationId": "get-user-roles",
+        "summary": "Get the directory roles assigned to a customer user",
+        "description": "The same page documents two sibling routes: GET .../directoryroles lists every role in the customer tenant, and GET .../directoryroles/{role-id}/usermembers lists the members of one role. This entry is the per-user view.\nRead this before offboarding - remove-user-role needs the role ids, and deleting a user who still holds a privileged role leaves the role unattended.\nRoles here are Microsoft Entra directory roles in the CUSTOMER tenant, not Partner Center roles and not GDAP roles.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "user-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-user-roles-for-a-customer"
         }
       }
     }
