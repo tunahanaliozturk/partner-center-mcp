@@ -147,6 +147,27 @@ export const ExamplesSchema = z.object({
   })),
 });
 
+
+/**
+ * Which scenario yields each path placeholder.
+ *
+ * Small and curated on purpose: most placeholders are caller-supplied query
+ * parameters, and only resource ids are actually obtained from another call.
+ * whenPathContains disambiguates a token that means different things on
+ * different routes, such as policy-id.
+ */
+export const PrerequisitesSchema = z.object({
+  version: z.string(),
+  producers: z.array(z.object({
+    placeholder: z.string().describe("The path placeholder this entry explains, without braces."),
+    producedBy: z.string().describe("Scenario id whose response yields it."),
+    whenPathContains: z.string().optional().describe("Only applies to target paths containing this fragment."),
+    note: z.string().describe("How to get the value out of that call."),
+  })),
+});
+
+export type PrerequisiteProducer = z.infer<typeof PrerequisitesSchema>["producers"][number];
+
 export type ExamplesData = z.infer<typeof ExamplesSchema>["examples"];
 export type LifecycleData = z.infer<typeof LifecycleSchema>;
 export type Scenario = z.infer<typeof ScenarioSchema>;
@@ -169,4 +190,5 @@ export interface Knowledge {
   resources: ResourcesData;
   lifecycle: LifecycleData;
   examples: ExamplesData;
+  prerequisites: PrerequisiteProducer[];
 }

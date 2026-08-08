@@ -1,0 +1,10 @@
+{
+  "version": "test",
+  "producers": [
+    {
+      "placeholder": "customer-id",
+      "producedBy": "list-customers",
+      "note": "start here"
+    }
+  ]
+}

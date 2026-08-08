@@ -15,6 +15,7 @@ import { getEnums } from "./getEnums.js";
 import { whatsNew } from "./whatsNew.js";
 import { getResource } from "./getResource.js";
 import { explainLifecycle } from "./explainLifecycle.js";
+import { planPrerequisitesTool } from "./planPrerequisites.js";
 import { buildRequest } from "./buildRequest.js";
 import { decodeError } from "./decodeError.js";
 import { planTransfer, planGdapOnboarding, planReconciliation, planCspOnboarding, planUserOnboarding, planUserOffboarding, planSubscriptionChange, planOrderLifecycle } from "./planWorkflows.js";
@@ -29,5 +30,5 @@ export const allTools: Tool[] = [
   buildRequest, decodeError,
   planTransfer, planGdapOnboarding, planReconciliation, planCspOnboarding,
   planUserOnboarding, planUserOffboarding,
-  planSubscriptionChange, planOrderLifecycle,
+  planSubscriptionChange, planOrderLifecycle, planPrerequisitesTool,
 ];
