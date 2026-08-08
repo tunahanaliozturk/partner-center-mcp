@@ -250,3 +250,13 @@ test("a request-syntax section whose uri is an absolute http(s) URL is collected
     { method: "GET", uri: "https://api.partner.microsoft.com/v1.0/engagements/referrals" },
   ]);
 });
+
+test("normalizeUri strips a protocol token the page repeated", () => {
+  // validate-reseller-partner-of-record writes "HTTP/1.1 HTTP/1.1" in its
+  // Request syntax cell. Stripping only the last one left the other glued to
+  // the path, producing /v1/partners/validateresellersHTTP/1.1.
+  expect(normalizeUri("{baseURL} /v1/partners/validateresellers HTTP/1.1 HTTP/1.1"))
+    .toBe("/v1/partners/validateresellers");
+  expect(normalizeUri("{baseURL} /v1/customers HTTP/1.1 HTTP/1.1 HTTP/1.1"))
+    .toBe("/v1/customers");
+});

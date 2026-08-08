@@ -185,3 +185,36 @@ test("a relatively-stated documented URI is not origin-checked", () => {
   const findings = checkFields(snapshotWith(facts()), [scenario({ api: "partner-center" })]);
   expect(findings.filter((f) => f.kind === "field-api")).toEqual([]);
 });
+
+test("a documented header cell that carries its example value still matches", () => {
+  // Learn writes "Prefer: odata.maxpagesize={x}" in the header NAME column on
+  // the service-announcement pages. Comparing the whole cell against a declared
+  // "Prefer" reported a missing header that was not missing.
+  const snapshot = {
+    version: "t", extractorVersion: 5, tocHrefs: [],
+    pages: {
+      "https://learn.microsoft.com/x": {
+        url: "https://learn.microsoft.com/x", finalUrl: "https://learn.microsoft.com/x",
+        template: "graph" as const, documentId: null, sourceRepo: null, sourceSha: null,
+        sourcePath: null, msDate: null, updatedAt: null, title: "x",
+        requestSyntax: { method: "GET", uri: "/admin/serviceAnnouncement/issues" },
+        requestSyntaxes: [{ method: "GET", uri: "/admin/serviceAnnouncement/issues" }],
+        headerNames: ["Authorization", "Prefer: odata.maxpagesize={x}"],
+        bodyFields: [], isEndpointPage: true, extractionError: null, extractorVersion: 5,
+      },
+    },
+  };
+  const scenario = {
+    id: "s", area: "support" as const, title: "t", method: "GET" as const, api: "graph" as const,
+    path: "/admin/serviceAnnouncement/issues", authType: "app+user" as const,
+    headers: [
+      { name: "Authorization", required: true },
+      { name: "Prefer", required: false, note: "odata.maxpagesize={x}" },
+    ],
+    requestShape: null, responseShape: "x",
+    examples: { curl: "c", csharp: "c", typescript: "t" },
+    gotchas: [], docUrl: "https://learn.microsoft.com/x", lastVerified: "2026-08-08",
+  };
+  const findings = checkFields(snapshot, [scenario]);
+  expect(findings.filter((f) => f.kind === "field-header")).toEqual([]);
+});

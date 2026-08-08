@@ -5678,7 +5678,8 @@
       "authType": "app+user",
       "headers": [
         { "name": "Authorization", "required": true, "note": "Bearer token for https://api.partner.microsoft.com - a Partner Center audience token is rejected here" },
-        { "name": "Accept", "required": true, "note": "the response is a file, not JSON" }
+        { "name": "Accept", "required": true, "note": "the response is a file, not JSON" },
+        { "name": "Accept-Encoding", "required": false, "note": "gzip; the payload is a large file, so asking for compression is worth it" }
       ],
       "requestShape": null,
       "responseShape": "price sheet document",
@@ -5706,7 +5707,8 @@
       "authType": "app+user",
       "headers": [
         { "name": "Authorization", "required": true, "note": "Bearer token for https://api.partner.microsoft.com" },
-        { "name": "Accept", "required": true, "note": "the response is a file, not JSON" }
+        { "name": "Accept", "required": true, "note": "the response is a file, not JSON" },
+        { "name": "Accept-Encoding", "required": false, "note": "gzip; the payload is a large file, so asking for compression is worth it" }
       ],
       "requestShape": null,
       "responseShape": "offer matrix document",
@@ -5733,7 +5735,8 @@
       "authType": "app+user",
       "headers": [
         { "name": "Authorization", "required": true, "note": "Bearer token for https://api.partner.microsoft.com" },
-        { "name": "Accept", "required": true, "note": "the response is a file, not JSON" }
+        { "name": "Accept", "required": true, "note": "the response is a file, not JSON" },
+        { "name": "Accept-Encoding", "required": false, "note": "gzip; the payload is a large file, so asking for compression is worth it" }
       ],
       "requestShape": null,
       "responseShape": "FX rate document",

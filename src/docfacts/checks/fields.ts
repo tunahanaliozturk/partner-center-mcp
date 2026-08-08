@@ -141,8 +141,12 @@ export function checkFields(snapshot: Snapshot, scenarios: Scenario[]): Finding[
         }
       }
     }
-    const declared = new Set(scenario.headers.map((h) => h.name.toLowerCase()));
-    const undeclared = facts.headerNames.filter((name) => !declared.has(name.toLowerCase()));
+    // Some Learn tables put the example value in the header NAME column, e.g.
+    // "Prefer: odata.maxpagesize={x}" on the service-announcement pages. The
+    // name is what a scenario declares, so compare on the part before the colon.
+    const headerName = (cell: string) => (cell.split(":")[0] ?? cell).trim().toLowerCase();
+    const declared = new Set(scenario.headers.map((h) => headerName(h.name)));
+    const undeclared = facts.headerNames.filter((name) => !declared.has(headerName(name)));
     if (undeclared.length > 0) {
       findings.push({
         kind: "field-header", severity: "warning", ref: scenario.id,

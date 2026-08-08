@@ -19,11 +19,15 @@ type SyntaxEntry = { method: string; uri: string };
  * literal character by the time this function sees it. Neither character is
  * ever valid in a Partner Center REST path, so they're dropped unconditionally
  * rather than special-cased to any one page.
+ *
+ * The protocol token is stripped repeatedly, not once: validate-reseller-partner-
+ * of-record writes "HTTP/1.1 HTTP/1.1", and removing only the last one left the
+ * other to be glued onto the path by the whitespace collapse below.
  */
 export function normalizeUri(raw: string): string {
   return raw
     .replace(/\{baseURL\}/gi, "")
-    .replace(/\s*HTTP\/\d(\.\d)?\s*$/i, "")
+    .replace(/(?:\s*HTTP\/\d(?:\.\d)?)+\s*$/i, "")
     .replace(/[<>]/g, "")
     .replace(/\s+/g, "")
     .trim();
