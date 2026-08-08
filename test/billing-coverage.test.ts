@@ -67,3 +67,25 @@ test("each consumption line-item entry names its billinglineitems sibling", () =
     expect(s.gotchas.join(" "), id).toContain("billinglineitems");
   }
 });
+
+test("batch N: pricing, margins and promotion eligibility are addressable", () => {
+  for (const id of [
+    "get-margins", "download-margins", "get-growth-margins", "get-growth-margin-by-id",
+    "get-price-sheet", "get-offer-matrix", "get-fx-rates", "verify-promotion-eligibility",
+  ]) {
+    expect(byId.has(id), id).toBe(true);
+  }
+});
+
+test("the sales routes declare the pricing host, not the Partner Center one", () => {
+  for (const id of ["get-price-sheet", "get-offer-matrix", "get-fx-rates"]) {
+    expect(scenario(id).api, id).toBe("pricing-and-referrals");
+  }
+});
+
+test("promotion eligibility closes the loop with the promotion listings", () => {
+  const g = scenario("verify-promotion-eligibility").gotchas.join(" ");
+  expect(g).toContain("get-promotions");
+  expect(scenario("verify-promotion-eligibility").requestFields?.map((f) => f.name))
+    .toEqual(expect.arrayContaining(["items[].catalogItemId", "items[].termDuration"]));
+});

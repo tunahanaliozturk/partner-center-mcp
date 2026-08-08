@@ -484,6 +484,207 @@
             },
             "description": "Replaces checkInventory, which retires 2026-09-25.\nresourceType is a REQUIRED query parameter; the accepted values are in the resourceType enum (pc_get_enums).\nA product missing from the response means unavailable for that subscription and region ONLY - do not read it as globally unavailable.\nA SKU present with isRestricted true carries the reason in restrictions[] (e.g. reasonCode NotAvailableForSubscription).\nItems not matching the requested resourceType are omitted, as are items absent from the catalog.\nThe docs accept app-only credentials here too, not only app+user.\nFor Azure RI purchases the azureSubscriptionId must already be registered and RI-enabled.\n\nDocs: https://learn.microsoft.com/partner-center/developer/check-inventory-by-resource-type"
           }
+        },
+        {
+          "name": "Check whether a purchase qualifies for a promotion",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/customers/{customer-id}/promotionEligibilities",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "customers",
+                "%7Bcustomer-id%7D",
+                "promotionEligibilities"
+              ],
+              "query": []
+            },
+            "description": "This is the half of the promotion story the listings cannot answer: get-promotions and get-promotion-by-id tell you a promotion EXISTS, this tells you whether THIS customer, catalog item, term and quantity actually qualify.\nA POST even though it only reads eligibility, because the question travels as a body of line items.\nEligibility depends on term and billing cycle, so check the combination you intend to buy, not a representative one.\nRun it before checkout-cart; an ineligible promotion is silently not applied rather than failing the purchase.\n\nDocs: https://learn.microsoft.com/partner-center/developer/verify-promotion-eligibility"
+          }
+        },
+        {
+          "name": "Get available growth margins",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/catalog/benefits?type=growthmargin&country={country-code}&segment={segment}&baseSkuPaths={base-sku-paths}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "catalog",
+                "benefits"
+              ],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "growthmargin"
+                },
+                {
+                  "key": "country",
+                  "value": "{country-code}"
+                },
+                {
+                  "key": "segment",
+                  "value": "{segment}"
+                },
+                {
+                  "key": "baseSkuPaths",
+                  "value": "{base-sku-paths}"
+                }
+              ]
+            },
+            "description": "type=growthmargin is a literal query value on a generic /catalog/benefits route - drop it and you get a different benefit type.\nA growth margin is an earned incentive on qualifying growth, unrelated to the standard margins in get-margins.\nbaseSkuPaths narrows the answer to specific SKUs; without it you get everything for the country and segment.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-growth-margins"
+          }
+        },
+        {
+          "name": "Get one growth margin by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/catalog/benefits/{growth-margin-id}?country={country-code}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "catalog",
+                "benefits",
+                "%7Bgrowth-margin-id%7D"
+              ],
+              "query": [
+                {
+                  "key": "country",
+                  "value": "{country-code}"
+                }
+              ]
+            },
+            "description": "The id comes from get-growth-margins; country is still required because eligibility and value are market-specific.\nUse it to confirm the terms of one incentive before quoting it to a customer.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-growth-margin-by-id"
+          }
+        },
+        {
+          "name": "Get a price sheet",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token for https://api.partner.microsoft.com - a Partner Center audience token is rejected here"
+              },
+              {
+                "key": "Accept",
+                "value": "the response is a file, not JSON",
+                "description": "the response is a file, not JSON"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partner.microsoft.com/v1.0/sales/pricesheets(Market='{market}',PricesheetView='{view}')/$value",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partner",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1.0",
+                "sales",
+                "pricesheets(Market='%7Bmarket%7D',PricesheetView='%7Bview%7D')",
+                "$value"
+              ],
+              "query": []
+            },
+            "description": "Different HOST and different token audience: https://api.partner.microsoft.com, not the Partner Center base URL.\nOData-style parameters in parentheses and a /$value suffix that returns a FILE - stream it rather than parsing JSON.\nPricesheetView selects the list: azure_consumption, azure_reservations, updatedlicensebased, licensebasedest, licensebasedeos, marketplace, software, softwareeos.\nFuture pricing is not available for Marketplace; software price history goes back to March 2022.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-a-price-sheet"
+          }
+        },
+        {
+          "name": "Get the offer matrix for a month",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token for https://api.partner.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "the response is a file, not JSON",
+                "description": "the response is a file, not JSON"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partner.microsoft.com/v1.0/sales/offermatrix(Month='{date}')/$value",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partner",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1.0",
+                "sales",
+                "offermatrix(Month='%7Bdate%7D')",
+                "$value"
+              ],
+              "query": []
+            },
+            "description": "On the pricing host with its own token audience, like the price sheet and FX rates.\nMonth is a parameter inside the parentheses, and /$value means you get a file back.\nThe matrix maps offers to their SKUs and availabilities for that month - it is the bridge between a legacy offer id and a New Commerce catalog item.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-an-offer-matrix"
+          }
         }
       ]
     },
@@ -3648,6 +3849,116 @@
               ]
             },
             "description": "The unbilled counterpart of get-invoice-billed-consumption, and the usagelineitems sibling of the billinglineitems route in get-invoice-unbilled-lineitems.\nperiod selects current or previous; there is no invoice id because nothing has been invoiced yet.\nUnbilled figures are estimates that can still move - do not invoice a customer from them.\nPage large results with size and a 0-based offset.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-invoice-unbilled-consumption-lineitems"
+          }
+        },
+        {
+          "name": "Get the partner's margins",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "description": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/margins",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "margins"
+              ],
+              "query": []
+            },
+            "description": "Partner-wide margin metadata. For the per-country file use download-margins, which returns a document rather than JSON.\nMargins are distinct from growth margins, which are an earned incentive - see get-growth-margins.\nNot a price list: the price sheet lives on the pricing host (get-price-sheet).\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-margins"
+          }
+        },
+        {
+          "name": "Download the margins file for a market",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token, audience https://api.partnercenter.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "the response is a document, not JSON",
+                "description": "the response is a document, not JSON"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partnercenter.microsoft.com/v1/margins/download?country={country-code}",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partnercenter",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1",
+                "margins",
+                "download"
+              ],
+              "query": [
+                {
+                  "key": "country",
+                  "value": "{country-code}"
+                }
+              ]
+            },
+            "description": "Returns a FILE, not JSON - stream it to disk instead of parsing the body as an object.\ncountry is required and uses the co-sell country and region codes.\nMargins vary by market, so a single download does not cover a multi-country customer base.\n\nDocs: https://learn.microsoft.com/partner-center/developer/download-margins"
+          }
+        },
+        {
+          "name": "Get foreign exchange rates for a month",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "Bearer token for https://api.partner.microsoft.com"
+              },
+              {
+                "key": "Accept",
+                "value": "the response is a file, not JSON",
+                "description": "the response is a file, not JSON"
+              }
+            ],
+            "url": {
+              "raw": "https://api.partner.microsoft.com/v1.0/sales/fxrates(Month='{month}')/$value",
+              "protocol": "https",
+              "host": [
+                "api",
+                "partner",
+                "microsoft",
+                "com"
+              ],
+              "path": [
+                "v1.0",
+                "sales",
+                "fxrates(Month='%7Bmonth%7D')",
+                "$value"
+              ],
+              "query": []
+            },
+            "description": "The rates Microsoft actually billed at for that month, which is what you need to explain a currency difference between your quote and the invoice.\nPricing host and pricing token audience, not Partner Center.\nA file download via /$value, one month per request.\n\nDocs: https://learn.microsoft.com/partner-center/developer/get-foreign-exchange-rates"
           }
         }
       ]

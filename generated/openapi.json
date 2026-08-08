@@ -5532,6 +5532,169 @@
           "url": "https://learn.microsoft.com/partner-center/developer/get-invoice-billed-consumption-lineitems"
         }
       }
+    },
+    "/v1/customers/{customer-id}/promotionEligibilities": {
+      "post": {
+        "operationId": "verify-promotion-eligibility",
+        "summary": "Check whether a purchase qualifies for a promotion",
+        "description": "This is the half of the promotion story the listings cannot answer: get-promotions and get-promotion-by-id tell you a promotion EXISTS, this tells you whether THIS customer, catalog item, term and quantity actually qualify.\nA POST even though it only reads eligibility, because the question travels as a body of line items.\nEligibility depends on term and billing cycle, so check the combination you intend to buy, not a representative one.\nRun it before checkout-cart; an ineligible promotion is silently not applied rather than failing the purchase.",
+        "parameters": [
+          {
+            "name": "customer-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/verify-promotion-eligibility"
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/margins": {
+      "get": {
+        "operationId": "get-margins",
+        "summary": "Get the partner's margins",
+        "description": "Partner-wide margin metadata. For the per-country file use download-margins, which returns a document rather than JSON.\nMargins are distinct from growth margins, which are an earned incentive - see get-growth-margins.\nNot a price list: the price sheet lives on the pricing host (get-price-sheet).",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-margins"
+        }
+      }
+    },
+    "/v1/margins/download": {
+      "get": {
+        "operationId": "download-margins",
+        "summary": "Download the margins file for a market",
+        "description": "Returns a FILE, not JSON - stream it to disk instead of parsing the body as an object.\ncountry is required and uses the co-sell country and region codes.\nMargins vary by market, so a single download does not cover a multi-country customer base.",
+        "parameters": [
+          {
+            "name": "country",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/download-margins"
+        }
+      }
+    },
+    "/v1/catalog/benefits": {
+      "get": {
+        "operationId": "get-growth-margins",
+        "summary": "Get available growth margins",
+        "description": "type=growthmargin is a literal query value on a generic /catalog/benefits route - drop it and you get a different benefit type.\nA growth margin is an earned incentive on qualifying growth, unrelated to the standard margins in get-margins.\nbaseSkuPaths narrows the answer to specific SKUs; without it you get everything for the country and segment.",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "country",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "segment",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "baseSkuPaths",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-growth-margins"
+        }
+      }
+    },
+    "/v1/catalog/benefits/{growth-margin-id}": {
+      "get": {
+        "operationId": "get-growth-margin-by-id",
+        "summary": "Get one growth margin by ID",
+        "description": "The id comes from get-growth-margins; country is still required because eligibility and value are market-specific.\nUse it to confirm the terms of one incentive before quoting it to a customer.",
+        "parameters": [
+          {
+            "name": "growth-margin-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "country",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "externalDocs": {
+          "url": "https://learn.microsoft.com/partner-center/developer/get-growth-margin-by-id"
+        }
+      }
     }
   }
 }
