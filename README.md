@@ -1,50 +1,39 @@
 # partner-center-mcp
 [![partner-center-mcp MCP server](https://glama.ai/mcp/servers/tunahanaliozturk/partner-center-mcp/badges/card.svg)](https://glama.ai/mcp/servers/tunahanaliozturk/partner-center-mcp)
 
-An MCP server that helps you build against the **Partner Center REST API**: scenario
-discovery, ready-to-run REST examples, current authentication guidance, an auth deprecation
-linter, archived-.NET-SDK → REST migration, error decoding, and reference. Grounded in a
-curated, date-versioned knowledge pack plus live Microsoft Learn doc fetch. It holds **no
-credentials** and makes **no live Partner Center calls** — it is a knowledge & codegen assistant.
+Building against the Partner Center REST API means living in Microsoft Learn. Two hundred odd
+endpoint pages, an archived .NET SDK that still turns up in search results, and error codes that
+tell you almost nothing on their own.
 
-> **Unofficial, community project** — not affiliated with, sponsored, or endorsed by Microsoft.
+This MCP server puts that knowledge next to your agent. Ask how to cancel a subscription and you
+get the verified method, path, headers, a working code sample, and the constraints the page
+actually warns about. It holds no credentials and never calls Partner Center. Every answer comes
+from a bundled knowledge pack, with a cached Microsoft Learn search as the fallback.
+
+> **Unofficial, community project.** Not affiliated with, sponsored, or endorsed by Microsoft.
 > "Partner Center" and "Microsoft" are trademarks of Microsoft, used here only descriptively.
-
-![partner-center-mcp demo](https://raw.githubusercontent.com/tunahanaliozturk/partner-center-mcp/master/assets/demo.gif)
 
 ## Why
 
-The Partner Center .NET SDK (3.4.0) was archived in June 2023; Microsoft directs partners to
-the REST APIs. Deprecated auth (the retired `graph.windows.net` audience) still causes
-401 / `900420` failures, and from **2026-04-01** App+User API usage enforces MFA. This server
-steers you to the current REST + auth patterns and decodes the errors you hit along the way.
+Microsoft archived the Partner Center .NET SDK (3.4.0) in June 2023 and points partners at the
+REST APIs instead. Plenty of code still hasn't moved. The retired `graph.windows.net` audience
+keeps producing 401 / `900420`, and from **2026-04-01** App+User API calls enforce MFA.
+
+So the server does two things. It shows you the current REST and auth patterns, and it explains
+the errors you hit on the way there.
 
 ## How it works
 
-Your MCP host (Claude Code, Cursor, Copilot, VS Code…) talks to this server over the MCP
-protocol (stdio by default, or HTTP). The server answers from a **curated knowledge pack** that
-is zod-validated at load and grounded in official Microsoft Learn docs — falling back to a
-**cached live doc search** only when needed. It never sees your credentials and never calls
-Partner Center.
+Your MCP host (Claude Code, Cursor, Copilot, VS Code) talks to the server over MCP, on stdio by
+default or HTTP if you'd rather. The server reads from a knowledge pack that is zod-validated at
+load and anchored to official Learn pages. When the pack has no answer it falls back to a cached
+doc search.
 
-```mermaid
-flowchart LR
-  subgraph Host["MCP host (Claude / Cursor / Copilot / VS Code)"]
-    LLM["LLM agent"]
-  end
-  LLM -->|"MCP protocol"| T{"Transport<br/>stdio · HTTP"}
-  T --> S["partner-center-mcp"]
-  S --> Tools["26 tools<br/>list/get scenario · generate_call<br/>validate_request · plan_purchase<br/>explain_lifecycle · lookup_error · diagnose · …"]
-  S --> RP["Resources & Prompts<br/>pc://… · migrate / diagnose / plan"]
-  Tools --> KP[("Knowledge pack<br/>data/*.json")]
-  KP -. "zod-validated at load" .-> Tools
-  Tools -->|"fallback (cached)"| ML[("Microsoft Learn<br/>live doc search")]
-  KP -. "docUrl + lastVerified" .-> CI[["Weekly doc-freshness CI<br/>opens an issue on high-severity drift"]]
-```
+![An MCP host talks to partner-center-mcp over stdio or HTTP. The server exposes tools plus resources and prompts, answers from a zod-validated knowledge pack, falls back to a cached Microsoft Learn search, and a weekly CI job checks the pack against the docs.](https://raw.githubusercontent.com/tunahanaliozturk/partner-center-mcp/master/assets/architecture.svg)
 
-A typical call: the agent picks a tool (e.g. `pc_generate_call`), the server looks the scenario
-up in the pack, and returns the verified method, path, headers, a ready code sample, and gotchas —
-each carrying the `docUrl` it was verified against.
+A typical call: the agent picks a tool such as `pc_generate_call`, the server looks the scenario up
+in the pack, and back comes the method, path, headers, a ready code sample, and the gotchas, each
+carrying the `docUrl` it was verified against.
 
 ## Run
 
@@ -58,7 +47,7 @@ Requires Node.js 20 or newer. (0.9.0 dropped Node 18, which reached end of life 
 
 ## Add to your MCP host
 
-The server speaks MCP over **stdio**, so any MCP-capable host works — there's nothing
+The server speaks MCP over **stdio**, so any MCP-capable host works. There's nothing
 host-specific to install. Use whichever config your host expects:
 
 **VS Code** (`.vscode/mcp.json`) and **Visual Studio** (`.mcp.json`):
@@ -67,7 +56,7 @@ host-specific to install. Use whichever config your host expects:
 { "servers": { "partner-center": { "command": "npx", "args": ["-y", "partner-center-mcp"] } } }
 ```
 
-**GitHub Copilot** — Copilot reads the same `.vscode/mcp.json` (VS Code) / `.mcp.json` (Visual
+**GitHub Copilot.** Copilot reads the same `.vscode/mcp.json` (VS Code) / `.mcp.json` (Visual
 Studio) shown above; no extra config needed.
 
 **Cursor** (`.cursor/mcp.json`) and **Windsurf** (`~/.codeium/windsurf/mcp_config.json`):
@@ -125,48 +114,50 @@ PORT=3000 npx -p partner-center-mcp partner-center-mcp-http
 | `pc_get_enums` | Look up enum values (billingCycle, termDuration, targetView, transitionType, status, …). |
 | `pc_get_resource` | Field dictionary for resources (Customer, Subscription, Order, Invoice, migration schedules, …). |
 | `pc_whats_new` | Deprecations & deadlines (MFA enforcement, graph.windows.net, v1→v2 reconciliation, …). |
-| `pc_search_docs` | Fetch live Microsoft Learn excerpts — the fallback when the curated pack has no answer. |
+| `pc_search_docs` | Fetch live Microsoft Learn excerpts. The fallback when the curated pack has no answer. |
 | `pc_get_reference` | Base URLs, headers, versioning, sandbox, rate limits, national-cloud differences. |
 
-Every tool ships full metadata for the calling agent: a `title`, a description that says
-when to use it *and* which sibling tool to prefer instead, a description on every input
-parameter, a declared `outputSchema`, and MCP behaviour annotations. All 26 are
-`readOnlyHint: true` / `destructiveHint: false` — this server holds no credentials and
-calls no Partner Center endpoint, it only reads the bundled knowledge pack. The two
-exceptions to `idempotentHint`/`openWorldHint` are `pc_search_docs` (and
-`pc_get_scenario` with `enrich: true`), which reach Microsoft Learn, and
-`pc_build_request`, which mints a fresh `MS-RequestId` per call.
+Every tool carries the metadata a calling agent needs: a `title`, a description that says when to
+use it *and* which sibling to prefer instead, a description on every input parameter, a declared
+`outputSchema`, and MCP behaviour annotations. All 26 are `readOnlyHint: true` and
+`destructiveHint: false`, because the server holds no credentials and calls no Partner Center
+endpoint. It only reads the bundled pack. Three tools break `idempotentHint` or `openWorldHint`:
+`pc_search_docs` and `pc_get_scenario` with `enrich: true` both reach Microsoft Learn, and
+`pc_build_request` mints a fresh `MS-RequestId` on every call.
 
-Responses use one envelope — `{ ok, data }` on success, `{ ok: false, error, suggestions? }`
-on failure — returned as `structuredContent` and validated against each tool's
-`outputSchema` by the MCP SDK.
+Responses share one envelope. `{ ok, data }` on success, `{ ok: false, error, suggestions? }` on
+failure, returned as `structuredContent` and validated against each tool's `outputSchema` by the
+MCP SDK.
 
 ## Coverage
 
-Scenarios span **customers** (identity and profiles, search, users and directory roles,
-relationship removal, agreements and consent, self-serve policies), **subscriptions** (the whole
-lifecycle: seats up and down, upgrade, cancel, renewal changes, suspend/reactivate, add-ons, New
-Commerce migration and transfer), **orders & carts** (through to provisioning status),
-**catalog/products**, **licenses**, **invoicing/billing**, **devices** (Autopilot batches and
-configuration policies, end to end), **utilities** (address & domain validation), **audit**,
-**support**, **security/MFA**, **analytics**, and **profiles** — each with a verified `docUrl`
-and `lastVerified` date.
+Scenarios cover:
 
-Lifecycle changes carry their *preconditions*, not just their endpoints: `pc_explain_lifecycle`
-returns the state machine — which operation is legal from which state, the field to read off the
-live subscription before attempting it (`cancellationAllowedUntilDate`, `autoRenewEnabled`,
-`suspensionReasons`), and the error a failed precondition returns. National clouds covered: commercial,
-21Vianet (China), and US Gov.
+- **Customers.** Identity and profiles, search, users and directory roles, relationship removal,
+  agreements and consent, self-serve policies.
+- **Subscriptions.** The whole lifecycle: seats up and down, upgrade, cancel, renewal changes,
+  suspend and reactivate, add-ons, New Commerce migration, transfer.
+- **Orders and carts.** Through to provisioning status, not just checkout.
+- **Devices.** Autopilot batches and configuration policies, end to end.
+- Plus catalog and products, licenses, invoicing and billing, address and domain validation,
+  audit, support, security and MFA, analytics, and partner profiles.
 
-The pack is also exposed as MCP **resources** (`pc://scenarios`, `pc://errors`, `pc://auth`,
+Every scenario carries the `docUrl` it was verified against and the date it was last checked.
+National clouds covered: commercial, 21Vianet (China), and US Gov.
+
+Lifecycle changes come with their *preconditions*, not just their endpoints. `pc_explain_lifecycle`
+returns the state machine: which operation is legal from which state, the field to read off the
+live subscription first (`cancellationAllowedUntilDate`, `autoRenewEnabled`, `suspensionReasons`),
+and the error you get when the precondition fails.
+
+The pack is also browsable as MCP resources (`pc://scenarios`, `pc://errors`, `pc://auth`,
 `pc://reference`, `pc://sdk-map`, `pc://enums`, `pc://deprecations`, `pc://resources`,
-`pc://lifecycle`, and
-`pc://scenario/{id}`) and three **prompts** (`migrate-sdk`, `diagnose-issue`, `plan-purchase`)
-for hosts that surface them.
+`pc://lifecycle`, `pc://scenario/{id}`) and three prompts (`migrate-sdk`, `diagnose-issue`,
+`plan-purchase`) for hosts that surface them.
 
-It also ships reference datasets — **enum values**, a **resource field dictionary**, and a
-**deprecations & deadlines** timeline — and can **export** the whole pack to an OpenAPI 3.0 spec
-and a Postman collection (`npm run export`).
+Alongside the scenarios it ships enum values, a resource field dictionary, and a deprecations and
+deadlines timeline. `npm run export` turns the whole pack into an OpenAPI 3.0 spec and a Postman
+collection.
 
 ## Examples
 
@@ -222,26 +213,28 @@ The knowledge pack lives in `data/` (date-versioned; each record carries a `docU
 `lastVerified`). Schemas in [`src/knowledge/schema.ts`](src/knowledge/schema.ts) validate every
 file at load time, so malformed or drifted data fails fast.
 
-Verification runs in two halves. `npm run check-pack` is offline and runs on every PR: it verifies
-each scenario's `method`, `path`, and headers against `verification/doc-facts.json` — a committed
-snapshot of what the Microsoft Learn pages actually say — and reports documented endpoints that have
-no scenario yet. `npm run check-docs` is the weekly networked half: it re-fetches every referenced
-page and compares it to the snapshot, keying drift off the source commit each Learn page embeds. It
-exits non-zero on a dead, moved, or replaced page, on a page that became unreadable, or when a field
-the pack depends on changed — the weekly GitHub Action then opens an issue; an upstream edit that
-touched only prose is reported without failing. `npm run check-docs:update` does the same fetch and
-then rewrites the snapshot. `npm run docfacts:refresh`
-rebuilds the snapshot from scratch, including the whole `developer/` section of the Learn table of
-contents.
+Verification runs in two halves, one offline and one networked.
 
-`npm run eval` runs a deterministic golden-case suite; `npm run eval:llm` (needs
-`ANTHROPIC_API_KEY`) checks that a real model picks the right tool for a question; `npm run export`
-emits an OpenAPI spec + Postman collection.
+`npm run check-pack` is the offline half and runs on every PR. It compares each scenario's
+`method`, `path`, and headers against `verification/doc-facts.json`, a committed snapshot of what
+the Learn pages actually say, and lists documented endpoints that still have no scenario.
 
-To regenerate the demo GIF (after `npm run build`): install [vhs](https://github.com/charmbracelet/vhs)
-and run `vhs demo.tape` (writes `assets/demo.gif`).
+`npm run check-docs` is the weekly networked half. It re-fetches every referenced page and diffs it
+against the snapshot, keying drift off the source commit each Learn page embeds. It fails on a
+dead, moved, or replaced page, on a page that became unreadable, and when a field the pack depends
+on changed. The weekly GitHub Action opens an issue when that happens. An upstream edit that
+touched only prose is reported without failing the run. `npm run check-docs:update` does the same
+fetch and rewrites the snapshot; `npm run docfacts:refresh` rebuilds it from scratch across the
+whole `developer/` section of the Learn table of contents.
+
+For the rest: `npm run eval` runs a deterministic golden-case suite, `npm run eval:llm` (needs
+`ANTHROPIC_API_KEY`) checks that a real model picks the right tool for a question, and
+`npm run export` emits the OpenAPI spec and Postman collection.
+
+`npm run read-doc -- <slug>` prints one Learn page as plain text, which is how new scenarios get
+authored.
 
 ## Contributing
 
-New scenarios and doc-accuracy fixes are very welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
+New scenarios and doc-accuracy fixes are very welcome. See [CONTRIBUTING.md](CONTRIBUTING.md).
 This is an unofficial, community project and is not affiliated with Microsoft.

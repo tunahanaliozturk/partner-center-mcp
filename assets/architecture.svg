@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 400" width="940" height="400" role="img" aria-label="Architecture: an MCP host talks to partner-center-mcp over stdio or HTTP; the server answers from a zod-validated knowledge pack, falling back to a cached Microsoft Learn search, and a weekly CI job checks the pack against the docs.">
+  <title>partner-center-mcp architecture</title>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/>
+    </marker>
+    <style>
+      .b  { fill: #f8fafc; stroke: #cbd5e1; stroke-width: 1.5; rx: 8; }
+      .bx { fill: #eff6ff; stroke: #93c5fd; stroke-width: 1.5; rx: 8; }
+      .bk { fill: #f1f5f9; stroke: #94a3b8; stroke-width: 1.5; rx: 8; }
+      .grp{ fill: none; stroke: #cbd5e1; stroke-width: 1.5; stroke-dasharray: 5 4; rx: 10; }
+      .t  { font: 600 14px ui-sans-serif, -apple-system, "Segoe UI", Roboto, sans-serif; fill: #0f172a; }
+      .s  { font: 400 12px ui-sans-serif, -apple-system, "Segoe UI", Roboto, sans-serif; fill: #475569; }
+      .e  { font: 400 11px ui-sans-serif, -apple-system, "Segoe UI", Roboto, sans-serif; fill: #64748b; }
+      .g  { font: 600 11px ui-sans-serif, -apple-system, "Segoe UI", Roboto, sans-serif; fill: #64748b; letter-spacing: .3px; }
+      .ln { stroke: #94a3b8; stroke-width: 1.6; fill: none; marker-end: url(#a); }
+      .ld { stroke: #cbd5e1; stroke-width: 1.4; fill: none; stroke-dasharray: 4 4; marker-end: url(#a); }
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="940" height="400" fill="#ffffff"/>
+
+  <!-- host -->
+  <rect class="grp" x="16" y="86" width="188" height="104"/>
+  <text class="g" x="30" y="106">MCP HOST</text>
+  <text class="e" x="30" y="122">Claude · Cursor · Copilot · VS Code</text>
+  <rect class="b" x="40" y="132" width="140" height="42"/>
+  <text class="t" x="110" y="158" text-anchor="middle">LLM agent</text>
+
+  <!-- transport -->
+  <rect class="b" x="248" y="120" width="118" height="66"/>
+  <text class="t" x="307" y="147" text-anchor="middle">Transport</text>
+  <text class="s" x="307" y="166" text-anchor="middle">stdio · HTTP</text>
+
+  <!-- server -->
+  <rect class="bx" x="410" y="120" width="160" height="66"/>
+  <text class="t" x="490" y="147" text-anchor="middle">partner-center-mcp</text>
+  <text class="s" x="490" y="166" text-anchor="middle">holds no credentials</text>
+
+  <!-- tools -->
+  <rect class="b" x="628" y="40" width="180" height="66"/>
+  <text class="t" x="718" y="66" text-anchor="middle">26 tools</text>
+  <text class="s" x="718" y="85" text-anchor="middle">scenarios · codegen · lifecycle</text>
+
+  <!-- resources -->
+  <rect class="b" x="628" y="200" width="180" height="66"/>
+  <text class="t" x="718" y="226" text-anchor="middle">Resources &amp; Prompts</text>
+  <text class="s" x="718" y="245" text-anchor="middle">pc://… · migrate · diagnose</text>
+
+  <!-- knowledge pack -->
+  <rect class="bk" x="380" y="300" width="196" height="66"/>
+  <text class="t" x="478" y="326" text-anchor="middle">Knowledge pack</text>
+  <text class="s" x="478" y="345" text-anchor="middle">data/*.json · zod-validated</text>
+
+  <!-- learn -->
+  <rect class="b" x="700" y="300" width="196" height="66"/>
+  <text class="t" x="798" y="326" text-anchor="middle">Microsoft Learn</text>
+  <text class="s" x="798" y="345" text-anchor="middle">cached live doc search</text>
+
+  <!-- ci -->
+  <rect class="b" x="60" y="300" width="242" height="66"/>
+  <text class="t" x="181" y="326" text-anchor="middle">Weekly doc-freshness CI</text>
+  <text class="s" x="181" y="345" text-anchor="middle">opens an issue on drift</text>
+
+  <!-- edges -->
+  <path class="ln" d="M 180 153 H 244"/>
+  <text class="e" x="212" y="145" text-anchor="middle">MCP</text>
+  <path class="ln" d="M 366 153 H 406"/>
+  <path class="ln" d="M 570 145 C 600 145, 600 80, 624 76"/>
+  <path class="ln" d="M 570 165 C 600 165, 600 228, 624 232"/>
+  <path class="ln" d="M 700 106 C 660 140, 560 250, 500 296"/>
+  <path class="ln" d="M 760 106 C 780 160, 790 250, 796 296"/>
+  <text class="e" x="836" y="212" text-anchor="middle">fallback</text>
+  <path class="ld" d="M 380 336 H 306"/>
+  <text class="e" x="343" y="328" text-anchor="middle">docUrl</text>
+</svg>
