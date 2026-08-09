@@ -1,0 +1,47 @@
+{
+  "version": "2026-08",
+  "releases": [
+    {
+      "version": "0.17.0",
+      "date": "2026-08-08",
+      "scenarioCount": 239,
+      "added": [
+        "activate-marketplace-subscription",
+        "attach-purchase-order",
+        "cancel-azure-entitlement",
+        "create-order-for-indirect-reseller",
+        "create-sandbox-indirect-reseller",
+        "get-addon-offers",
+        "get-availability-by-id",
+        "get-azure-entitlement",
+        "get-dap-statistics",
+        "get-offer-by-id",
+        "get-partner-network-profile",
+        "get-referral-by-id",
+        "list-agreement-metadata",
+        "list-availabilities-by-customer",
+        "list-dap-customers",
+        "list-offer-categories",
+        "list-offers",
+        "list-product-skus",
+        "list-products-by-customer",
+        "list-skus-by-customer",
+        "list-subscriptions-by-partner",
+        "reactivate-azure-entitlement",
+        "remove-sandbox-reseller-relationship",
+        "update-fraud-event-status",
+        "update-legal-business-profile",
+        "update-referral",
+        "update-support-profile",
+        "validate-reseller-por",
+        "verify-reseller-mpa-status"
+      ],
+      "changed": [
+        "get-fx-rates",
+        "get-offer-matrix",
+        "get-price-sheet"
+      ],
+      "removed": []
+    }
+  ]
+}

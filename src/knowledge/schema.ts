@@ -168,6 +168,28 @@ export const PrerequisitesSchema = z.object({
 
 export type PrerequisiteProducer = z.infer<typeof PrerequisitesSchema>["producers"][number];
 
+
+/**
+ * What changed between releases of this pack, newest first.
+ *
+ * Written by scripts/pack-diff.mjs at release time from a fingerprint of every
+ * scenario, so a release entry reflects real differences rather than an author
+ * remembering to write one.
+ */
+export const HistorySchema = z.object({
+  version: z.string(),
+  releases: z.array(z.object({
+    version: z.string().describe("Pack version this release shipped as."),
+    date: isoDate,
+    scenarioCount: z.number().describe("Total scenarios at that release."),
+    added: z.array(z.string()),
+    changed: z.array(z.string()),
+    removed: z.array(z.string()),
+  })),
+});
+
+export type ReleaseEntry = z.infer<typeof HistorySchema>["releases"][number];
+
 export type ExamplesData = z.infer<typeof ExamplesSchema>["examples"];
 export type LifecycleData = z.infer<typeof LifecycleSchema>;
 export type Scenario = z.infer<typeof ScenarioSchema>;
@@ -191,4 +213,5 @@ export interface Knowledge {
   lifecycle: LifecycleData;
   examples: ExamplesData;
   prerequisites: PrerequisiteProducer[];
+  history: ReleaseEntry[];
 }

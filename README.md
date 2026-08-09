@@ -126,12 +126,14 @@ driving your local server.
 | `pc_get_enums` | Look up enum values (billingCycle, termDuration, targetView, transitionType, status, …). |
 | `pc_get_resource` | Field dictionary for resources (Customer, Subscription, Order, Invoice, migration schedules, …). |
 | `pc_whats_new` | Deprecations & deadlines (MFA enforcement, graph.windows.net, v1→v2 reconciliation, …). |
+| `pc_plan_prerequisites` | For any scenario, the ordered calls that produce the ids its path needs, and the parameters you supply yourself. |
+| `pc_diff_pack` | What changed between pack releases: scenarios added, removed, or whose route, auth, fields or constraints moved. |
 | `pc_search_docs` | Fetch live Microsoft Learn excerpts. The fallback when the curated pack has no answer. |
 | `pc_get_reference` | Base URLs, headers, versioning, sandbox, rate limits, national-cloud differences. |
 
 Every tool carries the metadata a calling agent needs: a `title`, a description that says when to
 use it *and* which sibling to prefer instead, a description on every input parameter, a declared
-`outputSchema`, and MCP behaviour annotations. All 26 are `readOnlyHint: true` and
+`outputSchema`, and MCP behaviour annotations. All 28 are `readOnlyHint: true` and
 `destructiveHint: false`, because the server holds no credentials and calls no Partner Center
 endpoint. It only reads the bundled pack. Three tools break `idempotentHint` or `openWorldHint`:
 `pc_search_docs` and `pc_get_scenario` with `enrich: true` both reach Microsoft Learn, and
@@ -159,7 +161,9 @@ Scenarios cover:
 - Plus catalog and products, licenses, address and domain validation, audit, support, security and
   MFA, and partner profiles.
 
-Every scenario carries the `docUrl` it was verified against and the date it was last checked.
+Every scenario carries the `docUrl` it was verified against and the date it was last checked, and
+185 of them ship the response example their page publishes, so field names and nesting can be read
+off rather than guessed at.
 National clouds covered: commercial, 21Vianet (China), and US Gov.
 
 Lifecycle changes come with their *preconditions*, not just their endpoints. `pc_explain_lifecycle`
@@ -169,7 +173,7 @@ and the error you get when the precondition fails.
 
 The pack is also browsable as MCP resources (`pc://scenarios`, `pc://errors`, `pc://auth`,
 `pc://reference`, `pc://sdk-map`, `pc://enums`, `pc://deprecations`, `pc://resources`,
-`pc://lifecycle`, `pc://scenario/{id}`) and three prompts (`migrate-sdk`, `diagnose-issue`,
+`pc://lifecycle`, `pc://examples`, `pc://history`, `pc://scenario/{id}`) and three prompts (`migrate-sdk`, `diagnose-issue`,
 `plan-purchase`) for hosts that surface them.
 
 Alongside the scenarios it ships enum values, a resource field dictionary, and a deprecations and
@@ -249,7 +253,13 @@ For the rest: `npm run eval` runs a deterministic golden-case suite, `npm run ev
 `npm run export` emits the OpenAPI spec and Postman collection.
 
 `npm run read-doc -- <slug>` prints one Learn page as plain text, which is how new scenarios get
-authored.
+authored. `npm run examples:refresh` re-collects the response examples; it merges rather than
+overwrites, so a run that Learn rate-limits cannot lose the previous one's work.
+
+`npm run pack-diff` reports what changed since the last recorded release, comparing a fingerprint
+of every scenario's route, auth, headers, fields, response shape and gotchas. Re-verifying a
+scenario is deliberately not a change. `npm run pack-diff -- --record X.Y.Z` writes the result into
+`data/history.json`, which is what the `pc_diff_pack` tool serves.
 
 ## Contributing
 

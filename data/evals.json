@@ -32,6 +32,8 @@
     { "name": "cancellation plan reads the subscription first", "tool": "pc_plan_subscription_change", "input": { "operation": "cancel" }, "contains": ["cancel-subscription", "cancellationAllowedUntilDate"], "assert": [{ "path": "steps.0.scenarioId", "equals": "get-subscription-by-id" }] },
     { "name": "order lifecycle plan polls provisioning", "tool": "pc_plan_order_lifecycle", "input": {}, "contains": ["get-order-provisioning-status", "get-subscription-provisioning-status"], "assert": [{ "path": "steps.0.scenarioId", "equals": "create-cart" }] },
     { "name": "prerequisites derive the id chain for any scenario", "tool": "pc_plan_prerequisites", "input": { "id": "cancel-subscription" }, "contains": ["list-customers", "list-customer-subscriptions"], "assert": [{ "path": "steps.0.provides", "equals": "customer-id" }] },
-    { "name": "a supplied customer id drops its own lookup", "tool": "pc_plan_prerequisites", "input": { "id": "get-batch-devices", "customerId": "c7f6e4b1-3a2d-4c5e-9f80-1b2c3d4e5f60" }, "contains": ["get-device-batches"], "notContains": ["{customer-id}"] }
+    { "name": "a supplied customer id drops its own lookup", "tool": "pc_plan_prerequisites", "input": { "id": "get-batch-devices", "customerId": "c7f6e4b1-3a2d-4c5e-9f80-1b2c3d4e5f60" }, "contains": ["get-device-batches"], "notContains": ["{customer-id}"] },
+    { "name": "the pack diff reports the latest release", "tool": "pc_diff_pack", "input": {}, "contains": ["0.17.0"], "assert": [{ "path": "releases.0.scenarioCount", "equals": 239 }] },
+    { "name": "the pack diff narrows to one scenario", "tool": "pc_diff_pack", "input": { "id": "get-price-sheet" }, "contains": ["get-price-sheet"], "notContains": ["get-offer-matrix"] }
   ]
 }

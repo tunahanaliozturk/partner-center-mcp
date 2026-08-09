@@ -54,7 +54,8 @@
     "export": "node scripts/export.mjs",
     "start": "node dist/index.js",
     "start:http": "node dist/http.js",
-    "examples:refresh": "node scripts/examples-refresh.mjs"
+    "examples:refresh": "node scripts/examples-refresh.mjs",
+    "pack-diff": "node scripts/pack-diff.mjs"
   },
   "engines": {
     "node": ">=20"

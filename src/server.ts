@@ -48,6 +48,7 @@ function registerResources(server: McpServer, ctx: ToolContext): void {
     { slug: "resources", title: "Resource field dictionary", get: () => k().resources },
     { slug: "lifecycle", title: "Subscription lifecycle state machine", get: () => k().lifecycle },
     { slug: "examples", title: "Verified response examples per scenario", get: () => k().examples },
+    { slug: "history", title: "What changed between pack releases", get: () => k().history },
   ];
   for (const c of collections) {
     server.registerResource(
