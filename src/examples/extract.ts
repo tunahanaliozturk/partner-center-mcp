@@ -210,22 +210,61 @@ function parseBlock(raw: string): ResponseExample | null {
   return null;
 }
 
+interface Heading { index: number; length: number; level: number; text: string }
+
+const HEADING = /<h([1-6])[^>]*>([\s\S]*?)<\/h\1>/gi;
+
+function headingsOf(html: string): Heading[] {
+  const out: Heading[] = [];
+  HEADING.lastIndex = 0;
+  for (let m = HEADING.exec(html); m !== null; m = HEADING.exec(html)) {
+    out.push({
+      index: m.index,
+      length: m[0].length,
+      level: Number(m[1]),
+      text: (m[2] ?? "").replace(/<[^>]+>/g, "").trim(),
+    });
+  }
+  return out;
+}
+
+/**
+ * The body of a section: from the end of its heading to the next heading at the
+ * same level or higher.
+ *
+ * Bounding matters. A Graph page has several "Response" headings, and the first
+ * is prose with no example; searching forward without a bound would walk out of
+ * that section and pick up a code block belonging to another one.
+ */
+function sectionBody(html: string, headings: Heading[], heading: Heading, i: number): string {
+  const next = headings.slice(i + 1).find((h) => h.level <= heading.level);
+  return html.slice(heading.index + heading.length, next ? next.index : undefined);
+}
+
 /**
  * The first parseable response example on the page, or null.
  *
- * Only blocks that follow a "Response example" heading are considered: a page's
- * REQUEST example is the same shape and would otherwise be mistaken for the
- * response, which is the one failure mode that would poison the whole set.
+ * Two doc templates publish these differently. Partner Center writes a
+ * "Response example" heading; Microsoft Graph writes plain "Response", usually
+ * more than once. Both are read, Partner Center first, and only sections that
+ * announce a response are considered: a page's REQUEST example is the same
+ * shape and mistaking it for the response would poison the whole set.
  */
 export function extractResponseExample(html: string): ResponseExample | null {
-  const heading = /<h[1-6][^>]*>[^<]*response\s+example[^<]*<\/h[1-6]>/i.exec(html);
-  if (!heading) return null;
-  const after = html.slice(heading.index + heading[0].length);
+  const headings = headingsOf(html);
+  const isPartnerCenter = (t: string) => /response\s+example/i.test(t);
+  const isGraph = (t: string) => /^response(\s+\d+)?$/i.test(t);
 
-  CODE_BLOCK.lastIndex = 0;
-  for (let m = CODE_BLOCK.exec(after); m !== null; m = CODE_BLOCK.exec(after)) {
-    const parsed = parseBlock(m[1] ?? "");
-    if (parsed) return parsed;
+  for (const matches of [isPartnerCenter, isGraph]) {
+    for (const [i, heading] of headings.entries()) {
+      if (!matches(heading.text)) continue;
+      const body = sectionBody(html, headings, heading, i);
+      CODE_BLOCK.lastIndex = 0;
+      for (let m = CODE_BLOCK.exec(body); m !== null; m = CODE_BLOCK.exec(body)) {
+        const parsed = parseBlock(m[1] ?? "");
+        if (parsed) return parsed;
+      }
+    }
   }
   return null;
 }

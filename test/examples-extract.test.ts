@@ -120,3 +120,53 @@ test("a comma inside a string value is not treated as structure", () => {
   const got = extractResponseExample(page('{"a": "x, y", "b": "{not json}"}'));
   expect(got?.body).toEqual({ a: "x, y", b: "{not json}" });
 });
+
+// --- Microsoft Graph template ------------------------------------------
+
+const graphPage = (body: string) => `<h2 id="request">Request</h2>
+<pre><code class="lang-http">GET /tenantRelationships/delegatedAdminRelationships
+
+</code></pre>
+<h2 id="response">Response</h2>
+<p>If successful, this method returns a <code>200 OK</code> response code.</p>
+<h2 id="examples">Examples</h2>
+<h3 id="request-1">Request</h3>
+<pre><code class="lang-http">GET /tenantRelationships/delegatedAdminRelationships
+
+{"requestOnly": true}
+</code></pre>
+<h3 id="response-1">Response</h3>
+<blockquote><p><strong>Note:</strong> shortened for readability.</p></blockquote>
+<pre><code class="lang-http">HTTP/1.1 200 OK
+Content-Type: application/json
+
+${body}
+</code></pre>`;
+
+test("reads the Graph template, which heads its example just Response", () => {
+  const got = extractResponseExample(graphPage('{"value": [{"id": "abc"}]}'));
+  expect(got).toEqual({ httpStatus: 200, body: { value: [{ id: "abc" }] } });
+});
+
+test("the prose Response section above the example is skipped, not mistaken for it", () => {
+  // The first "Response" heading holds no code block at all. Reading forward
+  // without bounding the section would pick up the request example under
+  // Examples instead.
+  const got = extractResponseExample(graphPage('{"value": []}'));
+  expect(got?.body).toEqual({ value: [] });
+  expect(got?.body).not.toHaveProperty("requestOnly");
+});
+
+test("a Partner Center page still wins over a bare Response heading", () => {
+  const both = `<h2>Response</h2>
+<pre><code class="lang-http">HTTP/1.1 200 OK
+
+{"from": "graph-shaped section"}
+</code></pre>
+<h2>Response example</h2>
+<pre><code class="lang-http">HTTP/1.1 200 OK
+
+{"from": "partner-center section"}
+</code></pre>`;
+  expect(extractResponseExample(both)?.body).toEqual({ from: "partner-center section" });
+});

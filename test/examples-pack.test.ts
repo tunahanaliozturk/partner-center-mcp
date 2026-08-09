@@ -32,7 +32,7 @@ test("every stored body is real JSON, never a string of one", () => {
  * refresh that silently loses half of them would otherwise pass CI.
  */
 test("the response-example coverage does not regress", () => {
-  expect(Object.keys(knowledge.examples).length).toBeGreaterThanOrEqual(185);
+  expect(Object.keys(knowledge.examples).length).toBeGreaterThanOrEqual(197);
 });
 
 test("pc_get_scenario returns the example alongside the record", async () => {
