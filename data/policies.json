@@ -7,8 +7,15 @@
       "question": "How long do I have to cancel, and does it depend on what was bought?",
       "rule": "It depends entirely on the product type. Perpetual software: full refund within 30 calendar days of purchase. Software subscriptions: prorated refund within 7 calendar days. License-based (per user) subscriptions: prorated refund within 7 calendar days. Microsoft Marketplace SaaS: full refund within 72 HOURS, excluding metered charges. Dynamics 365 Business Central: within 7 days of purchase OR renewal.",
       "consequence": "Quoting one number to a customer gets it wrong for three of the five product types. The subscription's own cancellationAllowedUntilDate field is the authoritative deadline for that particular subscription; this table tells you what to expect before you have one.",
-      "relatedScenarios": ["cancel-subscription", "cancel-software-purchase", "get-subscription-by-id"],
-      "relatedErrors": ["900117", "900213"],
+      "relatedScenarios": [
+        "cancel-subscription",
+        "cancel-software-purchase",
+        "get-subscription-by-id"
+      ],
+      "relatedErrors": [
+        "900117",
+        "900213"
+      ],
       "docUrl": "https://learn.microsoft.com/partner-center/customers/new-commerce-cancellation-policy",
       "lastVerified": "2026-08-10"
     },
@@ -18,8 +25,13 @@
       "question": "A subscription created by an upgrade was cancelled and we were refused. Why?",
       "rule": "A subscription created as the result of a partial upgrade INHERITS the cancellation window of the parent it came from. It does not get a fresh 7 days from the day it was created, and the window does not reopen until that subscription renews into a new term.",
       "consequence": "The upgrade looks like a new purchase, so everyone expects a new window. If the parent was bought two months ago, the new subscription is already outside it on day one.",
-      "relatedScenarios": ["create-subscription-transition", "cancel-subscription"],
-      "relatedErrors": ["900117"],
+      "relatedScenarios": [
+        "create-subscription-transition",
+        "cancel-subscription"
+      ],
+      "relatedErrors": [
+        "900117"
+      ],
       "docUrl": "https://learn.microsoft.com/partner-center/customers/new-commerce-cancellation-policy",
       "lastVerified": "2026-08-10"
     },
@@ -29,8 +41,13 @@
       "question": "Can I reduce seats on a software subscription?",
       "rule": "No. Partner Center does not allow licence reductions on software subscriptions at all. If the count is wrong it has to be changed inside the seven-day cancellation window, by cancelling and repurchasing.",
       "consequence": "Seat-based habits do not transfer. On a licence-based subscription a reduction inside the window is normal; on a software subscription there is no reduction path at any point, so an over-purchase is locked in for the term once the window closes.",
-      "relatedScenarios": ["change-subscription-quantity", "cancel-software-purchase"],
-      "relatedErrors": ["800090"],
+      "relatedScenarios": [
+        "change-subscription-quantity",
+        "cancel-software-purchase"
+      ],
+      "relatedErrors": [
+        "800090"
+      ],
       "docUrl": "https://learn.microsoft.com/partner-center/customers/new-commerce-cancellation-policy",
       "lastVerified": "2026-08-10"
     },
@@ -40,7 +57,10 @@
       "question": "The customer will not pay. Are we still liable to Microsoft?",
       "rule": "Yes. The partner is responsible for paying any outstanding amount regardless of whether the customer cannot or will not pay, including because of bankruptcy, dissolution, or a commercial disagreement with the partner. Nothing about the customer's situation moves the liability off the partner.",
       "consequence": "An annual-term subscription sold to a customer who later defaults is a full-term debt the partner carries. The documented mitigations are to sell such customers a MONTHLY term, which can be cancelled at the end of any month, or not to sell to them.",
-      "relatedScenarios": ["cancel-subscription", "suspend-subscription"],
+      "relatedScenarios": [
+        "cancel-subscription",
+        "suspend-subscription"
+      ],
       "docUrl": "https://learn.microsoft.com/partner-center/customers/new-commerce-cancellation-policy",
       "lastVerified": "2026-08-10"
     },
@@ -50,7 +70,9 @@
       "question": "Can a cancelled Marketplace free trial be started again?",
       "rule": "No. A Microsoft Marketplace free trial can be cancelled at any point during the trial period, but once cancelled it cannot be reinitiated.",
       "consequence": "Cancelling to tidy up a customer's list destroys an evaluation that cannot be recreated. Let it lapse instead if there is any chance the customer wants it.",
-      "relatedScenarios": ["cancel-subscription"],
+      "relatedScenarios": [
+        "cancel-subscription"
+      ],
       "docUrl": "https://learn.microsoft.com/partner-center/customers/new-commerce-cancellation-policy",
       "lastVerified": "2026-08-10"
     },
@@ -60,8 +82,13 @@
       "question": "Does a promotion's licence limit count licences another partner already sold to the same customer?",
       "rule": "Yes. Promotion licence limits are enforced across partners for the same customer. If a promotion caps at 1000 and one partner has already sold 900, a second partner selling 200 gets the NON-promotional price.",
       "consequence": "The second partner has no visibility of the first partner's sale and quotes a promotional price they cannot get. Verify eligibility first: the API returns the minimum, maximum, and how many licences remain.",
-      "relatedScenarios": ["verify-promotion-eligibility", "get-promotions"],
-      "relatedErrors": ["2002"],
+      "relatedScenarios": [
+        "verify-promotion-eligibility",
+        "get-promotions"
+      ],
+      "relatedErrors": [
+        "2002"
+      ],
       "docUrl": "https://learn.microsoft.com/partner-center/pricing/new-commerce-promotions",
       "lastVerified": "2026-08-10"
     },
@@ -71,7 +98,9 @@
       "question": "Does a promotion's minimum purchase requirement count licences the customer already has?",
       "rule": "Yes. Eligibility against a minimum takes already-provisioned licences into account, including licences from another partner or bought web direct. A customer with eight licences and a promotion requiring ten qualifies by buying two more.",
       "consequence": "Read the wrong way round this looks like the customer must buy ten. Quoting ten when two would do loses the deal or oversells it.",
-      "relatedScenarios": ["verify-promotion-eligibility"],
+      "relatedScenarios": [
+        "verify-promotion-eligibility"
+      ],
       "docUrl": "https://learn.microsoft.com/partner-center/pricing/new-commerce-promotions",
       "lastVerified": "2026-08-10"
     },
@@ -81,7 +110,11 @@
       "question": "What happens if the term I buy does not match the promotion's term?",
       "rule": "The transaction goes through at the NON-promotional price. Promotions define their discount per term, and a mismatch is not an error.",
       "consequence": "Nothing fails, so nobody notices until the invoice. Check the promotion's term and billing cycle against what you are actually buying.",
-      "relatedScenarios": ["verify-promotion-eligibility", "checkout-cart", "get-promotion-by-id"],
+      "relatedScenarios": [
+        "verify-promotion-eligibility",
+        "checkout-cart",
+        "get-promotion-by-id"
+      ],
       "docUrl": "https://learn.microsoft.com/partner-center/pricing/new-commerce-promotions",
       "lastVerified": "2026-08-10"
     },
@@ -91,7 +124,10 @@
       "question": "If I change a subscription's term mid-term, do we lose the promotion?",
       "rule": "Not necessarily. A term duration can be changed mid-term to the options Partner Center offers, and if a promotion exists for the resulting term and billing cycle it is applied automatically. Mid-term changes take effect immediately.",
       "consequence": "Make sure no scheduled changes are pending on the subscription before adjusting the term, or the two collide.",
-      "relatedScenarios": ["create-scheduled-changes", "create-subscription-transition"],
+      "relatedScenarios": [
+        "create-scheduled-changes",
+        "create-subscription-transition"
+      ],
       "docUrl": "https://learn.microsoft.com/partner-center/pricing/new-commerce-promotions",
       "lastVerified": "2026-08-10"
     },
@@ -101,8 +137,187 @@
       "question": "A promotion id and a catalog item id look different. Which one is the limit counted against?",
       "rule": "The promotion's product SKU, not the availability. A promotion id has a product:SKU:availability shape, and limits such as licence count are evaluated against the product:SKU part only.",
       "consequence": "Different product SKUs carry different promotion ids, so a customer can hit the maximum on Microsoft 365 E3 and still get promotional pricing on E5. Assuming one shared pool understates what is available.",
-      "relatedScenarios": ["verify-promotion-eligibility", "get-sku-availabilities"],
+      "relatedScenarios": [
+        "verify-promotion-eligibility",
+        "get-sku-availabilities"
+      ],
       "docUrl": "https://learn.microsoft.com/partner-center/pricing/new-commerce-promotions",
+      "lastVerified": "2026-08-10"
+    },
+    {
+      "id": "who-microsoft-actually-invoices",
+      "area": "billing",
+      "question": "Does Microsoft invoice indirect resellers?",
+      "rule": "No. Microsoft bills only direct bill partners (tier 1) and indirect providers (tier 2). An indirect reseller is billed by their provider, not by Microsoft. Your own tier is in Account Settings under Legal Info, Program Info, Cloud Solution Provider Tier.",
+      "consequence": "An indirect reseller waiting for a Microsoft invoice that will never arrive, or building reconciliation against invoice APIs they have no data in. The invoice endpoints return nothing useful for tier 3.",
+      "relatedScenarios": [
+        "get-invoices",
+        "get-invoice-summaries",
+        "get-indirect-resellers"
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/billing/billing-basics",
+      "lastVerified": "2026-08-10"
+    },
+    {
+      "id": "invoice-timing-differs-legacy-vs-nce",
+      "area": "billing",
+      "question": "When is my invoice available?",
+      "rule": "It depends which billing you are on. Legacy: the billing period is a monthly cycle starting on your billing anniversary date, and the invoice and reconciliation files are ready two days after that date. New Commerce: the billing period is the full calendar month, and documents are published by the 8th of the following month. September's NCE invoice appears by 8 October.",
+      "consequence": "A partner with both runs two different clocks. Polling for an NCE invoice on the legacy schedule finds nothing and looks like a fault.",
+      "relatedScenarios": [
+        "get-invoices",
+        "get-invoice-by-id",
+        "get-invoice-summaries"
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/billing/billing-basics",
+      "lastVerified": "2026-08-10"
+    },
+    {
+      "id": "azure-plan-fx-rate-is-fixed-before-the-month",
+      "area": "billing",
+      "question": "Why does the Azure invoice amount differ from the price we quoted?",
+      "rule": "Azure plan services are priced in US dollars and converted into your billing currency. The rate is the Thomson Reuters mid-rate from two business days before the month begins, and it applies to every purchase in that month. The 29 November rate is used for everything bought between 1 and 31 December.",
+      "consequence": "Quoting from a live FX rate mid-month will not match the invoice. The rate for the whole month was already fixed before the month started, so a quote should use that rate.",
+      "relatedScenarios": [
+        "get-fx-rates",
+        "get-azure-rate-card",
+        "get-invoice-billed-consumption"
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/billing/billing-basics",
+      "lastVerified": "2026-08-10"
+    },
+    {
+      "id": "pec-needs-access-not-just-the-sale",
+      "area": "billing",
+      "question": "We sold the Azure plan but are not getting partner earned credit. Why?",
+      "rule": "PEC rewards operational control of the customer's Azure environment, not the sale. To earn it you need an active Microsoft AI Cloud Partner Program agreement, an eligible RBAC role (not every role qualifies), and one of the three access permission types set up with its matching partner association type.",
+      "consequence": "Without the permission set up, PEC does not calculate at all. The invoice simply shows no credit, with nothing to indicate that access is the reason.",
+      "relatedScenarios": [
+        "get-invoice-billed-lineitems",
+        "create-azure-plan-upgrade"
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/billing/partner-earned-credit-explanation",
+      "lastVerified": "2026-08-10"
+    },
+    {
+      "id": "pec-breaks-on-azure-plan-transfer",
+      "area": "billing",
+      "question": "A customer transferred their Azure plan to us and partner earned credit stopped. What happened?",
+      "rule": "For the FIRST transacting partner the reseller association is set up automatically. After an Azure plan is transferred to a new partner, that association has to be set up MANUALLY. It does not follow the transfer.",
+      "consequence": "PEC silently stops for the new partner until somebody notices the credit missing from an invoice. For indirect resellers the association is arranged through the indirect provider, who is the transacting partner.",
+      "relatedScenarios": [
+        "create-transfer",
+        "get-transfer",
+        "list-customer-transfers"
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/billing/partner-earned-credit-explanation",
+      "lastVerified": "2026-08-10"
+    },
+    {
+      "id": "aobo-is-the-default-azure-plan-permission",
+      "area": "billing",
+      "question": "What access does provisioning an Azure plan give us by default?",
+      "rule": "Admin on behalf of (AOBO) is the default when a partner provisions an Azure plan subscription for a customer. It makes AOBO a foreign principal inheriting owner permissions on the Azure subscription, which the Admin agents group in the partner tenant then holds.",
+      "consequence": "It is also the thing that quietly disappears in the scenarios that break PEC: a partner change, cross-tenant management, or access granted to individual users only.",
+      "relatedScenarios": [
+        "get-azure-entitlements",
+        "remove-delegated-admin"
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/billing/partner-earned-credit-explanation",
+      "lastVerified": "2026-08-10"
+    },
+    {
+      "id": "expired-gdap-cannot-be-restored",
+      "area": "security",
+      "question": "Our GDAP relationship expired. Can we reactivate it?",
+      "rule": "No. An expired GDAP cannot be restored or made active again. The only route back is a new relationship: create it, get the customer to approve it, and redo the access assignments.",
+      "consequence": "Letting one lapse costs a customer approval cycle, and until that completes the partner has no admin access to manage the tenant at all. Partners can filter GDAPs expiring in 30 days, 7 days and 1 day, which is the window to act in.",
+      "relatedScenarios": [
+        "get-gdap-relationships",
+        "create-gdap-relationship",
+        "create-gdap-access-assignment"
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/customers/expiring-gdap-relationships-and-auto-extend-gdap",
+      "lastVerified": "2026-08-10"
+    },
+    {
+      "id": "gdap-autoextend-avoids-the-approval-cycle",
+      "area": "security",
+      "question": "How do we stop GDAP relationships expiring on us?",
+      "rule": "Enable auto-extend. A GDAP with auto-extend does not expire on its last day; it rolls forward by six months, with no new request, no customer consent and no reassignment of access. It can be set on up to 25 relationships at a time and needs the Admin agent role.",
+      "consequence": "With auto-extend off, the partner gets notified at 30 days, 7 days and 1 day and must complete a full approval cycle before the last one passes.",
+      "relatedScenarios": [
+        "get-gdap-relationships",
+        "get-gdap-relationship-by-id"
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/customers/expiring-gdap-relationships-and-auto-extend-gdap",
+      "lastVerified": "2026-08-10"
+    },
+    {
+      "id": "global-administrator-gdap-cannot-autoextend",
+      "area": "security",
+      "question": "Why can we not enable auto-extend on this GDAP?",
+      "rule": "A GDAP holding the Microsoft Entra Global Administrator role cannot be auto-extended, to align with Zero Trust and least privilege. Such relationships show NA in the auto-extend duration column.",
+      "consequence": "The relationships most painful to lose are exactly the ones that cannot roll forward. Filter on Having Global Administrator, remove that role where it is not needed, and the relationship becomes auto-extendable.",
+      "relatedScenarios": [
+        "get-gdap-relationships",
+        "update-gdap-access-assignment"
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/customers/expiring-gdap-relationships-and-auto-extend-gdap",
+      "lastVerified": "2026-08-10"
+    },
+    {
+      "id": "partner-is-liable-for-customer-fraud",
+      "area": "security",
+      "question": "A customer's tenant was compromised and ran up Azure charges. Who pays?",
+      "rule": "The partner. Direct-bill partners and indirect providers are financially responsible both for fraudulent purchases made by their customers and for customers' non-payment. Signing the Microsoft Partner Agreement binds the partner to that policy.",
+      "consequence": "Azure consumption fraud can reach a large number quickly and it lands on the partner's invoice. This is why fraud detection and spending signals are an operational necessity rather than a nicety.",
+      "relatedScenarios": [
+        "get-fraud-events",
+        "update-fraud-event-status",
+        "get-usage-budget"
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/security/nonpayment-fraud-misuse",
+      "lastVerified": "2026-08-10"
+    },
+    {
+      "id": "fraud-credit-clock-starts-at-first-usage",
+      "area": "security",
+      "question": "How long do we have to request a credit for compromise charges?",
+      "rule": "60 calendar days from the FIRST USAGE DATE of the fraudulent activity, regardless of when it was discovered. The request is a refund support ticket filed through the Azure portal. Microsoft may grant a one-time discretionary credit covering up to the first 30 days of compromise-related charges, for verified compromises of New Commerce subscriptions, once per customer tenant id.",
+      "consequence": "The clock runs from when the fraud started, not from when you found it. A compromise discovered on day 70 is already out of time, which is what makes detection latency expensive rather than merely embarrassing.",
+      "relatedScenarios": [
+        "get-fraud-events",
+        "get-subscription-resource-usage",
+        "get-usage-budget"
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/security/nonpayment-fraud-misuse",
+      "lastVerified": "2026-08-10"
+    },
+    {
+      "id": "fraud-credit-requires-mfa-at-the-time",
+      "area": "security",
+      "question": "Does MFA affect whether we can claim a fraud credit?",
+      "rule": "Yes, since September 2024. To be eligible the partner must have had MFA both ENABLED and REGISTERED for every administrative user on their CSP tenant at the time the fraudulent activity began. This includes emergency access accounts.",
+      "consequence": "Turning MFA on after discovering the compromise does not qualify; the test is the state at the moment the fraud started. One unregistered break-glass account is enough to disqualify the claim.",
+      "relatedScenarios": [
+        "get-mfa-status",
+        "get-fraud-events"
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/security/nonpayment-fraud-misuse",
+      "lastVerified": "2026-08-10"
+    },
+    {
+      "id": "invoice-payments-take-five-business-days-to-show",
+      "area": "billing",
+      "question": "We paid the invoice but Partner Center still shows it outstanding.",
+      "rule": "Invoice payments appear in the Partner Center Billing workspace after five business days. Check the billing information is correct before submitting a payment.",
+      "consequence": "Chasing a payment that has not appeared yet, or paying twice, are both avoidable by knowing the lag.",
+      "relatedScenarios": [
+        "get-invoice-summaries",
+        "get-partner-balance"
+      ],
+      "docUrl": "https://learn.microsoft.com/partner-center/security/nonpayment-fraud-misuse",
       "lastVerified": "2026-08-10"
     }
   ]

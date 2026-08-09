@@ -37,8 +37,10 @@ export const explainPolicy: Tool = {
     "Read-only, offline, deterministic. Every entry carries the Microsoft Learn page it was read from and the date it was checked.",
   inputShape: {
     question: z.string().optional().describe(
-      "The question in your own words, e.g. \"can I reduce seats on a software subscription\" or \"customer went bankrupt who pays\". " +
-      "Matched against the question each entry answers, then its rule. Omit to list everything in an area.",
+      "The question in plain words, e.g. \"can I reduce seats on a software subscription\" or \"customer went bankrupt who pays\". " +
+      "Matched against the question each entry answers, then its rule. Omit to list everything in an area. " +
+      "PASS IT IN ENGLISH: the rules are written in the words Microsoft's documentation uses, so a question in another language will not match. " +
+      "Translate the user's question first and answer them in whatever language they asked.",
     ),
     area: z.enum(AREAS).optional().describe(
       "Narrow to one area: customers, billing, pricing, security, lifecycle, announcements. Omit to search them all.",
