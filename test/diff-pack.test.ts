@@ -1,7 +1,7 @@
 import { test, expect } from "vitest";
 import { loadKnowledge } from "../src/knowledge/load.js";
 import { diffPack } from "../src/tools/diffPack.js";
-import { fingerprintScenario, diffFingerprints } from "../src/knowledge/fingerprint.js";
+import { fingerprintScenario, fingerprintPack, diffFingerprints } from "../src/knowledge/fingerprint.js";
 import type { Scenario } from "../src/knowledge/schema.js";
 import type { ToolContext } from "../src/types.js";
 
@@ -86,4 +86,20 @@ test("pc_diff_pack says so when nothing touched the id", async () => {
 test("pc_diff_pack rejects a version it never recorded", async () => {
   const r = await diffPack.run({ since: "9.9.9" }, ctx);
   expect(r.ok).toBe(false);
+});
+
+test("fingerprintPack keys every scenario and is stable across ordering", () => {
+  const a = { ...base, id: "a" };
+  const b = { ...base, id: "b", path: "/v1/customers/{customer-id}" };
+  const forward = fingerprintPack([a, b]);
+  const reversed = fingerprintPack([b, a]);
+
+  expect(Object.keys(forward)).toEqual(["a", "b"]);
+  expect(forward).toEqual(reversed);
+  expect(forward.a).not.toBe(forward.b);
+});
+
+test("fingerprintPack covers the shipped pack, one entry per scenario", () => {
+  const prints = fingerprintPack(knowledge.scenarios);
+  expect(Object.keys(prints).length).toBe(knowledge.scenarios.length);
 });

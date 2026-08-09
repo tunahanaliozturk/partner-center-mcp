@@ -90,8 +90,6 @@ export function planPrerequisites(k: Knowledge, target: Scenario): PrerequisiteP
         if (!unresolved.includes(placeholder)) unresolved.push(placeholder);
         continue;
       }
-      // A producer that needs what it produces would loop; report it as caller
-      // supplied rather than recursing, because the caller has to break the tie.
       if (visiting.has(producer.producedBy) || producer.producedBy === target.id) {
         if (!callerSupplied.includes(placeholder)) callerSupplied.push(placeholder);
         continue;
@@ -99,7 +97,18 @@ export function planPrerequisites(k: Knowledge, target: Scenario): PrerequisiteP
       if (emitted.has(producer.producedBy)) continue;
 
       const scenario = findScenario(k, producer.producedBy);
-      if (!scenario) { unresolved.push(placeholder); continue; }
+      if (!scenario) {
+        if (!unresolved.includes(placeholder)) unresolved.push(placeholder);
+        continue;
+      }
+
+      // A producer that asks for the very id it yields cannot start the chain,
+      // so it is not emitted at all: the caller has to supply that id and break
+      // the cycle. Emitting it would produce a step you cannot actually make.
+      if (placeholdersOf(scenario.path).includes(placeholder)) {
+        if (!callerSupplied.includes(placeholder)) callerSupplied.push(placeholder);
+        continue;
+      }
 
       visiting.add(producer.producedBy);
       resolve(scenario.path, [...chain, producer.producedBy]);
