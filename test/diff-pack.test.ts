@@ -72,7 +72,19 @@ test("pc_diff_pack expands ids into records a caller can act on", async () => {
 });
 
 test("a release with no scenario changes is still recorded, so `since` can name it", async () => {
-  const r = await diffPack.run({ since: "0.17.1" }, ctx);
+  // Not pinned to a version: releases keep being added, and the point is that
+  // an empty one is recorded at all, not which one it happens to be.
+  const empty = knowledge.history.find(
+    (r) => r.added.length + r.changed.length + r.removed.length === 0,
+  );
+  expect(empty, "expected at least one release with no scenario changes").toBeTruthy();
+
+  const r = await diffPack.run({ since: empty?.version }, ctx);
+  expect(r.ok).toBe(true);
+});
+
+test("the newest recorded release is the one the pack ships as", async () => {
+  const r = await diffPack.run({ since: knowledge.history[0]?.version }, ctx);
   expect(r.ok).toBe(true);
   expect((r.data as { releases: unknown[] }).releases).toEqual([]);
 });

@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "Partner Center REST (unofficial, generated)",
-    "version": "0.17.1",
+    "version": "0.18.0",
     "description": "Generated from partner-center-mcp's verified scenario pack. Not affiliated with Microsoft."
   },
   "servers": [
