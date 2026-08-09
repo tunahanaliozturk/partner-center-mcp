@@ -17,6 +17,7 @@ import { getResource } from "./getResource.js";
 import { explainLifecycle } from "./explainLifecycle.js";
 import { planPrerequisitesTool } from "./planPrerequisites.js";
 import { diffPack } from "./diffPack.js";
+import { explainPolicy } from "./explainPolicy.js";
 import { buildRequest } from "./buildRequest.js";
 import { decodeError } from "./decodeError.js";
 import { planTransfer, planGdapOnboarding, planReconciliation, planCspOnboarding, planUserOnboarding, planUserOffboarding, planSubscriptionChange, planOrderLifecycle } from "./planWorkflows.js";
@@ -31,5 +32,5 @@ export const allTools: Tool[] = [
   buildRequest, decodeError,
   planTransfer, planGdapOnboarding, planReconciliation, planCspOnboarding,
   planUserOnboarding, planUserOffboarding,
-  planSubscriptionChange, planOrderLifecycle, planPrerequisitesTool, diffPack,
+  planSubscriptionChange, planOrderLifecycle, planPrerequisitesTool, diffPack, explainPolicy,
 ];

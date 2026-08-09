@@ -1,0 +1,109 @@
+{
+  "version": "2026-08",
+  "policies": [
+    {
+      "id": "cancellation-window-by-product-type",
+      "area": "lifecycle",
+      "question": "How long do I have to cancel, and does it depend on what was bought?",
+      "rule": "It depends entirely on the product type. Perpetual software: full refund within 30 calendar days of purchase. Software subscriptions: prorated refund within 7 calendar days. License-based (per user) subscriptions: prorated refund within 7 calendar days. Microsoft Marketplace SaaS: full refund within 72 HOURS, excluding metered charges. Dynamics 365 Business Central: within 7 days of purchase OR renewal.",
+      "consequence": "Quoting one number to a customer gets it wrong for three of the five product types. The subscription's own cancellationAllowedUntilDate field is the authoritative deadline for that particular subscription; this table tells you what to expect before you have one.",
+      "relatedScenarios": ["cancel-subscription", "cancel-software-purchase", "get-subscription-by-id"],
+      "relatedErrors": ["900117", "900213"],
+      "docUrl": "https://learn.microsoft.com/partner-center/customers/new-commerce-cancellation-policy",
+      "lastVerified": "2026-08-10"
+    },
+    {
+      "id": "upgrade-inherits-cancellation-window",
+      "area": "lifecycle",
+      "question": "A subscription created by an upgrade was cancelled and we were refused. Why?",
+      "rule": "A subscription created as the result of a partial upgrade INHERITS the cancellation window of the parent it came from. It does not get a fresh 7 days from the day it was created, and the window does not reopen until that subscription renews into a new term.",
+      "consequence": "The upgrade looks like a new purchase, so everyone expects a new window. If the parent was bought two months ago, the new subscription is already outside it on day one.",
+      "relatedScenarios": ["create-subscription-transition", "cancel-subscription"],
+      "relatedErrors": ["900117"],
+      "docUrl": "https://learn.microsoft.com/partner-center/customers/new-commerce-cancellation-policy",
+      "lastVerified": "2026-08-10"
+    },
+    {
+      "id": "software-subscriptions-no-seat-reduction",
+      "area": "lifecycle",
+      "question": "Can I reduce seats on a software subscription?",
+      "rule": "No. Partner Center does not allow licence reductions on software subscriptions at all. If the count is wrong it has to be changed inside the seven-day cancellation window, by cancelling and repurchasing.",
+      "consequence": "Seat-based habits do not transfer. On a licence-based subscription a reduction inside the window is normal; on a software subscription there is no reduction path at any point, so an over-purchase is locked in for the term once the window closes.",
+      "relatedScenarios": ["change-subscription-quantity", "cancel-software-purchase"],
+      "relatedErrors": ["800090"],
+      "docUrl": "https://learn.microsoft.com/partner-center/customers/new-commerce-cancellation-policy",
+      "lastVerified": "2026-08-10"
+    },
+    {
+      "id": "partner-owes-microsoft-when-customer-does-not-pay",
+      "area": "billing",
+      "question": "The customer will not pay. Are we still liable to Microsoft?",
+      "rule": "Yes. The partner is responsible for paying any outstanding amount regardless of whether the customer cannot or will not pay, including because of bankruptcy, dissolution, or a commercial disagreement with the partner. Nothing about the customer's situation moves the liability off the partner.",
+      "consequence": "An annual-term subscription sold to a customer who later defaults is a full-term debt the partner carries. The documented mitigations are to sell such customers a MONTHLY term, which can be cancelled at the end of any month, or not to sell to them.",
+      "relatedScenarios": ["cancel-subscription", "suspend-subscription"],
+      "docUrl": "https://learn.microsoft.com/partner-center/customers/new-commerce-cancellation-policy",
+      "lastVerified": "2026-08-10"
+    },
+    {
+      "id": "marketplace-trial-cannot-be-restarted",
+      "area": "lifecycle",
+      "question": "Can a cancelled Marketplace free trial be started again?",
+      "rule": "No. A Microsoft Marketplace free trial can be cancelled at any point during the trial period, but once cancelled it cannot be reinitiated.",
+      "consequence": "Cancelling to tidy up a customer's list destroys an evaluation that cannot be recreated. Let it lapse instead if there is any chance the customer wants it.",
+      "relatedScenarios": ["cancel-subscription"],
+      "docUrl": "https://learn.microsoft.com/partner-center/customers/new-commerce-cancellation-policy",
+      "lastVerified": "2026-08-10"
+    },
+    {
+      "id": "promotion-limits-are-counted-across-partners",
+      "area": "pricing",
+      "question": "Does a promotion's licence limit count licences another partner already sold to the same customer?",
+      "rule": "Yes. Promotion licence limits are enforced across partners for the same customer. If a promotion caps at 1000 and one partner has already sold 900, a second partner selling 200 gets the NON-promotional price.",
+      "consequence": "The second partner has no visibility of the first partner's sale and quotes a promotional price they cannot get. Verify eligibility first: the API returns the minimum, maximum, and how many licences remain.",
+      "relatedScenarios": ["verify-promotion-eligibility", "get-promotions"],
+      "relatedErrors": ["2002"],
+      "docUrl": "https://learn.microsoft.com/partner-center/pricing/new-commerce-promotions",
+      "lastVerified": "2026-08-10"
+    },
+    {
+      "id": "promotion-minimum-counts-existing-licences",
+      "area": "pricing",
+      "question": "Does a promotion's minimum purchase requirement count licences the customer already has?",
+      "rule": "Yes. Eligibility against a minimum takes already-provisioned licences into account, including licences from another partner or bought web direct. A customer with eight licences and a promotion requiring ten qualifies by buying two more.",
+      "consequence": "Read the wrong way round this looks like the customer must buy ten. Quoting ten when two would do loses the deal or oversells it.",
+      "relatedScenarios": ["verify-promotion-eligibility"],
+      "docUrl": "https://learn.microsoft.com/partner-center/pricing/new-commerce-promotions",
+      "lastVerified": "2026-08-10"
+    },
+    {
+      "id": "promotion-term-mismatch-is-silent",
+      "area": "pricing",
+      "question": "What happens if the term I buy does not match the promotion's term?",
+      "rule": "The transaction goes through at the NON-promotional price. Promotions define their discount per term, and a mismatch is not an error.",
+      "consequence": "Nothing fails, so nobody notices until the invoice. Check the promotion's term and billing cycle against what you are actually buying.",
+      "relatedScenarios": ["verify-promotion-eligibility", "checkout-cart", "get-promotion-by-id"],
+      "docUrl": "https://learn.microsoft.com/partner-center/pricing/new-commerce-promotions",
+      "lastVerified": "2026-08-10"
+    },
+    {
+      "id": "midterm-term-change-reapplies-a-promotion",
+      "area": "pricing",
+      "question": "If I change a subscription's term mid-term, do we lose the promotion?",
+      "rule": "Not necessarily. A term duration can be changed mid-term to the options Partner Center offers, and if a promotion exists for the resulting term and billing cycle it is applied automatically. Mid-term changes take effect immediately.",
+      "consequence": "Make sure no scheduled changes are pending on the subscription before adjusting the term, or the two collide.",
+      "relatedScenarios": ["create-scheduled-changes", "create-subscription-transition"],
+      "docUrl": "https://learn.microsoft.com/partner-center/pricing/new-commerce-promotions",
+      "lastVerified": "2026-08-10"
+    },
+    {
+      "id": "promotion-limits-apply-to-sku-not-availability",
+      "area": "pricing",
+      "question": "A promotion id and a catalog item id look different. Which one is the limit counted against?",
+      "rule": "The promotion's product SKU, not the availability. A promotion id has a product:SKU:availability shape, and limits such as licence count are evaluated against the product:SKU part only.",
+      "consequence": "Different product SKUs carry different promotion ids, so a customer can hit the maximum on Microsoft 365 E3 and still get promotional pricing on E5. Assuming one shared pool understates what is available.",
+      "relatedScenarios": ["verify-promotion-eligibility", "get-sku-availabilities"],
+      "docUrl": "https://learn.microsoft.com/partner-center/pricing/new-commerce-promotions",
+      "lastVerified": "2026-08-10"
+    }
+  ]
+}

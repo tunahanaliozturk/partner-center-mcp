@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { z } from "zod";
 import {
   ScenarioSchema, ErrorEntrySchema, AuthSchema, SdkMapSchema, ReferenceSchema,
-  EnumsSchema, DeprecationsSchema, ResourcesSchema, LifecycleSchema, ExamplesSchema, PrerequisitesSchema, HistorySchema, type Knowledge,
+  EnumsSchema, DeprecationsSchema, ResourcesSchema, LifecycleSchema, ExamplesSchema, PrerequisitesSchema, HistorySchema, PoliciesSchema, type Knowledge,
 } from "./schema.js";
 
 function read<T>(dir: string, file: string, schema: z.ZodType<T>): T {
@@ -35,5 +35,6 @@ export function loadKnowledge(dir: string): Knowledge {
   const examples = read(dir, "examples.json", ExamplesSchema).examples;
   const prerequisites = read(dir, "prerequisites.json", PrerequisitesSchema).producers;
   const history = read(dir, "history.json", HistorySchema).releases;
-  return { scenarios, errors, auth, sdkMap, reference, enums, deprecations, resources, lifecycle, examples, prerequisites, history };
+  const policies = read(dir, "policies.json", PoliciesSchema).policies;
+  return { scenarios, errors, auth, sdkMap, reference, enums, deprecations, resources, lifecycle, examples, prerequisites, history, policies };
 }

@@ -1,0 +1,13 @@
+{
+  "version": "test",
+  "policies": [
+    {
+      "id": "x",
+      "area": "lifecycle",
+      "question": "q?",
+      "rule": "r",
+      "docUrl": "https://learn.microsoft.com/x",
+      "lastVerified": "2026-08-10"
+    }
+  ]
+}

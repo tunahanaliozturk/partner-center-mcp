@@ -190,6 +190,41 @@ export const HistorySchema = z.object({
 
 export type ReleaseEntry = z.infer<typeof HistorySchema>["releases"][number];
 
+
+/**
+ * How Partner Center BEHAVES, as opposed to what its endpoints are.
+ *
+ * The scenario pack answers "what do I call and how". A licensing team asks
+ * something else: what the cancellation window actually depends on, what happens
+ * to subscriptions when a GDAP relationship expires, whether a promotion limit
+ * counts licences another partner already sold. None of that is a request or a
+ * response, and none of it can be derived from one.
+ *
+ * Each entry is keyed by the QUESTION it answers, because that is how the
+ * question arrives. The rule states the behaviour, and consequence states what
+ * goes wrong when the rule is not known, which is usually why anyone is asking.
+ */
+export const PoliciesSchema = z.object({
+  version: z.string(),
+  policies: z.array(z.object({
+    id: z.string().describe("Stable kebab-case identifier."),
+    area: z.enum(["customers", "billing", "pricing", "security", "lifecycle", "announcements"])
+      .describe("Which part of running a CSP practice this belongs to."),
+    question: z.string().describe("The question as somebody managing licences would ask it."),
+    rule: z.string().describe("What Partner Center actually does. The answer."),
+    consequence: z.string().optional()
+      .describe("What goes wrong when this is not known. Usually the reason the question came up."),
+    relatedScenarios: z.array(z.string()).optional()
+      .describe("Scenario ids that carry this rule out; pass to pc_get_scenario."),
+    relatedErrors: z.array(z.string()).optional()
+      .describe("Error codes this rule explains; decode with pc_lookup_error."),
+    docUrl: z.string().url().describe("Microsoft Learn page the rule was read from."),
+    lastVerified: isoDate,
+  })),
+});
+
+export type Policy = z.infer<typeof PoliciesSchema>["policies"][number];
+
 export type ExamplesData = z.infer<typeof ExamplesSchema>["examples"];
 export type LifecycleData = z.infer<typeof LifecycleSchema>;
 export type Scenario = z.infer<typeof ScenarioSchema>;
@@ -214,4 +249,5 @@ export interface Knowledge {
   examples: ExamplesData;
   prerequisites: PrerequisiteProducer[];
   history: ReleaseEntry[];
+  policies: Policy[];
 }

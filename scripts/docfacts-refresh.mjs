@@ -11,12 +11,21 @@ const knowledge = loadKnowledge("data");
 
 console.log("fetching the Learn TOC...");
 const tocHrefs = await fetchTocHrefs();
-const developerUrls = tocHrefs.filter((h) => h.startsWith("developer/")).map(tocHrefToUrl);
+
+// developer/ is the API surface the scenario pack is built from. The rest are
+// the sections a licensing team lives in: how customers, relationships, billing,
+// pricing and security actually behave. Nothing there is an endpoint, so
+// checkFields never looks at it, but the drift check does: these pages carry the
+// rules data/policies.json states, and a rule outliving its page is the failure
+// that matters.
+const SNAPSHOT_SECTIONS = /^(developer|customers|billing|pricing|security|announcements)\//;
+const sectionUrls = tocHrefs.filter((h) => SNAPSHOT_SECTIONS.test(h)).map(tocHrefToUrl);
 
 const urls = [...new Set([
   ...knowledge.scenarios.map((s) => s.docUrl),
   ...knowledge.errors.map((e) => e.docUrl),
-  ...developerUrls,
+  ...knowledge.policies.map((p) => p.docUrl),
+  ...sectionUrls,
 ])].sort();
 
 console.log(`fetching ${urls.length} pages...`);

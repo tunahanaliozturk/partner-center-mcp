@@ -72,6 +72,7 @@ const HAPPY: Record<string, Record<string, unknown>> = {
   pc_plan_order_lifecycle: {},
   pc_plan_prerequisites: { id: "cancel-subscription" },
   pc_diff_pack: {},
+  pc_explain_policy: { question: "how long to cancel" },
   pc_plan_gdap_onboarding: {},
   pc_plan_reconciliation: {},
   pc_plan_csp_onboarding: {},
