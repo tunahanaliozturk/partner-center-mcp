@@ -61,9 +61,20 @@ test("every added or changed id in history is a scenario that exists", () => {
 test("pc_diff_pack expands ids into records a caller can act on", async () => {
   const r = await diffPack.run({}, ctx);
   const data = r.data as { releases: { added: { id: string; method: string; path: string }[] }[] };
-  const first = data.releases[0]?.added[0];
-  expect(first?.method).toBeTruthy();
-  expect(first?.path.startsWith("/")).toBe(true);
+  // A release with no scenario changes is recorded too, so pick the first that
+  // actually added something rather than assuming the newest did.
+  const added = data.releases.flatMap((release) => release.added);
+  expect(added.length).toBeGreaterThan(0);
+  for (const entry of added) {
+    expect(entry.method, entry.id).toBeTruthy();
+    expect(entry.path.startsWith("/"), entry.id).toBe(true);
+  }
+});
+
+test("a release with no scenario changes is still recorded, so `since` can name it", async () => {
+  const r = await diffPack.run({ since: "0.17.1" }, ctx);
+  expect(r.ok).toBe(true);
+  expect((r.data as { releases: unknown[] }).releases).toEqual([]);
 });
 
 test("pc_diff_pack narrowed to one id reports only that id", async () => {
