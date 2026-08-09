@@ -194,6 +194,209 @@ public static class WorkflowTools
         "For new-commerce recon after the v1 cutoffs, prefer the async v2 Graph exports.",
         "See pc_whats_new for the v1->v2 reconciliation deadlines.",
     });
+
+    [McpServerTool(Name = "pc_plan_csp_onboarding"), Description("The ordered CSP customer onboarding (account linking) workflow: invite -> verify relationship -> confirm agreement -> transact.")]
+    public static object PlanCspOnboarding([Description("customer id (optional)")] string? customerId = null) => BuildPlan(customerId, new[]
+    {
+        ("get-reseller-relationship-url", "Get the invitation URL and send it to the customer's global admin."),
+        ("get-customer-by-id", "Once accepted, confirm relationshipToPartner is reseller."),
+        ("get-agreement-metadata", "Read the current MCA templateId; a superseded template is rejected."),
+        ("create-agreement", "Record the customer's acceptance of the Microsoft Customer Agreement."),
+        ("get-agreements", "Verify the attestation is on record before transacting."),
+    }, "Link an existing customer tenant to the partner and make it transactable.", new[]
+    {
+        "All steps use an App+User token with audience https://api.partnercenter.microsoft.com.",
+        "A customer who signed the MCA directly with Microsoft needs no attestation - check get-direct-sign-status first.",
+        "Transacting before the agreement is recorded fails; 800075 means the account is still under review.",
+    });
+
+    [McpServerTool(Name = "pc_plan_user_onboarding"), Description("The ordered user onboarding workflow: check licences -> create user -> assign licences -> grant roles -> verify.")]
+    public static object PlanUserOnboarding([Description("customer id (optional)")] string? customerId = null) => BuildPlan(customerId, new[]
+    {
+        ("get-subscribed-skus", "Check the customer has an available seat before creating anyone."),
+        ("create-user", "Create the account; the response carries the one-time password."),
+        ("assign-licenses", "Assign the SKU; licences are not granted by creating the user."),
+        ("assign-user-role", "Grant any directory role the user needs."),
+        ("get-user-licenses", "Verify what actually landed on the account."),
+    }, "Onboard a user into a customer tenant with licences and roles.", new[]
+    {
+        "The user's UPN must use a domain registered on the tenant - see get-customer-custom-domains.",
+        "The password is returned once, on create. It cannot be read back.",
+        "Group-based licensing assigns through the group instead; see assign-group-license.",
+    });
+
+    [McpServerTool(Name = "pc_plan_user_offboarding"), Description("The ordered user offboarding workflow: read licences -> reclaim them -> strip roles -> delete (30-day restore window).")]
+    public static object PlanUserOffboarding([Description("customer id (optional)")] string? customerId = null) => BuildPlan(customerId, new[]
+    {
+        ("get-user-licenses", "See what the account holds before removing anything."),
+        ("assign-licenses", "Reclaim the licences with licensesToRemove so the seats free up."),
+        ("get-user-roles", "Find any directory role the account still holds."),
+        ("remove-user-role", "Strip elevated roles before deletion."),
+        ("delete-user", "Delete the account; it stays restorable for 30 days."),
+    }, "Offboard a user and reclaim what they were consuming.", new[]
+    {
+        "Needs the User Administrator GDAP role.",
+        "restore-user reverses the deletion within 30 days, but licences are not restored with it.",
+        "Licences that came from group membership are reclaimed by removing the user from the group.",
+    });
+
+    [McpServerTool(Name = "pc_plan_order_lifecycle"), Description("The ordered workflow from cart to PROVISIONED subscriptions: build, check out, poll the order, resolve the subscriptions, confirm each provisioned.")]
+    public static object PlanOrderLifecycle([Description("customer id (optional)")] string? customerId = null) => BuildPlan(customerId, new[]
+    {
+        ("create-cart", "Build the cart; it validates and prices the purchase before it is placed."),
+        ("checkout-cart", "Place the order. A 2xx here means ACCEPTED, not provisioned."),
+        ("get-order-provisioning-status", "Poll until every line item reports success - the step usually skipped."),
+        ("get-subscriptions-by-order", "Resolve the subscriptions the order created."),
+        ("get-subscription-provisioning-status", "Confirm each one provisioned before treating its licences as assignable."),
+    }, "Take a purchase from cart to subscriptions you can prove exist.", new[]
+    {
+        "Provisioning is reported per ORDER LINE ITEM, so a partially provisioned order is normal.",
+        "Software and perpetual purchases cancel at the order (cancel-software-purchase); seat-based ones at the subscription.",
+        "Products that need activation expose a link per line item - see get-order-activation-link.",
+    });
+
+    /// <summary>
+    /// The subscription lifecycle is one tool with nine branches rather than
+    /// nine tools: an agent choosing between them is choosing an operation, and
+    /// that reads better as an argument than as a tool name.
+    /// </summary>
+    private static readonly Dictionary<string, (string Goal, (string id, string why)[] Chain, string[] Notes)> SubscriptionChanges = new()
+    {
+        ["increase-seats"] = (
+            "Add seats to an active subscription.",
+            new[]
+            {
+                ("get-subscription-by-id", "Read the current resource; the PATCH sends it back whole."),
+                ("change-subscription-quantity", "PATCH the new TOTAL seat count; increases are prorated and need no window."),
+                ("get-subscription-provisioning-status", "Confirm the change provisioned."),
+            },
+            new[]
+            {
+                "Increases are unconditional; it is decreases that are bounded by cancellationAllowedUntilDate.",
+                "quantity is the new total, not a delta.",
+                "Omitting autoRenewEnabled from the PATCH silently resets it to false.",
+            }),
+        ["decrease-seats"] = (
+            "Remove seats from an active subscription.",
+            new[]
+            {
+                ("get-subscription-by-id", "Read cancellationAllowedUntilDate; it decides whether this is allowed at all."),
+                ("change-subscription-quantity", "PATCH the lower TOTAL seat count."),
+                ("get-subscription-provisioning-status", "Confirm the reduction provisioned."),
+            },
+            new[]
+            {
+                "GUARD: cancellationAllowedUntilDate must still be in the future. Read it, do not assume a window length.",
+                "Past that date the request fails with 800090; schedule the smaller count for the next term instead.",
+                "Seat reduction is not supported at all while suspended.",
+            }),
+        ["upgrade"] = (
+            "Move a subscription to a different offer (New Commerce transition).",
+            new[]
+            {
+                ("get-subscription-transition-eligibilities", "GUARD: the target must appear here; take its catalogItemId."),
+                ("create-subscription-transition", "Perform the transition; transitionType decides whether licences move too."),
+                ("get-subscription-transitions", "Poll the history - a transition is asynchronous."),
+            },
+            new[]
+            {
+                "An empty eligibility list means there is no path from this offer.",
+                "eligibilityType=immediate transitions now; scheduled targets the next term.",
+                "Legacy subscriptions upgrade through the /upgrades route instead.",
+            }),
+        ["cancel"] = (
+            "Cancel a subscription and stop billing it.",
+            new[]
+            {
+                ("get-subscription-by-id", "Read cancellationAllowedUntilDate and refundOptions."),
+                ("cancel-subscription", "PATCH the full resource with status \"deleted\"."),
+                ("get-subscription-provisioning-status", "Confirm the cancellation provisioned."),
+            },
+            new[]
+            {
+                "GUARD: cancellationAllowedUntilDate must still be in the future, and refundOptions says what comes back.",
+                "Past it the request fails with 900117 / 900213; the only lever left is turning autorenew off.",
+                "Suspending is not cancelling - it stops service without stopping billing.",
+                "Software and perpetual purchases cancel at the ORDER instead.",
+            }),
+        ["renew-change"] = (
+            "Change what the subscription renews into at the next term.",
+            new[]
+            {
+                ("get-subscription-by-id", "autoRenewEnabled must be true or the instructions never run."),
+                ("get-subscription-transition-eligibilities", "For end-of-sale-with-conversions offers, get the scheduled target."),
+                ("create-scheduled-changes", "PATCH the resource carrying scheduledActions or scheduledNextTermInstructions."),
+            },
+            new[]
+            {
+                "GUARD: autoRenewEnabled must be true.",
+                "Term, billing cycle and seat count cannot change mid-term; this is how they change at the next one.",
+                "Send scheduledActions OR scheduledNextTermInstructions, never both.",
+            }),
+        ["suspend"] = (
+            "Suspend a subscription's service.",
+            new[]
+            {
+                ("get-subscription-by-id", "Read the resource; the PATCH sends it back whole."),
+                ("suspend-subscription", "PATCH the full resource with status \"suspended\"."),
+            },
+            new[]
+            {
+                "Suspension stops service but NOT billing. To stop paying, cancel inside the window.",
+                "Seat count cannot be changed while suspended.",
+            }),
+        ["reactivate"] = (
+            "Bring a suspended subscription back into service.",
+            new[]
+            {
+                ("get-subscription-by-id", "Read suspensionReasons before trying."),
+                ("reactivate-subscription", "PATCH the full resource with status \"active\"."),
+            },
+            new[]
+            {
+                "GUARD: a subscription Microsoft suspended stays suspended until that reason clears.",
+                "Only valid from suspended - a cancelled subscription has to be repurchased.",
+            }),
+        ["migrate"] = (
+            "Migrate a legacy subscription to New Commerce.",
+            new[]
+            {
+                ("validate-migration", "GUARD: returns isEligible plus the exact reasons it would be rejected."),
+                ("migrate-to-new-commerce", "Start the migration; omitted properties carry legacy values forward."),
+                ("get-migration", "Poll it - migration is asynchronous."),
+                ("get-migration-events", "The step-by-step trail, and the only place a failure reason survives."),
+            },
+            new[]
+            {
+                "Base subscriptions migrate with all active add-ons as a bundle; one ineligible add-on fails the lot.",
+                "To run it later use create-migration-schedule, which can fire at the legacy renewal.",
+            }),
+        ["transfer"] = (
+            "Move billing ownership of a customer's subscriptions to another partner.",
+            new[]
+            {
+                ("create-transfer", "The TARGET partner creates it; transferType 3 for New Commerce."),
+                ("get-transfer", "Poll status - the source partner accepts or rejects on their side."),
+                ("list-customer-subscriptions", "Verify the subscriptions now sit under the new partner."),
+            },
+            new[]
+            {
+                "GUARD: the customer must already have a reseller relationship with the target partner, or creation fails with 900400.",
+                "The source partner responds with accept-transfer or reject-transfer.",
+                "A pending transfer blocks other lifecycle writes on the affected subscriptions.",
+            }),
+    };
+
+    [McpServerTool(Name = "pc_plan_subscription_change"), Description(
+        "The ordered call sequence for one subscription lifecycle change: increase-seats, decrease-seats, upgrade, cancel, renew-change, suspend, reactivate, migrate or transfer. Each plan reads the subscription first, states the precondition that decides whether the change is legal, performs it, and confirms it. Use pc_explain_lifecycle to find out WHICH operation is available.")]
+    public static object PlanSubscriptionChange(
+        [Description("increase-seats|decrease-seats|upgrade|cancel|renew-change|suspend|reactivate|migrate|transfer")] string operation,
+        [Description("customer id (optional)")] string? customerId = null)
+    {
+        if (!SubscriptionChanges.TryGetValue(operation, out var plan))
+            return new { error = $"Unknown operation \"{operation}\".", known = SubscriptionChanges.Keys };
+        return BuildPlan(customerId, plan.Chain, plan.Goal, plan.Notes);
+    }
 }
 
 [McpServerToolType]

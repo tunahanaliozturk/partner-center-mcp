@@ -18,8 +18,21 @@ public static class ScenarioTools
     [McpServerTool(Name = "pc_get_scenario"), Description("Full detail for one Partner Center scenario by id: method, path, headers, examples, gotchas.")]
     public static object GetScenario([Description("scenario id")] string id)
     {
-        var s = Knowledge.Current.Scenarios.FirstOrDefault(x => x.Id == id);
-        return s is not null ? s : new { error = $"No scenario with id \"{id}\".", ids = Knowledge.Current.Scenarios.Select(x => x.Id) };
+        var s = Knowledge.Current.Scenario(id);
+        if (s is null)
+            return new { error = $"No scenario with id \"{id}\".", ids = Knowledge.Current.Scenarios.Select(x => x.Id) };
+
+        // The response example is part of the record rather than an opt-in: it
+        // is what a caller reaches for when responseShape is not enough. Absent
+        // where the page publishes none, which is normal for writes with no body.
+        return Knowledge.Current.Examples.TryGetValue(id, out var example)
+            ? new
+            {
+                s.Id, s.Area, s.Title, s.Method, s.Path, s.AuthType, s.Headers, s.RequestShape,
+                s.RequestFields, s.ResponseShape, s.Examples, s.Gotchas, s.DocUrl, s.LastVerified,
+                exampleResponse = new { example.HttpStatus, example.Body },
+            }
+            : s;
     }
 
     [McpServerTool(Name = "pc_lookup_error"), Description("Decode a Partner Center REST error by error code: meaning, causes, remediation, related scenarios.")]

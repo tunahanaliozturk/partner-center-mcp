@@ -38,3 +38,18 @@ jobs:
       # 0.9.0; running export above and then diffing makes it impossible to miss.
       - name: Fail if generated/ is out of date with the source
         run: git diff --exit-code -- generated/
+
+  # The .NET server ships the same knowledge pack from the same data/ directory
+  # and is published to NuGet from the same tag. Nothing here built it until
+  # now, which is how it drifted eight tools behind the TypeScript one without
+  # a single red build. PackTests asserts the two expose the same tools.
+  dotnet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: "10.0.x"
+      - name: Build and test the .NET server
+        working-directory: dotnet
+        run: dotnet test PartnerCenterMcp.Tests -c Release

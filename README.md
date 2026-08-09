@@ -256,6 +256,10 @@ For the rest: `npm run eval` runs a deterministic golden-case suite, `npm run ev
 authored. `npm run examples:refresh` re-collects the response examples; it merges rather than
 overwrites, so a run that Learn rate-limits cannot lose the previous one's work.
 
+The .NET server in [`dotnet/`](dotnet/) exposes the same 28 tools from the same `data/` pack and
+ships to NuGet as `tunahanaliozturk.PartnerCenterMcp`. `dotnet test PartnerCenterMcp.Tests` runs its
+suite, one test of which asserts the two servers expose the same tool names.
+
 `npm run pack-diff` reports what changed since the last recorded release, comparing a fingerprint
 of every scenario's route, auth, headers, fields, response shape and gotchas. Re-verifying a
 scenario is deliberately not a change. `npm run pack-diff -- --record X.Y.Z` writes the result into
