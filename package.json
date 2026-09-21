@@ -69,7 +69,7 @@
     "@types/node": "^20.19.43",
     "@vitest/coverage-v8": "^4.1.10",
     "typescript": "^7.0.2",
-    "vitest": "^4.1.10"
+    "vitest": "^5.0.1"
   },
   "overrides": {
     "@hono/node-server": "^2.0.5"
